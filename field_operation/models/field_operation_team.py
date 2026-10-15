@@ -260,8 +260,6 @@ class FieldOperationTeam(models.Model):
             "context": {"search_default_team_id": self.id, "default_team_id": self.id},
         }
 
-    open_team_tasks = open_team_service
-
     def open_team_calendar(self):
         """Open team calendar view"""
         self.ensure_one()

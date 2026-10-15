@@ -341,3 +341,37 @@ class TestFieldOperation(TransactionCase):
         self.assertEqual(stats[0]["label"], self.env._("Services"))
         # Counter is recursive (child contacts included), badge must match it
         self.assertEqual(stats[0]["value"], company.field_operation_count)
+
+    def test_12_contact_mobile_reads_through_without_writing_back(self):
+        """The contact phone stays the master record: the job copy only follows it.
+
+        ``contact_mobile`` was a writable related field: editing the phone on a
+        job silently rewrote ``res.partner.phone`` for every document of that
+        contact (measured: 222 -> 999), including through list ``multi_edit``.
+        It is readonly now — a revert to ``readonly=False`` must fail this test.
+        """
+        partner = self.env["res.partner"].create(
+            {"name": "Phone Owner", "phone": "111222333"}
+        )
+        contact = self.env["res.partner"].create(
+            {"name": "Phone Contact", "parent_id": partner.id, "phone": "999888777"}
+        )
+        operation = self.env["field.operation"].create(
+            {"subject": "Phone Job", "partner_id": partner.id, "contact_id": contact.id}
+        )
+        self.assertEqual(operation.contact_mobile, "999888777")
+        self.assertTrue(
+            self.env["field.operation"]._fields["contact_mobile"].readonly,
+            "a writable related field would overwrite res.partner.phone",
+        )
+
+        operation.write({"contact_mobile": "000000000"})
+        self.assertEqual(
+            contact.phone,
+            "999888777",
+            "the write must not travel back to the contact's phone",
+        )
+
+        contact.phone = "444555666"
+        operation.invalidate_recordset(["contact_mobile"])
+        self.assertEqual(operation.contact_mobile, "444555666")

@@ -3,7 +3,7 @@
 > Saha servis operasyonunun çekirdeği — iş kaydı, ekip/bölge planlama, durum takibi,
 > portal erişimi ve PDF servis teslim formu.
 > Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.2.3.0` (tek kaynak: `__manifest__.py`)
-> Modül: `field_operation` · 48 dosya · 9 Python sınıfı (6 yeni model + 3 inherit) + portal controller
+> Modül: `field_operation` · 49 dosya · 9 Python sınıfı (6 yeni model + 3 inherit) + portal controller
 
 Doküman modül kodundan üretilmiştir; kanıtsız iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
 
@@ -26,7 +26,9 @@ Suite'in taban modülü: saha servis işini (`field.operation`) kaydeder, planla
 
 Kapsam dışı: sözleşme, taşeron, fatura, stok ve konum toplama ayrı modüllerde.
 
-<!-- DOLDURULACAK: Servis fiyatı (service_price) hangi roller için iş bilgisi olarak gizli kalmalı? -->
+Servis fiyatı politikası (2026-10-15 kararı): backend'de `service_price` yalnız Head Office grubuna
+açık (`views/field_operation_view.xml`); portal'da ise müşteriye **bilinçli olarak** gösterilir
+(liste "Fee" kolonu ve detay "Price" alanı). İki görünürlük farkı kasıtlıdır, hata değildir.
 
 ## 2. Bağımlılıklar
 
@@ -141,14 +143,20 @@ hücresinde servis sayacı rozeti (`_compute_application_statistics_hook`, `fa-t
 
 ## 8. Test Kapsamı
 
-`tests/test_field_operation.py` — `TestFieldOperation(TransactionCase)`,
-`@tagged('field_operation','post_install','-at_install')`, **11 test**: ekip kanban sayacı `draft`
-dahil tüm status'leri sayar, izin çakışması `ValidationError` yükseltir, alt kişi kayıtlarında
-`field_operation_count` invalidasyonu, partner aksiyon domain'i ile sayacın aynı olması, portal PDF
-rapor xml:id'inin varlığı, This Week/Last Week filtrelerinin gerçek pazartesiyi kullanması,
-`date_localization`'ın compute ile ezilmemesi, ekip `service_count` takibi, ekip kanban verisinin
-tek sorguda toplanması (N+1), tekrarlayan servis sihirbazının UTC saklaması ve kişi listesindeki
-"Stats" hücresinin servis rozetini (`application_statistics`) yayması.
+Suite toplam **14 test** (`post_install`, `-at_install`; etiket `field_operation`):
+
+`tests/test_field_operation.py` — `TestFieldOperation(TransactionCase)`, **11 test**: ekip kanban
+sayacı `draft` dahil tüm status'leri sayar, izin çakışması `ValidationError` yükseltir, alt kişi
+kayıtlarında `field_operation_count` invalidasyonu, partner aksiyon domain'i ile sayacın aynı olması,
+portal PDF rapor xml:id'inin varlığı, This Week/Last Week filtrelerinin gerçek pazartesiyi
+kullanması, `date_localization`'ın compute ile ezilmemesi, ekip `service_count` takibi, ekip kanban
+verisinin tek sorguda toplanması (N+1), tekrarlayan servis sihirbazının UTC saklaması ve kişi
+listesindeki "Stats" hücresinin servis rozetini (`application_statistics`) yayması.
+
+`tests/test_service_repeat_wizard.py` — `TestServiceRepeatWizard(TransactionCase)`, **3 test**:
+aylık "Day of Month" alanının başlangıç tarihini izlemesi ve düzenlenebilir kalması, 500 kayıt
+üst sınırının tarihler üretilmeden ÖNCE (islice) uygulanması (`rrule_count=10_000_000` 5 sn altında
+reddedilir).
 
 ```bash
 odoo-bin -c <odoo.conf> -d <test_db> -u field_operation \
@@ -166,6 +174,7 @@ odoo-bin -c <odoo.conf> -d <test_db> -u field_operation \
   `binding_model_id=model_field_operation`).
 - **Dış Python bağımlılığı:** `dateutil.rrule` (sihirbaz); `external_dependencies` boş — dateutil
   Odoo ile gelir. `xlsxwriter` bu modülde kullanılmaz.
-- **i18n:** `i18n/field_operation.pot` + `i18n/tr.po` (+ derlenmiş `tr.mo`).
+- **i18n:** `i18n/field_operation.pot` + `i18n/tr.po` (derlenmiş `.mo` repoya girmez; Odoo `.po`'yu
+  kurulumda derler).
 - **Statik:** `static/description/` altında `icon.png`, `icon.svg`, `portal.png`, `index.html`; portal ekran görüntüleri,
    `frontend.scss` / `portal_dashboard.scss` (`web.assets_frontend`).

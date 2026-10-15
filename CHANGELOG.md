@@ -5,6 +5,42 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.3.0] — 2026-10-15
+
+### İnceleme turu: `contact_mobile` salt-okunur, i18n tazelendi, doküman + temizlik (rapor: `field_operation_inceleme_2026-10-15.md`)
+
+- **P1 — `contact_mobile` write-through kapatıldı (karar a):** alan `related="contact_id.phone",
+  store=True, readonly=False` idi (`models/field_operation.py:78`); iş kartında telefon değiştirmek
+  kişi kaydının telefonunu **global ve sessizce** yeniden yazıyordu (probe: `op.write(
+  {'contact_mobile': '999'})` → partner phone 222 → 999). Liste `multi_edit` ile toplu yazım da
+  açıktı. Artık `readonly=True` + açıklayıcı `help`; şema aynı, sürüm artırılmadı.
+- **i18n tazelendi:** pot/po koddan 3 string gerideydi (+1 bayat). Koddan yeniden export (iki koşu,
+  msgid seti stabil: 350); `tr.po` 344 çeviriyi korudu + 4 yeni çeviri (`Only office users are
+  allowed to %s.`, `Signature is too large.`, `rrule_bymonthday` help'i, `contact_mobile` help'i).
+  Eskiden beri boş olanlar aynen duruyor: mail template `body_html`, `team_id`.
+- **Doküman:** README §8 test sayısı 11 → **14** (`test_service_repeat_wizard.py` belgelendi),
+  bayat `(+ derlenmiş tr.mo)` iddiası ve "48 dosya" sayısı düzeltildi, fiyat politikası notu eklendi
+  (karar b: portal **bilinçli** gösteriyor — backend Head Office kısıtıyla fark kasıtlı);
+  `index.html` sürümü 19.0.2.2.1 → 19.0.2.3.0.
+- **Temizlik:** ölü alias `open_team_tasks` kaldırıldı (`models/field_operation_team.py`); sihirbazın
+  no-op `raise ve/ue` blokları sadeleşti, genel `except Exception` artık `_logger.exception` ile
+  traceback bırakıyor (`wizard/service_repeat_wizard.py`).
+- **Bırakılanlar (karar):** durum geçiş guard'ı (c — kural yeterli), 09 bakiyesi priority/`_order`
+  (e — açık). 09 raporu m.6 retraksiyonu raporda: `ir_rule` flag'leri default True
+  (`base/models/ir_rule.py:27-30`), worker kuralı yazma dahil 4 işleme uygulanır.
+
+**Doğrulama (gerçek koşular):** `-u field_operation --test-enable --test-tags /field_operation
+-d fo_check --stop-after-init` → EXIT=0, **0 failed, 0 error(s) of 14 tests**
+(`/tmp/fo_check_update.log:75,101-102`); pre-commit 11/11 Passed; i18n export scratch conf'ta
+(kullanıcının log'una dokunulmadı); **`uzman_v19_20261012`'ye yazılmadı** — canlıya alım kullanıcının
+kendi sunucusunda `-u field_operation` ile (etiket değişmedi, Apps listesi işaret vermez).
+
+**PR #1 gözden geçirme turu (tate1192):** Talep 1 gereği `test_12_contact_mobile_reads_through_
+without_writing_back` eklendi — readonly bayrağı, yazımın partner'a akmaması ve read-through sabitlendi
+(forms modülündeki muadil desen); suite **15 test**. Ayrıca `tr.po`'nun düşen 3 satırlık Odoo başlığı
+geri eklendi (export churn'ü kalmasın). Doğrulama: aynı koşu → **0 failed, 0 error(s) of 15 tests**.
+Talep 2 (main/19.0 ayrışması) aynı daldan `main`'e açılan ikinci PR ile karşılanıyor.
+
 ## [field_operation_geolocation: 19.0.1.2.0] — 2026-10-13
 
 ### Ölü `boolean_button` widget'ı iki görünümden kaldırıldı

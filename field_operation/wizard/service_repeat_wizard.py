@@ -1,5 +1,6 @@
 # service_repeat_wizard.py
 
+import logging
 from datetime import datetime, time
 from itertools import islice
 
@@ -8,6 +9,8 @@ from dateutil import rrule
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
 
 #: Upper bound on the operations one run may generate, overridable with the
 #: ``max_recurring_operations`` context key.
@@ -339,11 +342,11 @@ class ServiceRepeatWizard(models.TransientModel):
                     }
                 )
 
-        except ValidationError as ve:
-            raise ve
-        except UserError as ue:
-            raise ue
+        except (UserError, ValidationError):
+            raise
         except Exception as e:
+            # Log the traceback: the UserError below is all the user sees.
+            _logger.exception("Recurring operation generation failed")
             raise UserError(
                 _(
                     "An unexpected error occurred while generating recurring "

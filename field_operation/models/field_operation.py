@@ -76,7 +76,13 @@ class FieldOperation(models.Model):
         readonly=False,
     )
     contact_mobile = fields.Char(
-        string="Phone", related="contact_id.phone", store=True, readonly=False
+        string="Phone",
+        related="contact_id.phone",
+        store=True,
+        readonly=True,
+        help="Read-only mirror of the contact's phone. Correct the number on "
+        "the contact record: a writable related field would silently rewrite "
+        "the partner's phone for every document.",
     )
     address_id = fields.Many2one(
         "res.partner",
