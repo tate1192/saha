@@ -4,6 +4,8 @@ from typing import Any
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from . import geo_helpers
+
 
 class FieldOperationTeam(models.Model):
     _inherit = "field.operation.team"
@@ -12,9 +14,12 @@ class FieldOperationTeam(models.Model):
     longitude = fields.Float(digits=(10, 7))
     accuracy = fields.Float("Accuracy (m)", tracking=True)
     device_id = fields.Char("Device ID", tracking=True)
-    timestamp = fields.Datetime("GPS Timestamp", default=fields.Datetime.now)
-    last_update = fields.Datetime("Last Update", default=fields.Datetime.now)
-    is_online = fields.Boolean("Online", compute="_compute_online_status", store=True)
+    timestamp = fields.Datetime("GPS Timestamp")
+    last_update = fields.Datetime("Last Update")
+    # Not stored on purpose: "online" is relative to *now*, so a stored value is
+    # only refreshed when last_update is written and stays True forever once the
+    # pings stop. Non-stored computes on every read; nothing filters/groups on it.
+    is_online = fields.Boolean("Online", compute="_compute_online_status")
     last_online = fields.Datetime("Last Online")
     location_history_ids = fields.One2many(
         "team.location.history", "team_id", string="Location History"
@@ -90,7 +95,7 @@ class FieldOperationTeam(models.Model):
 
     def action_show_on_map(self):
         self.ensure_one()
-        if not self.latitude or not self.longitude:
+        if not geo_helpers.has_point(self.latitude, self.longitude):
             raise UserError(_("No GPS coordinates available"))
 
         maps_website = self.env.user.map_website_id
@@ -125,7 +130,7 @@ class FieldOperationTeam(models.Model):
 
         coordinates = []
         for team in self:
-            if team.latitude and team.longitude:
+            if geo_helpers.has_point(team.latitude, team.longitude):
                 info = team.name
                 if team.battery_level:
                     info += _(" (Bat: %s%%)") % team.battery_level

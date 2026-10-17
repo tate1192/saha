@@ -4,7 +4,7 @@
 > konumu, konum geçmişi, harita sağlayıcı yapılandırması, rota ve çoklu nokta harita
 > bağlantıları; servis formu (`field.operation.forms`) için de aynı harita/konumlandırma kısayolları.
 > Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.2.0`
-> Modül: `apps/saha/field_operation_geolocation` · 35 dosya · 2 yeni model + 5 genişletme
+> Modül: `apps/saha/field_operation_geolocation` · 37 dosya · 2 yeni model + 5 genişletme
 
 Bu doküman modül kodundan üretilmiştir (manifest + Python + XML + JS). Kodda kanıtı
 olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
@@ -40,7 +40,15 @@ olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
   (`openstreetmap.org`, `graphhopper.com`, `google.com/maps`, `bing.com/maps`, `here.com`).
   *Kanıt: `odoo/addons/base_geolocalize/models/base_geocoder.py:83-96`.*
 
-<!-- DOLDURULACAK: GPS takibi hangi yasal dayanağa/açık rızaya dayanıyor? -->
+> **Yasal dayanak notu (işletme doldurur — kurulumdan ÖNCE):** Bu modül saha çalışanının
+> konumunu toplar ve işler. Teknik gerçekler: (1) takip, kullanıcı backend'e her girişinde
+> **otomatik** başlar (systray bileşeni tarayıcı konum iznini ister; ayrıca elle başlat/durdur
+> ikonu vardır), (2) vardiya boyunca ~5 dakikada bir konum/batarya/sinyal gönderilir,
+> (3) `team.location.history` tablosu **sınırsız büyür** (temizlik/arşiv politikası yok —
+> bilinçli bırakıldı), (4) görünürlük kullanıcının kendi takımı + manager ile sınırlıdır
+> (kayıt kuralları). KVKK kapsamındaki dayanak (açık rıza / sözleşmenin ifası / meşru menfaat)
+> ve çalışan aydınlatma metni bu gerçeklere göre **belgelenmelidir**; bu satır o karar
+> verilene kadar açık işarettir (2026-10-15 incelemesi, karar e).
 
 ## 2. Bağımlılıklar
 
@@ -75,13 +83,14 @@ olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
   Listedeki **Maps** butonu `base.group_user` ile sınırlıdır; aynı şekilde
   `field.operation.forms` listesindeki **Open Maps** ve formdaki **Geolocate** butonları da
   `base.group_user` taşır (**Map** butonu ek yetki gerektirmez, gated değildir).
-- **Konum uçları yalnızca kullanıcının kendi takımına kapalıdır (gizlilik sertleştirmesi):**
-  `/field_team/get_positions` ve `/field_team/get_team_positions/<id>` artık `sudo()` ile
-  tüm takımları okumaz; sonucu `_get_user_team()` ile **isteği yapan kullanıcının kendi
-  takımına** indirger (başkasının takımı için boş liste veya hata döner). Bir konum kişisel
-  veridir; bir saha çalışanı başka takımın konumunu göremez. Durum/kod yazımı da
-  (`/field_team/update_gps`) yalnızca kullanıcının kendi takımı için kabul edilir; gelen
-  enlem/boylam aralık, pil ve seçim değerleri doğrulanır. *Kanıt: `controllers/gps_tracking.py`.*
+- **Konum uçları kullanıcının kendi takımıyla sınırlıdır (gizlilik sertleştirmesi):**
+  geriye **iki uç** kaldı — `/field_team/get_my_team` (yalnız isteği yapan kullanıcının kendi
+  takımı) ve `/field_team/update_gps` (durum/kod yazımı yalnız kendi takımı için; gelen
+  enlem/boylam aralık, pil ve seçim değerleri doğrulanır). Bir konum kişisel veridir; bir saha
+  çalışanı başka takımın konumunu göremez. Tüm takımları okuyan
+  `/field_team/get_positions` ve `/field_team/get_team_positions/<id>` uçları **kaldırıldı**
+  (hiçbir çağıranı yoktu; kendi-takım kısıtı yüzünden dispeçere de veri döndürmüyorlardı).
+  *Kanıt: `controllers/gps_tracking.py`.*
 - **Harita sağlayıcı kayıtları:** `maps.website` ofis grubunda **salt-okunur**; gerçek API
   anahtarı `api_key` alanına `password=True` ile yazılır, yani alan maskeli gösterilir
   (`models/maps_website.py`). Düzenleme ofis/Route **Manager** gruplarındadır. Yönetici
@@ -111,7 +120,7 @@ Sunucu tarafı: `action_open_map` → `maps.website._get_lat_lon_url()` (+ `{API
 `action_show_selected_routes` → `_get_route_url(start, waypoints)`; `team.action_show_on_map`
 ve `action_show_route_history` harita yoksa OSM / **GraphHopper** URL'ini elle kurar.
 
-**Koordinat kuralı (tek yerde: `geo_helpers.has_coordinates`):** Float alanlarda ORM, veritabanındaki
+**Koordinat kuralı (tek yerde: `geo_helpers.has_point`; kayıt üzerinden `has_coordinates`):** Float alanlarda ORM, veritabanındaki
 NULL ile gerçek `0.0`ı ayırt edemez (kolon NULL, okuma `0.0`). Bu yüzden `is None` kontrolü hiç
 ateşlenmez; kural **çift sıfır "koordinat yok"** kabul edilir (tam (0,0) bir servis adresi olmaz).
 Geçerli `lat=0.0, lon≠0.0` (ekvator) kabul edilir.
@@ -148,10 +157,11 @@ gösterilir:
 
 Model üzerinde ayrıca GPS grubuna dahil edilmeyen `battery_level` (Integer, yüzde),
 `signal_strength` (Selection `0..4`: `No Signal` → `Excellent`), `status`
-(`idle` / `moving` / `working` / `break`, header'da badge), `is_online` (Boolean, store,
-compute — `last_update` 300 sn içindeyse `True`, `boolean_button`) ve
+(`idle` / `moving` / `working` / `break`, header'da badge), `is_online` (Boolean, **store'suz**
+compute — `last_update` 300 sn içindeyse `True`; `boolean_toggle readonly="1"`) ve
 `location_history_count` (Integer, compute — `button_box`'ta GPS History butonu) alanları
-bulunur.
+bulunur. `is_online` bilerek store'suzdur: store'lu hâlde yalnız `last_update` yazımında
+tazeleniyordu ve ping kesilen takım sonsuza dek "Online" kalıyordu.
 
 `team.location.history` liste kolonları: `timestamp`, `latitude`, `longitude`, `accuracy`,
 `battery_level`. `maps.website` liste kolonları: `sequence` (handle), `name`,
@@ -175,11 +185,16 @@ bulunur.
 
 ## 9. Test Kapsamı
 
-Bu sürümde iki dosya vardır. `tests/test_gps_tracking.py`: `TestGpsTrackingEndpoints`
-(`HttpCase`) uç noktaların sözleşmesini, `TestGpsTrackingModels` (`TransactionCase`)
-model/güvenlik sözleşmesini doğrular. `tests/test_field_operation_forms_map.py` (bu sürümde
-eklendi, `TransactionCase`): servis formundaki harita/konumlandırma kısayollarını doğrular.
-Her üç sınıf da `@tagged('post_install','-at_install')`.
+Dört dosya, toplam **33 test** (hepsi `@tagged('post_install','-at_install')`):
+
+- `tests/test_gps_tracking.py` — `TestGpsTrackingEndpoints` (`HttpCase`, uç sözleşmesi) +
+  `TestGpsTrackingModels` (`TransactionCase`, model/güvenlik/cron) — **16 test**.
+- `tests/test_field_operation_forms_map.py` (`TransactionCase`) — servis formundaki
+  harita/konumlandırma kısayolları — **10 test**.
+- `tests/test_geolocation_views.py` (`TransactionCase`) — görünüm/widget sözleşmesi
+  (`boolean_button` yasağı, arşiv toggle'ı, Geolocate butonu) — **3 test**.
+- `tests/test_team_map_actions.py` (`TransactionCase`) — takım tarafındaki iki harita
+  aksiyonu ve koordinat kuralı (`lat=0.0` kabul, çift sıfır `UserError`) — **4 test**.
 
 - **Servis formu kısayolları (10 test):** harita URL'inde kaydın koordinatları ve hiç yer tutucu
   kalmaması; `requires_api_key=False` iken URL'de `key=` bulunmaması; **çift sıfırın "koordinat yok"
@@ -188,15 +203,17 @@ Her üç sınıf da `@tagged('post_install','-at_install')`.
   bulunamazsa **warning**, bulunursa **success** (geokodlayıcı `_geo_localize` mock'lanır);
   liste/form butonlarının çözülen arch'ta bulunması.
 
-- **Uç noktalar:** `get_my_team` kullanıcının kendi takımını döndürür; `get_positions` yalnızca
-  kendi takımını verir (başka takımın konumu sızmaz); `update_gps` başka takıma yazmayı
-  reddeder, kendi takımına yazmayı kabul eder; geçersiz `status` (`started`) tüm isteği
+- **Uç noktalar:** `get_my_team` kullanıcının kendi takımını döndürür; `update_gps` başka takıma
+  yazmayı reddeder, kendi takımına yazmayı kabul eder; geçersiz `status` (`started`) tüm isteği
   düşürmez; enlem `91.0` ve boylam `181.0` reddedilir; `(0.0, 0.0)` geçerli koordinat sayılır.
+  (Ölü `get_positions` / `get_team_positions` uçları 2026-10-15'te silindi — hiçbir çağıranı yoktu.)
 - **Model/güvenlik:** `maps.website.api_key` `password=True` (maskeli); ofis kullanıcısı
   `maps.website` üzerinde salt-okunur, yönetici yazabilir; `team.location.history` kayıt kuralı
   kullanıcıyı kendi takımıyla sınırlar; günlük cron **pasif** (`active=False`) yüklenir ve
   `res.partner`'ı hedefler; cron yöntemi iş çıkmadığında temiz döner; rota geçmişi 50 nokta
-  sınırında en yeni noktaları korur.
+  sınırında en yeni noktaları korur; **`is_online` store'suzdur ve yeni takım Online başlamaz**,
+  bayrak `last_update` penceresini izler; operation formunda **Geolocate butonu** çözülen arch'ta
+  bulunur.
 
 ## 10. Geliştirici Notları
 
@@ -210,7 +227,9 @@ Her üç sınıf da `@tagged('post_install','-at_install')`.
   içinde düz fonksiyonlar + `maps.website._get_lat_lon_url()` + `res.users._get_map_provider()`;
   modellerde yalnız 2-3 satırlık sarmalayıcı aksiyonlar kalır.
 - **Float tuzağı:** ORM, veritabanı NULL'ını `0.0` olarak döndürür; `is None` kontrolü bu yüzden
-  ölü koddur (eski hâliyle bu modülde vardı). Kural tek yerde: `geo_helpers.has_coordinates`.
+  ölü koddur (eski hâliyle bu modülde vardı). Kural tek yerde: `geo_helpers.has_point`
+  (kayıt üzerinden `has_coordinates`); `field.operation.team` kendi `latitude`/`longitude`
+  çiftini aynı fonksiyonla kontrol eder.
 - Migration yok (`migrations/` bulunmuyor); çeviri dosyaları
   `i18n/field_operation_geolocation.pot` ve `i18n/tr.po` (**131 `msgid`**, iki dosyada
   `msgid` kümesi birebir aynı). `tr.mo` repoda **tutulmaz**; Odoo kurulumda `.po`'dan derler.

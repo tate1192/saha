@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 23:13+0000\n"
-"PO-Revision-Date: 2026-10-11 23:13+0000\n"
+"POT-Creation-Date: 2026-10-15 18:11+0000\n"
+"PO-Revision-Date: 2026-10-15 18:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -240,6 +240,7 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_forms_map_form
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 msgid "Geolocate"
 msgstr ""
 
@@ -729,12 +730,6 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__working
 msgid "Working"
-msgstr ""
-
-#. module: field_operation_geolocation
-#. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
-msgid "You are not allowed to access this team."
 msgstr ""
 
 #. module: field_operation_geolocation

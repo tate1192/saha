@@ -18,17 +18,28 @@ from odoo import _
 from odoo.exceptions import UserError
 
 
-def has_coordinates(record) -> bool:
-    """Whether the record carries usable coordinates.
+def has_point(latitude, longitude) -> bool:
+    """Whether a latitude/longitude pair is a usable coordinate.
 
     A Float column cannot tell a missing value from ``0.0`` through the ORM:
     the column is NULL in the database but reads back as ``0.0``, so ``is None``
     never matches and a truthiness test would reject a valid latitude of ``0.0``
     (equator / prime meridian). A pair of zeros is therefore treated as "no
-    coordinates" - a service address exactly on (0, 0) does not occur.
+    coordinates" - a point exactly on (0, 0) does not occur - while ``lat=0.0``
+    with a real longitude stays valid.
+
+    Callers that hold the two values instead of a record with the
+    ``service_*`` field names (``field.operation.team`` keeps plain
+    ``latitude``/``longitude``) use this; :func:`has_coordinates` wraps it for
+    the service-address models.
     """
+    return bool(latitude or longitude)
+
+
+def has_coordinates(record) -> bool:
+    """Whether the record carries usable coordinates (see :func:`has_point`)."""
     record.ensure_one()
-    return bool(record.service_latitude or record.service_longitude)
+    return has_point(record.service_latitude, record.service_longitude)
 
 
 def coordinates_or_error(record) -> dict[str, float]:

@@ -35,6 +35,14 @@
                         string="Map"
                         icon="fa-map-marker"
                 />
+                <button
+                        class="oe_stat_button"
+                        name="action_geolocate_operation"
+                        type="object"
+                        string="Geolocate"
+                        icon="fa-location-arrow"
+                        groups="base.group_user"
+                />
             </xpath>
         </field>
     </record>

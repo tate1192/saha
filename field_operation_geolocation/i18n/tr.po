@@ -243,8 +243,9 @@ msgstr "GPS takibi durduruldu"
 
 #. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_forms_map_form
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 msgid "Geolocate"
-msgstr ""
+msgstr "Konumlandır"
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__geo_localize_attempted
@@ -262,7 +263,7 @@ msgstr "Konumlandırma başarıyla tamamlandı."
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Geolocation failed: %(error)s"
-msgstr ""
+msgstr "Konumlandırma başarısız: %(error)s"
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__3
@@ -293,7 +294,7 @@ msgstr "Geçmiş Sayısı"
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__idle
@@ -439,7 +440,7 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__mapbox
 msgid "Mapbox"
-msgstr ""
+msgstr "Mapbox"
 
 #. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_view_users_form
@@ -491,7 +492,7 @@ msgstr "Sinyal Yok"
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "No coordinates could be found for the selected address."
-msgstr ""
+msgstr "Seçilen adres için koordinat bulunamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
@@ -544,12 +545,12 @@ msgstr "Çevrimiçi"
 #. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_forms_map_list
 msgid "Open Maps"
-msgstr ""
+msgstr "Haritada Aç"
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__openstreetmap
 msgid "OpenStreetMap"
-msgstr ""
+msgstr "OpenStreetMap"
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__other
@@ -741,12 +742,6 @@ msgstr "Çalışıyor"
 #. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
-msgid "You are not allowed to access this team."
-msgstr "Bu takıma erişim izniniz yok."
-
-#. module: field_operation_geolocation
-#. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "You are not authorized to update this team."
 msgstr "Bu takımı güncelleme yetkiniz yok."
 
@@ -761,8 +756,9 @@ msgstr "Herhangi bir saha takımına atanmadınız."
 msgid ""
 "https://maps.example.com/route?from={START_LATITUDE},{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}"
 msgstr ""
+"https://maps.example.com/route?from={START_LATITUDE},{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}"
 
 #. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "https://maps.example.com?lat={LATITUDE}&lon={LONGITUDE}"
-msgstr ""
+msgstr "https://maps.example.com?lat={LATITUDE}&lon={LONGITUDE}"

@@ -31,3 +31,15 @@ class TestGeolocationViewWidgets(TransactionCase):
         self.assertNotIn("boolean_button", arch)
         self.assertIn('name="active"', arch)
         self.assertIn("boolean_toggle", arch)
+
+    def test_the_operation_form_offers_the_geolocate_button(self):
+        """The geolocate action must be reachable from the form (not RPC-only).
+
+        It was defined on the model with no button anywhere: the only way to
+        (re)trigger a geolocation was the address onchange, which does not fire
+        when the address did not change. The forms model already had its button;
+        this asserts the operation form now matches it.
+        """
+        arch = self._arch("field_operation_geolocation.view_field_operation_route_form")
+        self.assertIn('name="action_geolocate_operation"', arch)
+        self.assertIn('name="action_open_map"', arch)

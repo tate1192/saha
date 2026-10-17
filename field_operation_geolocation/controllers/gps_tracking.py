@@ -90,24 +90,6 @@ class FieldTeamAPI(http.Controller):
         except (TypeError, ValueError):
             return None
 
-    @staticmethod
-    def _serialize_position(team):
-        """Return the client-facing payload of a team's GPS position."""
-        return {
-            "id": team.id,
-            "name": team.name,
-            "latitude": team.latitude,
-            "longitude": team.longitude,
-            "accuracy": team.accuracy,
-            "last_update": team.last_update,
-            "is_online": team.is_online,
-            "status": team.status,
-            "battery_level": team.battery_level,
-            "signal_strength": team.signal_strength,
-            "team_head": team.team_head_id.name if team.team_head_id else "",
-            "priority": team.priority,
-        }
-
     @http.route("/field_team/get_my_team", type="jsonrpc", auth="user")
     def get_my_team(self):
         """Return the field team assigned to the logged-in user."""
@@ -234,30 +216,3 @@ class FieldTeamAPI(http.Controller):
             }
         )
         return True
-
-    @http.route("/field_team/get_positions", type="jsonrpc", auth="user")
-    def get_positions(self, team_ids=None):
-        """Return the GPS position of the requesting user's own team only.
-
-        A location is personal data: a field worker may never see another
-        team's position, so the result is scoped to ``_get_user_team()``
-        instead of reading every team.
-        """
-        user_team = self._get_user_team(request.env.user)
-        if not user_team:
-            return []
-        if team_ids and user_team.id not in team_ids:
-            return []
-        return [self._serialize_position(user_team)]
-
-    @http.route(
-        "/field_team/get_team_positions/<int:team_id>",
-        type="jsonrpc",
-        auth="user",
-    )
-    def get_team_position(self, team_id):
-        """Return ``team_id``'s position when it is the user's own team."""
-        user_team = self._get_user_team(request.env.user)
-        if not user_team or user_team.id != team_id:
-            return {"error": _("You are not allowed to access this team.")}
-        return self._serialize_position(user_team)

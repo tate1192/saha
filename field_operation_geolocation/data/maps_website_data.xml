@@ -18,7 +18,11 @@
         <field name="name">Mapbox Maps</field>
         <field name="provider_type">mapbox</field>
         <field name="website_url">https://mapbox.com/maps</field>
-        <field name="requires_api_key">True</field>
+        <!-- The public mapbox.com web URLs below take no API key parameter (keys
+             apply to the Mapbox REST APIs, which this module does not call);
+             requires_api_key stays False so the flag matches the URLs, like the
+             Bing record above. -->
+        <field name="requires_api_key">False</field>
         <field name="lat_lon_url">https://mapbox.com/maps/?pt={LONGITUDE},{LATITUDE}&amp;z=15</field>
         <field name="route_lat_lon_url">https://mapbox.com/maps/?rtext={START_LATITUDE},{START_LONGITUDE}~{DEST_LATITUDE},{DEST_LONGITUDE}&amp;rtt=auto</field>
     </record>

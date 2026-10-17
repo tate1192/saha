@@ -106,19 +106,6 @@ class TestGpsTrackingEndpoints(HttpCase):
         self.assertIsNone(exc)
         self.assertEqual(result.get("team_id"), self.team_a.id)
 
-    def test_get_positions_only_returns_own_team(self):
-        self.authenticate(self.user_a.login, self.user_a.login)
-        result, exc = self._call("/field_team/get_positions", {})
-        self.assertIsNone(exc)
-        self.assertIsInstance(result, list)
-        returned_ids = {entry["id"] for entry in result}
-        self.assertIn(self.team_a.id, returned_ids)
-        self.assertNotIn(
-            self.team_b.id,
-            returned_ids,
-            "another team's position leaked through /field_team/get_positions",
-        )
-
     def test_update_gps_on_another_team_is_rejected(self):
         self.authenticate(self.user_a.login, self.user_a.login)
         params = {
@@ -384,3 +371,30 @@ class TestGpsTrackingModels(TransactionCase):
             url,
             "the oldest point was returned instead of the newest 50",
         )
+
+    def test_online_flag_is_computed_fresh_and_starts_false(self):
+        """``is_online`` must not be stored, and a fresh team must not be Online.
+
+        Two measured defects pinned here: the field was ``store=True`` (once the
+        pings stop, the stored True never refreshes — a silent team kept showing
+        as online forever; probed: last_update moved 2h back at the DB level,
+        ORM still read True) and ``last_update`` carried
+        ``default=fields.Datetime.now`` (a team that never sent a single ping
+        showed Online for its first five minutes).
+        """
+        self.assertFalse(
+            self.env["field.operation.team"]._fields["is_online"].store,
+            "a stored is_online never refreshes after the pings stop",
+        )
+        team = self.env["field.operation.team"].create({"name": "Fresh Team"})
+        self.assertFalse(team.is_online, "a brand-new team is Online before any ping")
+        self.assertFalse(team.last_update, "last_update must start empty")
+
+    def test_online_flag_follows_the_last_ping_window(self):
+        team = self.env["field.operation.team"].create({"name": "Ping Team"})
+        team.last_update = fields.Datetime.now() - timedelta(minutes=10)
+        self.assertFalse(
+            team.is_online, "a ping ten minutes old must not read as online"
+        )
+        team.last_update = fields.Datetime.now() - timedelta(minutes=1)
+        self.assertTrue(team.is_online, "a ping one minute old is online")
