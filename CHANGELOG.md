@@ -5,6 +5,113 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_sale: 19.0.1.0.3] — 2026-10-16
+
+### Düzeltme: "Create Sale" butonu satılmış serviste de görünüyordu (mükerrer sipariş üretimi)
+
+- **Buton koşulu eksikti:** `views/field_operation_view.xml` (header butonu) yalnız
+  `status not in ('done',)` bakıyordu; `sale_id` dolu servislerde de görünüyordu. Canlı veride
+  `status='done'` olan 12879 servisin **11656'sı zaten satışlı** → buton görünür, tıklayan ikinci
+  siparişi yaratıp `field.operation.sale_id`'yi yeni siparişe çeviriyordu: eski siparişin o2m'i
+  boşalır (sayacı 0'a düşer, stat butonu kaybolur), `sale.order.field_operation_id` eski siparişte
+  kalır → iki kayıt karşılıklı farklı şey söyler. Koşul `status not in ('done',) or sale_id` oldu;
+  satış tarafındaki `order_types != 'service' or field_operation_id` koşuluyla simetrik.
+- **Sunucu tarafı guard eklendi:** wizard'a yalnız butondan girilmiyor, ⚙ Actions bağlamsal
+  aksiyonundan da giriliyor (`binding_model_id=field.operation`, orada sadece grup kısıtı var).
+  `action_create_sale` artık `sale_id` dolu servis varsa `UserError` ile duruyor ve hiç sipariş
+  üretmiyor — `create_sale_service`'teki simetrik guard'ın aynısı.
+- **Testler:** 6 → **8** (satışlı serviste UserError + yeni sipariş oluşmaması; buton arch'ının
+  `sale_id` koşulunu taşıması).
+- **Şema:** yeni kolon `field.operation.sale_line_id` (m2o → sale.order.line, index, `ondelete=set
+  null`, `copy=False`); başka alan/veri değişikliği yok. Sürüm 19.0.1.0.1 → 19.0.1.0.2 (canlı `-u`
+  sırasında görünür olsun diye).
+
+### Düzeltme: "satış ↔ servis" kenarının kayıtsız kalan yarısı
+
+- **Satır bağı artık yazılıyor:** `create_sale_service` ve wizard, servisin doğduğu satırı
+  `sale_line_id`'ye yazıyor (öncesinde `create_sale_service` docstring'i "No line ↔ service link is
+  stored" diyordu). Böylece "fatura satırı → core `sale_line_ids` → sipariş satırı → servis" zinciri
+  kurulabiliyor; eşleşme servisin doğduğu anda bilinen tek yer olduğu için bu kenar satış tarafının işi.
+- **Para birimi/şirket taşınıyor:** servis `with_company(order.company_id)` bağlamında ve
+  `currency_id = order.currency_id` ile yaratılıyor (öncesinde EUR siparişin tutarı şirket para
+  birimli servise yazılıyordu — probe ile doğrulanmıştı). Wizard yönünde ters durum sessizce
+  geçmiyor: sipariş para birimi servisten farklıysa `UserError`.
+- **İptal davranışı:** iptal edilmiş siparişte `create_sale_service` `UserError` ile duruyor; var olan
+  bağ koparılmıyor (servis yapılmış olabilir: form, imza, stok) — bu bilinçli davranış olarak
+  docstring'e yazıldı.
+- **Geri doldurma scripti:** `scripts/backfill_sale_line_id.py` (varsayılan **kuru koşu**). İsim veya
+  satır tutarı eşleşmesiyle tek adaya düşen servisleri bağlar, çok adaylı/eşleşmeyeni raporlar.
+- **Testler:** 8 → **11** (satır bağı + para birimi, iptal guard'ı ve bağın korunması, wizard para
+  birimi reddi).
+
+### Ek tur (2026-10-17): wizard para birimi ve fiyat listesi
+
+- **Sipariş para birimi servisten kopamıyor:** wizard `pricelist_id` hiç yazmıyordu; sipariş şirket
+  para birimine düşerken `service_price` dönüştürülmeden `price_unit`'e yazılıyordu (EUR servis TRY
+  siparişte TRY tutar gibi görünüyordu). `_order_pricelist()` sırayla müşterinin fiyat listesini
+  (para birimi uyuyorsa), servis şirketinde aynı para birimindeki listeyi, sonra şirket-nötr listeyi
+  seçiyor.
+- **Aynı para biriminde liste zorunlu değil:** servis zaten şirket para birimindeyse `pricelist_id`
+  boş bırakılır (sipariş yine o para biriminde doğar). Yabancı para biriminde eşleşen liste yoksa
+  `UserError` — tutar dönüştürülmediği için yanlış fiyat yazmaktansa durmak doğru.
+- **`with_company` recordset karşılaştırma hatası:** `self._order_pricelist(op) in
+  env["product.pricelist"]` Odoo 19'da kayıtları env'iyle karşılaştırdığı için her zaman `False`
+  dönüyordu (testlerin 3'ü bu yüzden düşüyordu). Kontrol `not pricelist` oldu; liste sorgusu servis
+  başına bir kez, döngüden önce yapılıyor.
+- **Wizard `active_ids` sahipliği:** `default_get` yalnız `active_model == 'field.operation'` iken
+  `active_ids`'i kullanıyor; başka modelden gelen id'ler servis sanılmıyor.
+- **Testler:** 11 → **15** (`test_11` yabancı para biriminde liste yoksa ret, `test_12` şirket para
+  biriminde listesiz sipariş, `test_13` yabancı para biriminde uygun listeye düşme, `test_14`
+  para birimsiz servis, `test_15` yabancı `active_ids`).
+
+### Alan kaldırıldı: `sale.order.field_operation_id` (2026-10-17)
+
+- **Ölçüm (canlı kopya `uzman_fix_check`):** m2o **0 kayıtta** dolu; 12.090 servisin tamamı
+  `field.operation.sale_id` üzerinden bağlı, m2o'su dolu olup `sale_id`'si başka siparişi gösteren
+  kayıt **0**. Yani kaldırma veri kaybı yaratmıyor; alan pratikte ölüydü.
+- **Kaldırıldı:** model alanı, formdaki gizli `<field>`, wizard'ın `sale.order.create` değeri.
+  Bağın tek sahibi `field.operation.sale_id` (bir siparişin n servisi olabildiği için m2o zaten
+  doğru temsil değildi).
+- **Davranış korundu:** "Service" butonu `field_operation_count == 0` iken görünür; akıllı buton tek
+  serviste formu, birden fazla serviste listeyi açar; `_prepare_invoice()` ilk servisi faturaya yazar.
+- **Testler:** 15 → **16**; `test_04` iki yönlü bağ varsayımı yerine tek bağı (n servis dahil),
+  `test_07`, `test_11`, `test_14` "sipariş sayısı değişmedi" kontrolünü kullanıyor, `test_16` akıllı
+  butonun tek serviste formu / çok serviste listeyi açtığını sabitliyor.
+- **Sürüm:** 19.0.1.0.2 → **19.0.1.0.3**. Odoo 19 `-u` sırasında alan kaydını ve **kolonu** düşürdü
+  (`uzman_fix_check`: `ir_model_fields` kaydı yok, `information_schema`'da kolon yok); kolon 0 dolu
+  olduğu için veri kaybı yok, geri dönüş gerekirse alan yeniden kurulmalı.
+
+### i18n (2026-10-17)
+
+- **`pot` yeniden üretildi:** `odoo-bin i18n export -l pot` → 19.0 damgası, **47 giriş** (v18
+  kalıntısı 33 girişin yerine; sale_line_id yardımı, para birimi/fiyat listesi hataları dahil).
+- **`tr.po` sıfırdan kuruldu:** 47/47 çeviri, **0 boş**, yer tutucular birebir (`%s`,
+  `%(service_currency)s`, `%(operation)s`); 14 yeni çeviri (9 hata mesajı + `Sale`, `Sales Order
+  Line`, `Service Count` ve iki teknik anahtar). `Service Count` yanlış eski kopyası (`Servisler`)
+  `Servis Sayısı` olarak düzeltildi.
+- **Kopyaya yazıldı:** `odoo-bin i18n import -l tr_TR -w` → alan etiketleri (`Satış`, `Satış
+  Siparişi Satırı`, `Servis Sayısı`) ve görünüm terimleri DB'de güncel. Kod çevirisi tr_TR'de
+  probe'la doğrulandı: `FO/12686 servisinin para birimi yok: önce bir para birimi ayarlayın.`
+  (yer tutucu korunuyor).
+- `.mo` üretilmedi (önceki turdaki karar); sunucu `.po`'yu doğrudan yükler.
+
+**Doğrulama (gerçek koşular):** scratch DB `master_sale_check`: `-u field_operation_sale
+--test-enable --test-tags /field_operation_sale` → EXIT=0, **0 failed, 0 error(s) of 16 tests**
+(hem para birimi turundan sonra hem alan kaldırıldıktan sonra), log'da 0 ERROR/CRITICAL. Canlı veri
+kopyası `uzman_fix_check` (`uzman_v19_20261012`'nin pg_dump kopyası; canlı kopyaya yazılmadı):
+`-u field_operation_sale` → EXIT=0, `latest_version=19.0.1.0.3`; `sale_line_id` kolonu geldi (0 dolu
+— script çalıştırılmadı), `sale_order.field_operation_id` `ir_model_fields` kaydı ve DB kolonu düştü,
+`sale.order` formu `or field_operation_count` taşıyor ve eski gizli alanı içermiyor. Gerçek kayıtlarla
+probe (hepsi rollback, veriye yazılmadı): sipariş **S08681** (state `sale`, TRY, 1 ürün satırı) →
+`create_sale_service` → 1 servis, `sale_line_id` = siparişin satırı, para birimi TRY, tutar 15000.0;
+servis **FO/11022** → wizard → **S08694**, servisin `sale_line_id`'si o satır, para birimleri TRY/TRY,
+tutar 2500.0 = satır fiyatı; iptal sipariş **S08659** → `UserError: This sale order is cancelled, no
+service is created: S08659`. Geri doldurma kuru koşusu (aynı kopya, gerçek veri): scanned=12090,
+**matched=7196**, ambiguous=150, unmatched=4744; iki örnek: FO/12683 → S08692'nin satırı (8000.0),
+FO/12682 → S08668'in satırı (4500.0). pre-commit 11/11 Passed (ruff 0 ihlal).
+Bilinen artıklar: `scripts/backfill_sale_line_id.py` canlıda `APPLY=True` ile çalıştırılacak
+(öncesinde `pg_dump -Fc`); canlı `-u` ve `i18n import -w` kullanıcının kendi sunucusunda.
+
 ## [field_operation_geolocation: 19.0.1.2.0] — 2026-10-15
 
 ### İnceleme turu: "kim online" dürüstleşti, Geolocate butonu, ölü uçlar silindi (rapor: `field_operation_geolocation_inceleme_2026-10-15.md`)

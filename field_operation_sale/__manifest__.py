@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Sale",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.3",
     "category": "Services/Field Service",
     "summary": "Field Operation Sale integration",
     "author": "Softteknik Bilişim",

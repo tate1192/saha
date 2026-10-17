@@ -71,6 +71,22 @@ class TestFieldOperationSale(TransactionCase):
             }
         )
 
+    def _foreign_pricelist(self):
+        """A pricelist in a currency other than the company's."""
+        company_currency = self.env.company.currency_id
+        currency = (
+            self.env["res.currency"]
+            .with_context(active_test=False)
+            .search(
+                [("id", "!=", company_currency.id), ("name", "in", ("USD", "EUR"))],
+                limit=1,
+            )
+        )
+        currency.active = True
+        return self.env["product.pricelist"].create(
+            {"name": "Foreign Probe", "currency_id": currency.id}
+        )
+
     def test_01_wizard_creates_a_draft_sale_and_links_both_ways(self):
         """The wizard turns a service into a draft order with its price and customer."""
         operation = self._operation()
@@ -84,7 +100,7 @@ class TestFieldOperationSale(TransactionCase):
         self.assertEqual(sale.state, "draft")
         self.assertEqual(sale.partner_id, self.partner)
         self.assertEqual(sale.order_types, "service")
-        self.assertEqual(sale.field_operation_id, operation)
+        self.assertEqual(sale.field_operation_ids, operation)
         self.assertEqual(operation.sale_id, sale)
         self.assertEqual(len(sale.order_line), 1)
         self.assertEqual(sale.order_line.price_unit, 250.0)
@@ -115,14 +131,15 @@ class TestFieldOperationSale(TransactionCase):
         self.assertFalse(operation.sale_id)
 
     def test_04_invoice_preparation_carries_the_service(self):
-        """Both link directions must reach the invoice reference."""
+        """The service pointing at the order reaches the invoice reference."""
         operation = self._operation()
-        sale = self._sale(field_operation_id=operation.id)
+        sale = self._sale()
+        operation.sale_id = sale
         self.assertEqual(sale._prepare_invoice()["field_operation_id"], operation.id)
 
-        # reverse direction only: the service points at the order
-        sale.field_operation_id = False
-        operation.sale_id = sale
+        # several services: the first one is carried over
+        second = self._operation(subject="Second Job")
+        second.sale_id = sale
         self.assertEqual(sale._prepare_invoice()["field_operation_id"], operation.id)
 
     def test_05_create_sale_service_makes_one_service_per_line(self):
@@ -190,3 +207,186 @@ class TestFieldOperationSale(TransactionCase):
         # read back as the test user: the guard must have stopped it before any write
         created = self.env["field.operation"].search([("sale_id", "=", sale.id)])
         self.assertFalse(created)
+
+    def test_07_wizard_refuses_a_service_that_already_has_a_sale(self):
+        """A sold service is not sold twice, no orphan draft order is left behind."""
+        sale = self._sale()
+        operation = self._operation(sale_id=sale.id)
+        wizard = self._wizard(operation)
+        order_count = self.env["sale.order"].search_count([])
+
+        with self.assertRaises(UserError):
+            wizard.action_create_sale()
+
+        # the existing link is untouched and no second order was created
+        self.assertEqual(operation.sale_id, sale)
+        self.assertEqual(self.env["sale.order"].search_count([]), order_count)
+
+    def test_08_create_sale_button_hides_itself_once_the_service_is_sold(self):
+        """The header button carries the ``sale_id`` condition, not the status alone."""
+        arch = self.env.ref(
+            "field_operation_sale.sale_order_field_operation_form_view"
+        ).arch
+        self.assertIn("status not in ('done',)", arch)
+        self.assertIn("or sale_id", arch)
+
+    def test_09_create_sale_service_stores_the_line_and_the_order_currency(self):
+        """Each service keeps its line; the order currency is copied too."""
+        pricelist = self._foreign_pricelist()
+        sale = self._sale(
+            pricelist_id=pricelist.id,
+            order_line=[
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.service_product.id,
+                        "product_uom_qty": 1,
+                        "price_unit": 100.0,
+                    },
+                ),
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.service_product.id,
+                        "product_uom_qty": 1,
+                        "price_unit": 50.0,
+                    },
+                ),
+            ],
+        )
+        self.assertEqual(sale.currency_id, pricelist.currency_id)
+
+        sale.create_sale_service()
+
+        self.assertEqual(
+            sorted(sale.field_operation_ids.mapped("sale_line_id").ids),
+            sorted(sale.order_line.ids),
+        )
+        self.assertEqual(
+            sale.field_operation_ids.mapped("currency_id"), pricelist.currency_id
+        )
+
+    def test_10_cancelled_order_creates_no_service_and_keeps_the_link(self):
+        """Cancelling blocks new services; the services created earlier stay linked."""
+        sale = self._sale(
+            order_line=[
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.service_product.id,
+                        "product_uom_qty": 1,
+                        "price_unit": 10.0,
+                    },
+                ),
+            ]
+        )
+        sale.create_sale_service()
+        operation = sale.field_operation_ids
+
+        sale.action_cancel()
+        self.assertEqual(sale.state, "cancel")
+        self.assertEqual(operation.sale_id, sale)
+        self.assertEqual(operation.sale_line_id, sale.order_line)
+
+        with self.assertRaises(UserError):
+            sale.create_sale_service()
+        self.assertEqual(sale.field_operation_ids, operation)
+
+    def test_11_wizard_refuses_a_foreign_currency_without_a_pricelist(self):
+        """A foreign-currency service with no pricelist in that currency is refused.
+
+        Picking the customer's pricelist would not convert the amount, it would only
+        relabel it, so the wizard stops instead of booking a wrong price.
+        """
+        pricelist = self._foreign_pricelist()
+        currency = pricelist.currency_id
+        # no pricelist in that currency may be picked, archived ones included
+        self.env["product.pricelist"].with_context(active_test=False).search(
+            [("currency_id", "=", currency.id)]
+        ).write({"active": False})
+        operation = self._operation(currency_id=currency.id)
+        self.assertNotEqual(operation.currency_id, self.env.company.currency_id)
+        order_count = self.env["sale.order"].search_count([])
+
+        wizard = self._wizard(operation)
+        with self.assertRaises(UserError):
+            wizard.action_create_sale()
+
+        self.assertFalse(operation.sale_id)
+        self.assertFalse(operation.sale_line_id)
+        # the refusal happens before any order exists: no orphan draft is left
+        self.assertEqual(self.env["sale.order"].search_count([]), order_count)
+
+    def test_12_wizard_pricelist_and_currency_follow_the_service(self):
+        """The order is created in the service's currency.
+
+        A service already in the company currency needs no pricelist at all: an order
+        without one lands in the same currency, so the copied price needs no
+        conversion. When the customer has a pricelist it is the natural pick.
+        """
+        operation = self._operation()
+        wizard = self._wizard(operation)
+        action = wizard.action_create_sale()
+        sale = self.env["sale.order"].browse(action["domain"][0][2])
+        self.assertEqual(
+            sale.pricelist_id,
+            self.partner.property_product_pricelist,
+        )
+        self.assertEqual(sale.currency_id, operation.currency_id)
+
+    def test_13_wizard_falls_back_to_a_pricelist_in_the_service_currency(self):
+        """A foreign-currency service still gets an order, without conversion.
+
+        With no usable pricelist the wizard used to create the order first and only
+        then complain; now an equivalent pricelist in the service's currency is picked
+        and the order inventory exactly matches the service price.
+        """
+        pricelist = self._foreign_pricelist()
+        currency = pricelist.currency_id
+        operation = self._operation(service_price=120.0, currency_id=currency.id)
+
+        wizard = self._wizard(operation)
+        action = wizard.action_create_sale()
+        sale = self.env["sale.order"].browse(action["domain"][0][2])
+
+        self.assertEqual(sale.pricelist_id.currency_id, currency)
+        self.assertEqual(sale.currency_id, currency)
+        self.assertEqual(sale.order_line.price_unit, 120.0)
+        self.assertFalse(sale.order_line.discount)
+
+    def test_14_wizard_refuses_an_unknown_currency(self):
+        """A service with no currency at all is refused, not silently ordered."""
+        operation = self._operation(currency_id=False)
+        wizard = self._wizard(operation)
+        order_count = self.env["sale.order"].search_count([])
+        with self.assertRaises(UserError):
+            wizard.action_create_sale()
+        self.assertFalse(operation.sale_id)
+        self.assertEqual(self.env["sale.order"].search_count([]), order_count)
+
+    def test_15_default_get_ignores_foreign_active_ids(self):
+        """``active_ids`` from another model must not end up as service links."""
+        wizard = self.wizard_model.with_context(active_model="res.partner").create(
+            {"product_id": self.service_product.id}
+        )
+        self.assertFalse(wizard.operation_ids)
+
+    def test_16_stat_button_opens_the_single_service_or_the_list(self):
+        """One service opens its form, several open the filtered list."""
+        sale = self._sale()
+        operation = self._operation()
+        operation.sale_id = sale.id
+
+        action = sale.show_field_operation()
+        self.assertEqual(action["view_mode"], "form")
+        self.assertEqual(action["res_id"], operation.id)
+
+        second = self._operation(subject="Second Job")
+        second.sale_id = sale.id
+
+        action = sale.show_field_operation()
+        self.assertEqual(action["view_mode"], "list,form")
+        self.assertEqual(action["domain"], [("sale_id", "=", sale.id)])

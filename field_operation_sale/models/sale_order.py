@@ -7,7 +7,6 @@ from odoo.exceptions import AccessError, UserError
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    field_operation_id = fields.Many2one("field.operation", string="Service")
     field_operation_ids = fields.One2many(
         "field.operation", "sale_id", string="Services"
     )
@@ -29,15 +28,16 @@ class SaleOrder(models.Model):
             order.field_operation_count = len(order.field_operation_ids)
 
     def show_field_operation(self):
-        """Open the linked service, or the list of the services of this order."""
+        """Open the only linked service, or the list when there are several."""
         self.ensure_one()
-        if self.field_operation_id:
+        services = self.field_operation_ids
+        if len(services) == 1:
             return {
                 "name": _("Field Operation"),
                 "res_model": "field.operation",
                 "view_mode": "form",
                 "type": "ir.actions.act_window",
-                "res_id": self.field_operation_id.id,
+                "res_id": services.id,
             }
         return {
             "name": _("Field Operations"),
@@ -51,12 +51,12 @@ class SaleOrder(models.Model):
     def _prepare_invoice(self):
         """Carry the service reference over to the invoice.
 
-        The order can be linked to its service either way: ``field_operation_id`` when
-        the sale was created from one operation (wizard), ``field.operation.sale_id``
-        when the operations were created from the order. The explicit link wins.
+        The only link between an order and its services is
+        ``field.operation.sale_id``; the first service is written to the invoice so the
+        "Services" stat button on the invoice can find its way back.
         """
         res = super()._prepare_invoice()
-        operation = self.field_operation_id or self.field_operation_ids[:1]
+        operation = self.field_operation_ids[:1]
         if operation:
             res["field_operation_id"] = operation.id
         return res
@@ -64,12 +64,21 @@ class SaleOrder(models.Model):
     def create_sale_service(self):
         """Create one ``field.operation`` per product line of a service order.
 
-        No line ↔ service link is stored: every operation points back at the order
-        through ``sale_id``, which is what the counter and the stat button read.
+        Each service keeps the line it was born from (``sale_line_id``) and inherits the
+        order's currency; the company context follows the order, so a service can never
+        land in another company with a foreign amount. The order side of the link is
+        ``field.operation.sale_id``, which is what the counter and the stat button read.
         """
         for order in self:
             if order.order_types != "service":
                 continue
+            if order.state == "cancel":
+                raise UserError(
+                    _(
+                        "This sale order is cancelled, no service is created: %s.",
+                        order.name,
+                    )
+                )
             if not self.env.user.has_group(
                 "field_operation_sale.group_field_operation_sale_enabled"
             ):
@@ -84,19 +93,22 @@ class SaleOrder(models.Model):
                     )
                 )
 
+            operations = self.env["field.operation"].with_company(order.company_id)
             created = self.env["field.operation"]
             for line in order.order_line:
                 if line.display_type or not line.product_id:
                     continue
-                created |= self.env["field.operation"].create(
+                created |= operations.create(
                     {
                         "sale_id": order.id,
+                        "sale_line_id": line.id,
                         "partner_id": order.partner_id.id,
                         "subject": line.name or line.product_id.display_name,
                         "start_date": fields.Datetime.now(),
                         "description": order.note or "",
                         "service_type_id": line.product_id.service_type_id.id,
                         "service_price": line.price_subtotal,
+                        "currency_id": order.currency_id.id,
                     }
                 )
 

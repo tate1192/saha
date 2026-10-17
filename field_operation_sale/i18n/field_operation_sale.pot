@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-15 17:37+0000\n"
-"PO-Revision-Date: 2026-03-15 17:37+0000\n"
+"POT-Creation-Date: 2026-10-17 14:39+0000\n"
+"PO-Revision-Date: 2026-10-17 14:39+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -75,7 +75,12 @@ msgid "Default product used when creating sales from field operations."
 msgstr ""
 
 #. module: field_operation_sale
+#: model:ir.model.fields,field_description:field_operation_sale.field_account_move__display_name
+#: model:ir.model.fields,field_description:field_operation_sale.field_field_operation__display_name
 #: model:ir.model.fields,field_description:field_operation_sale.field_field_operation_create_sale_wizard__display_name
+#: model:ir.model.fields,field_description:field_operation_sale.field_product_template__display_name
+#: model:ir.model.fields,field_description:field_operation_sale.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:field_operation_sale.field_sale_order__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -107,19 +112,26 @@ msgid "Field Operation Create Sale"
 msgstr ""
 
 #. module: field_operation_sale
+#: model:res.groups.privilege,name:field_operation_sale.field_operation_sale_hidden_privilege
 #: model_terms:ir.ui.view,arch_db:field_operation_sale.res_config_settings_view_form
 msgid "Field Operation Sale"
 msgstr ""
 
 #. module: field_operation_sale
 #. odoo-python
+#: code:addons/field_operation_sale/models/account_move.py:0
 #: code:addons/field_operation_sale/models/sale_order.py:0
 #: model:ir.model.fields,field_description:field_operation_sale.field_field_operation_create_sale_wizard__operation_ids
 msgid "Field Operations"
 msgstr ""
 
 #. module: field_operation_sale
+#: model:ir.model.fields,field_description:field_operation_sale.field_account_move__id
+#: model:ir.model.fields,field_description:field_operation_sale.field_field_operation__id
 #: model:ir.model.fields,field_description:field_operation_sale.field_field_operation_create_sale_wizard__id
+#: model:ir.model.fields,field_description:field_operation_sale.field_product_template__id
+#: model:ir.model.fields,field_description:field_operation_sale.field_res_config_settings__id
+#: model:ir.model.fields,field_description:field_operation_sale.field_sale_order__id
 msgid "ID"
 msgstr ""
 
@@ -141,6 +153,15 @@ msgstr ""
 #. module: field_operation_sale
 #. odoo-python
 #: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
+msgid ""
+"No pricelist in %(service_currency)s is available for %(operation)s: the "
+"order price comes from the service price and will not be converted. Create a"
+" pricelist in that currency or price the service in the customer's currency."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
 msgid "Please select at least one field operation."
 msgstr ""
 
@@ -148,6 +169,20 @@ msgstr ""
 #: model:ir.model,name:field_operation_sale.model_product_template
 #: model:ir.model.fields,field_description:field_operation_sale.field_field_operation_create_sale_wizard__product_id
 msgid "Product"
+msgstr ""
+
+#. module: field_operation_sale
+#: model:ir.model.fields,help:field_operation_sale.field_field_operation__sale_line_id
+msgid ""
+"Product line the service was created from, when the service comes from a "
+"sale order line. Empty for services created the other way round (service "
+"first, sale order afterwards)."
+msgstr ""
+
+#. module: field_operation_sale
+#: model:ir.model.fields,field_description:field_operation_sale.field_field_operation__sale_count
+#: model_terms:ir.ui.view,arch_db:field_operation_sale.sale_order_field_operation_form_view
+msgid "Sale"
 msgstr ""
 
 #. module: field_operation_sale
@@ -162,12 +197,23 @@ msgid "Sales Order"
 msgstr ""
 
 #. module: field_operation_sale
+#: model:ir.model.fields,field_description:field_operation_sale.field_field_operation__sale_line_id
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: field_operation_sale
 #: model:ir.model.fields,field_description:field_operation_sale.field_account_bank_statement_line__field_operation_id
 #: model:ir.model.fields,field_description:field_operation_sale.field_account_move__field_operation_id
-#: model:ir.model.fields,field_description:field_operation_sale.field_sale_order__field_operation_id
 #: model:ir.model.fields.selection,name:field_operation_sale.selection__sale_order__order_types__service
 #: model_terms:ir.ui.view,arch_db:field_operation_sale.field_operation_sale_order_form_view
 msgid "Service"
+msgstr ""
+
+#. module: field_operation_sale
+#: model:ir.model.fields,field_description:field_operation_sale.field_account_bank_statement_line__field_operation_count
+#: model:ir.model.fields,field_description:field_operation_sale.field_account_move__field_operation_count
+#: model:ir.model.fields,field_description:field_operation_sale.field_sale_order__field_operation_count
+msgid "Service Count"
 msgstr ""
 
 #. module: field_operation_sale
@@ -177,9 +223,7 @@ msgid "Service Type"
 msgstr ""
 
 #. module: field_operation_sale
-#: model:ir.model.fields,field_description:field_operation_sale.field_account_bank_statement_line__field_operation_count
-#: model:ir.model.fields,field_description:field_operation_sale.field_account_move__field_operation_count
-#: model:ir.model.fields,field_description:field_operation_sale.field_sale_order__field_operation_count
+#: model:ir.model.fields,field_description:field_operation_sale.field_sale_order__field_operation_ids
 msgid "Services"
 msgstr ""
 
@@ -191,4 +235,65 @@ msgstr ""
 #. module: field_operation_sale
 #: model:ir.model.fields.selection,name:field_operation_sale.selection__sale_order__order_types__stock
 msgid "Stock"
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
+msgid "The service %(operation)s has no currency: set one first."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/models/sale_order.py:0
+msgid "There are no product lines to create service operations."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
+msgid "These services already have a sale order, no second one is created: %s"
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
+msgid "These services have no customer, no sale order can be created: %s"
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/models/sale_order.py:0
+msgid "This sale order already has services: %s."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/models/sale_order.py:0
+msgid "This sale order is cancelled, no service is created: %s."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
+msgid "You are not allowed to create sale orders from services."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/models/sale_order.py:0
+msgid "You are not allowed to create services from a sale order."
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/wizard/create_sale_wizard.py:0
+msgid "id"
+msgstr ""
+
+#. module: field_operation_sale
+#. odoo-python
+#: code:addons/field_operation_sale/models/account_move.py:0
+#: code:addons/field_operation_sale/models/sale_order.py:0
+msgid "sale_id"
 msgstr ""

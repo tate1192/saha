@@ -7,6 +7,16 @@ class FieldOperation(models.Model):
     _inherit = "field.operation"
 
     sale_id = fields.Many2one("sale.order", "Sales Order", tracking=True)
+    sale_line_id = fields.Many2one(
+        "sale.order.line",
+        "Sales Order Line",
+        ondelete="set null",
+        copy=False,
+        index=True,
+        help="Product line the service was created from, when the service comes from a "
+        "sale order line. Empty for services created the other way round (service "
+        "first, sale order afterwards).",
+    )
     sale_count = fields.Integer(compute="_compute_sale_count", string="Sale")
 
     @api.depends("sale_id")

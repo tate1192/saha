@@ -25,9 +25,12 @@ class FieldOperationCreateSaleWizard(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
-        active_ids = self.env.context.get("active_ids", [])
-        if active_ids:
-            res["operation_ids"] = [fields.Command.set(active_ids)]
+        # Only trust ``active_ids`` launched from a field operation: coming from any
+        # other model they are ids of foreign records, not services.
+        if self.env.context.get(
+            "active_model"
+        ) == "field.operation" and self.env.context.get("active_ids"):
+            res["operation_ids"] = [fields.Command.set(self.env.context["active_ids"])]
         if "product_id" in fields_list:
             product = self._default_product()
             if product:
@@ -51,6 +54,48 @@ class FieldOperationCreateSaleWizard(models.TransientModel):
             return self.env["product.product"]
         return self.env["product.product"].browse(int(product_id)).exists()
 
+    def _order_pricelist(self, operation):
+        """Pick a pricelist that makes the order speak the service's currency.
+
+        The order price comes straight from the service: ``service_price`` is written
+        as-is into ``price_unit``, never converted. So the order must be priced in the
+        service's currency — the customer's own pricelist when it already is, otherwise
+        any pricelist of the service's company (company-specific first, company-neutral
+        fallback) in the same currency.
+
+        An empty recordset is not always an error: when the service is already in the
+        company currency, an order without a pricelist lands in that same currency, so
+        no conversion can happen. It only becomes a refusal when the service speaks a
+        foreign currency, because then the order would silently price the amount in
+        another currency. The caller makes that call.
+        """
+        if not operation.currency_id:
+            return self.env["product.pricelist"]
+        partner_pricelist = operation.partner_id.with_company(
+            operation.company_id
+        ).property_product_pricelist
+        if partner_pricelist and partner_pricelist.currency_id == operation.currency_id:
+            return partner_pricelist
+        pricelist_model = self.env["product.pricelist"].with_company(
+            operation.company_id
+        )
+        company_pricelist = pricelist_model.search(
+            [
+                ("currency_id", "=", operation.currency_id.id),
+                ("company_id", "=", operation.company_id.id),
+            ],
+            limit=1,
+        )
+        if company_pricelist:
+            return company_pricelist
+        return pricelist_model.search(
+            [
+                ("currency_id", "=", operation.currency_id.id),
+                ("company_id", "=", False),
+            ],
+            limit=1,
+        )
+
     def action_create_sale(self):
         """Create one draft sale order per selected service."""
         self.ensure_one()
@@ -73,17 +118,59 @@ class FieldOperationCreateSaleWizard(models.TransientModel):
                 )
             )
 
+        already_sold = self.operation_ids.filtered("sale_id")
+        if already_sold:
+            raise UserError(
+                _(
+                    "These services already have a sale order, "
+                    "no second one is created: %s",
+                    ", ".join(already_sold.mapped("name")),
+                )
+            )
+
+        # Validate every service up front. Checking inside the loop would leave the
+        # earlier services with their draft orders behind whenever the caller runs
+        # outside a web request (server action, cron), which rolls nothing back.
+        # ``not pricelist`` (not ``pricelist in recordset``): recordsets are compared
+        # with their environment, and the helper returns a ``with_company`` copy.
+        pricelists = {}
+        for operation in self.operation_ids:
+            if not operation.currency_id:
+                raise UserError(
+                    _(
+                        "The service %(operation)s has no currency: set one first.",
+                        operation=operation.name,
+                    )
+                )
+            pricelist = self._order_pricelist(operation)
+            if (
+                not pricelist
+                and operation.currency_id != operation.company_id.currency_id
+            ):
+                raise UserError(
+                    _(
+                        "No pricelist in %(service_currency)s is available for "
+                        "%(operation)s: the order price comes from the service price "
+                        "and will not be converted. Create a pricelist in that "
+                        "currency or price the service in the customer's currency.",
+                        service_currency=operation.currency_id.name,
+                        operation=operation.name,
+                    )
+                )
+            pricelists[operation.id] = pricelist
+
         created_sales = self.env["sale.order"]
         for operation in self.operation_ids:
             sale = self.env["sale.order"].create(
                 {
                     "partner_id": operation.partner_id.id,
-                    "field_operation_id": operation.id,
+                    "company_id": operation.company_id.id,
+                    "pricelist_id": pricelists[operation.id].id,
                     "order_types": "service",
                     "note": operation.description or "",
                 }
             )
-            self.env["sale.order.line"].create(
+            sale_line = self.env["sale.order.line"].create(
                 {
                     "order_id": sale.id,
                     "product_id": self.product_id.id,
@@ -92,7 +179,7 @@ class FieldOperationCreateSaleWizard(models.TransientModel):
                     "product_uom_qty": 1.0,
                 }
             )
-            operation.sale_id = sale.id
+            operation.write({"sale_id": sale.id, "sale_line_id": sale_line.id})
             created_sales |= sale
 
         return {

@@ -11,7 +11,7 @@
                         type="object"
                         class="oe_highlight"
                         groups="field_operation_sale.group_field_operation_sale_enabled"
-                        invisible="order_types != 'service' or field_operation_id"
+                        invisible="order_types != 'service' or field_operation_count"
                 />
             </header>
             <div class="oe_button_box" name="button_box" position="inside">
@@ -22,7 +22,6 @@
             </div>
             <field name="partner_id" position="after">
                 <field name="order_types"/>
-                <field name="field_operation_id" invisible="1"/>
             </field>
         </field>
     </record>

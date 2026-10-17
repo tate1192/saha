@@ -1,7 +1,7 @@
 # Field Operation Sale
 
 > Field Operation Sale integration
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.0.1`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.0.3`
 > Modül: `apps/saha_legacy/field_operation_sale` · 30 dosya · 1 yeni model (`field.operation.create.sale.wizard`) + 5 `_inherit`
 
 Bu doküman modül kodundan üretilmiştir (manifest + modeller + view XML + i18n). Kodda kanıtı
@@ -35,7 +35,7 @@ Kapsam dışı: fiyat listesi/kampanya hesabı ve otomatik fatura/sipariş onay�
 | Model | Tür | Eklenenler / davranış | Dosya |
 |---|---|---|---|
 | `field.operation` | `_inherit` | `sale_id` (M2o `sale.order`), `sale_count`, `action_view_sale()` | `models/field_operation.py` |
-| `sale.order` | `_inherit` | `field_operation_id`, `field_operation_count`, `order_types` (Selection `service`/`stock`), `show_field_operation()`, `_prepare_invoice()`, `create_sale_service()` | `models/sale_order.py` |
+| `sale.order` | `_inherit` | `field_operation_ids` (O2m `sale_id`), `field_operation_count`, `order_types` (Selection `service`/`stock`), `show_field_operation()`, `_prepare_invoice()`, `create_sale_service()` | `models/sale_order.py` |
 | `account.move` | `_inherit` | `field_operation_count`, `field_operation_id`, `show_field_operation()` | `models/account_move.py` |
 | `product.template` | `_inherit` | `service_type_id` (M2o `field.operation.type`) | `models/product_template.py` |
 | `res.config.settings` | `_inherit` | `group_field_operation_sale_enabled`, `field_operation_sale_default_product_id` | `models/res_config_settings.py` |
@@ -60,7 +60,7 @@ Kapsam dışı: fiyat listesi/kampanya hesabı ve otomatik fatura/sipariş onay�
 | 1 | `status = 'done'` kayıtta **Create Sale** butonu | `views/field_operation_view.xml:31-36` |
 | 2 | Wizard açılır; `active_ids` → `operation_ids` | `wizard/create_sale_wizard.py:26-28` |
 | 3 | Varsayılan ürün `ir.config_parameter` `field_operation_sale.default_product_id`'den okunur | `wizard/create_sale_wizard.py:29-33` |
-| 4 | `action_create_sale`: her servis için 1 `sale.order` (`partner_id`, `field_operation_id`, `order_types='service'`, `note ← description`) | `wizard/create_sale_wizard.py:44-50` |
+| 4 | `action_create_sale`: her servis için 1 `sale.order` (`partner_id`, `order_types='service'`, `note ← description`); bağ ters yönden (`operation.sale_id`) kurulur | `wizard/create_sale_wizard.py:159-185` |
 | 5 | Her siparişe 1 satır: `name ← subject`, `price_unit ← service_price`, `product_uom_qty = 1` | `wizard/create_sale_wizard.py:52-58` |
 | 6 | `operation.sale_id = sale.id`; dönüş domain'i `[('id','in',created_sales.ids)]` | `wizard/create_sale_wizard.py:60-70` |
 
@@ -70,14 +70,14 @@ Servis seçilmezse `UserError('Please select at least one field operation.')` (`
 
 | Adım | Detay | Kanıt |
 |---|---|---|
-| 1 | `sale.order` header'ında **Service**; `order_types = 'service'` ve `field_operation_id` boşsa görünür | `views/sale_order_view.xml:9-14` |
+| 1 | `sale.order` header'ında **Service**; `order_types = 'service'` ve `field_operation_count == 0` ise görünür | `views/sale_order_view.xml:9-14` |
 | 2 | `create_sale_service()` her ürün satırı için ayrı `field.operation` yaratır | `models/sale_order.py:59-75` |
 | 3 | Aktarım: `partner_id`, `sale_id`, `subject = "{ürün adı} {satır adı}"`, `start_date = bugün`, `description ← order.note`, `service_type_id ← line.product_id.service_type_id`, `service_price ← line.price_subtotal` | `models/sale_order.py:63-74` |
 | 4 | Ürün satırı yoksa `UserError('There are no product lines to create service operations.')` | `models/sale_order.py:77-78` |
 
 ### Akış C — Fatura bağı
 
-`_prepare_invoice()` servis referansını faturaya taşır (`models/sale_order.py:42-47`); `account.move` formunda `field_operation_count == 0` değilse **Services** butonu görünür (`views/account_move_view.xml:8-13`) ve `show_field_operation()` ilgili servisleri listeler (`models/account_move.py:16-24`).
+`_prepare_invoice()` servis referansını faturaya taşır (`models/sale_order.py:35-46`); `account.move` formunda `field_operation_count == 0` değilse **Services** butonu görünür (`views/account_move_view.xml:8-13`) ve `show_field_operation()` ilgili servisleri listeler (`models/account_move.py:16-24`).
 
 <!-- DOLDURULACAK: `service_price` ile ürünün satış fiyatı çelişirse hangisi esas alınmalı? -->
 
@@ -96,7 +96,7 @@ Servis seçilmezse `UserError('Please select at least one field operation.')` (`
 |---|---|---|
 | `field.operation` listesi | `sale_id` (`optional="hide"`, `name` sonrası) | `views/field_operation_view.xml:4-13` |
 | `field.operation` formu | "Sale" akıllı butonu, header'da "Create Sale", `create_date` sonrası `sale_id` (`no_create`) | `views/field_operation_view.xml:15-42` |
-| `sale.order` formu | `order_types`, `field_operation_id` (gizli), "Services" akıllı butonu | `views/sale_order_view.xml:16-25` |
+| `sale.order` formu | `order_types`, "Services" akıllı butonu | `views/sale_order_view.xml:16-22` |
 | `product.template` formu | `service_type_id` (`type == 'service'` ise zorunlu) | `views/product_template_view.xml:8-12` |
 | `res.config.settings` | "Create Sale Feature" + "Default Sale Product" | `views/res_config_settings_view.xml:11-21` |
 
@@ -150,3 +150,18 @@ Bu modül yeni arama görünümü/filtre eklemez (kanıt: `views/` altında `sea
 - **Standart:** manifest gömülü `description` kaldırıldı, boş `demo`/`assets`/`external_dependencies` silindi,
   `order_types` view'da artık zorunlu değil (DB'de 2 boş kayıt vardı), 6 dosya CRLF→LF, Türkçe docstring'ler
   İngilizce, ruff temiz, `tests/` eklendi.
+
+## 11. Değişiklik kaydı — 2026-10-17 (sürüm 19.0.1.0.3)
+
+- **`sale.order.field_operation_id` kaldırıldı.** Sipariş ↔ servis bağının tek sahibi artık
+  `field.operation.sale_id`. Kaldırma öncesi canlı kopyada (`uzman_fix_check`) ölçüldü: m2o
+  **0 kayıtta** dolu, 12.090 servisin tamamı `sale_id` üzerinden bağlı → veri kaybı yok. Bir servis
+  birden fazla olabildiği için m2o zaten n servisi temsil edemiyordu.
+- **Davranış korundu:** "Service" butonu `field_operation_count == 0` iken görünür; akıllı buton tek
+  servis varsa formu, birden fazlaysa listeyi açar; `_prepare_invoice()` ilk servisi faturaya yazar.
+- **Şema notu:** `-u` sırasında Odoo 19 `ir_model_fields` kaydını temizleyip
+  `sale_order.field_operation_id` kolonunu da düşürür (canlı kopyada doğrulandı). Yani geri dönüş
+  gerekirse alan + veri yeniden kurulmalı; kolon boş olduğu için kayıp yok.
+- **i18n:** `pot` yeniden üretildi (47 giriş, 19.0), `tr.po` 47/47 dolu (0 boş, yer tutucular
+  korunuyor). Yeni hata mesajları, `Sale`, `Sales Order Line` ve `Service Count` çevrildi;
+  `Service Count` eski yanlış karşılığı (`Servisler`) `Servis Sayısı` oldu.

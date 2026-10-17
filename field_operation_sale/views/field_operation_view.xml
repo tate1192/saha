@@ -32,7 +32,7 @@
                         string="Create Sale"
                         type="action"
                         class="btn-primary"
-                        invisible="status not in ('done',)"
+                        invisible="status not in ('done',) or sale_id"
                         groups="field_operation_sale.group_field_operation_sale_enabled"/>
             </xpath>
             <field name="create_date" position="after">
@@ -42,4 +42,3 @@
     </record>
 
 </odoo>
-
