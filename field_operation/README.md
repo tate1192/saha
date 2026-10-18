@@ -2,7 +2,7 @@
 
 > Saha servis operasyonunun çekirdeği — iş kaydı, ekip/bölge planlama, durum takibi,
 > portal erişimi ve PDF servis teslim formu.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.2.3.0` (tek kaynak: `__manifest__.py`)
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.2.4.0` (tek kaynak: `__manifest__.py`)
 > Modül: `field_operation` · 49 dosya · 9 Python sınıfı (6 yeni model + 3 inherit) + portal controller
 
 Doküman modül kodundan üretilmiştir; kanıtsız iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
@@ -136,6 +136,12 @@ tag/status/activity. Ana veri listeleri: Region (`name`, `code`, `manager_id`), 
 | Grupla | Customer, Service Type, Team, Date (`start_date`) |
 | Searchpanel | `status` (çoklu seçim), `service_type_id`, `team_id` |
 
+Arşivli takımlar searchpanel'in `team_id` kategorisinde **görünmez**:
+`field.operation.search_panel_select_range` bu alan için
+`comodel_domain=[('active', '=', True)]` geçirir. Panel, işleri `team_id`'ye göre gruplayıp
+bulduğu değeri gösterdiği için arşivli bir takıma bağlı tek bir iş o takımı panelde
+tutabiliyordu; comodel domain'i paneli takımların kendisini okumaya zorlar.
+
 Alan aramaları: `name` ("No", ilike), `partner_id` (`child_of`), `subject` (ilike), `team_id`.
 Ek: `res.partner`'da "Services" filtresi (`field_operation_count > 0`) ve kişi listesindeki "Stats"
 hücresinde servis sayacı rozeti (`_compute_application_statistics_hook`, `fa-tasks`);
@@ -143,15 +149,18 @@ hücresinde servis sayacı rozeti (`_compute_application_statistics_hook`, `fa-t
 
 ## 8. Test Kapsamı
 
-Suite toplam **14 test** (`post_install`, `-at_install`; etiket `field_operation`):
+Suite toplam **16 test** (`post_install`, `-at_install`; etiket `field_operation`):
 
-`tests/test_field_operation.py` — `TestFieldOperation(TransactionCase)`, **11 test**: ekip kanban
+`tests/test_field_operation.py` — `TestFieldOperation(TransactionCase)`, **12 test**: ekip kanban
 sayacı `draft` dahil tüm status'leri sayar, izin çakışması `ValidationError` yükseltir, alt kişi
 kayıtlarında `field_operation_count` invalidasyonu, partner aksiyon domain'i ile sayacın aynı olması,
 portal PDF rapor xml:id'inin varlığı, This Week/Last Week filtrelerinin gerçek pazartesiyi
 kullanması, `date_localization`'ın compute ile ezilmemesi, ekip `service_count` takibi, ekip kanban
 verisinin tek sorguda toplanması (N+1), tekrarlayan servis sihirbazının UTC saklaması ve kişi
 listesindeki "Stats" hücresinin servis rozetini (`application_statistics`) yayması.
+
+`tests/test_search_panel.py` — `TestSearchPanelTeams(TransactionCase)`, **1 test**: arşivli
+takım searchpanel'de görünmez, aktif takım görünür.
 
 `tests/test_service_repeat_wizard.py` — `TestServiceRepeatWizard(TransactionCase)`, **3 test**:
 aylık "Day of Month" alanının başlangıç tarihini izlemesi ve düzenlenebilir kalması, 500 kayıt

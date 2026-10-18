@@ -5,6 +5,19 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.4.0] — 2026-10-18
+
+### Arşivli takımlar arama panelinden çıkarıldı
+
+- `field.operation.search_panel_select_range`, `team_id` için
+  `comodel_domain=[('active', '=', True)]` geçiriyor. Panel, işleri `team_id`'ye göre gruplayıp
+  bulduğu her değeri listelediği için arşivli bir takıma bağlı tek bir iş o takımı panelde
+  tutabiliyordu; comodel domain'i paneli takımların kendisini okumaya zorlar, tek seçimli
+  kategori davranışı korunur (view'da `domain` yalnız `select="multi"` ile kullanılabiliyor).
+- Bu kural önce geolocation modülünde yazılmıştı; arama görünümü bu modülde olduğu için
+  buraya taşındı.
+- **Testler:** 15 → **16** (`tests/test_search_panel.py`: arşivli görünmez, aktif görünür).
+
 ## [field_operation_forms_ext: 19.0.1.1.0] — 2026-10-18
 
 ### Modül repoya geri geldi: servis formu harita/konum kısayolları (WhatsApp'sız)
@@ -80,15 +93,9 @@ Biçim: [tutulan sürüm] — tarih — commit — açıklama
   `field_operation_forms_ext` modülünün işi. Bu modülden `models/field_operation_forms.py`,
   `views/field_operation_forms_view.xml`, `tests/test_field_operation_forms_map.py` ve manifest
   bağımlılığı kaldırıldı.
-- **Testler:** 33 → **45** (`tests/test_route_planning.py`, 22 test). Doğrulama: `fo_check`
+- **Testler:** 33 → **44** (`tests/test_route_planning.py`, 21 test). Doğrulama: `fo_check`
   `-u field_operation_geolocation --test-enable --test-tags /field_operation_geolocation` →
-  EXIT=0, **0 failed, 0 error(s) of 45 tests**; ruff/ruff-format temiz.
-- **Arşivli takımlar arama panelinden çıkarıldı:** panel, işleri `team_id`'ye göre
-  gruplayıp bulduğu her değeri listeliyordu; arşivli bir takıma bağlı tek bir iş o takımı
-  panelde tutuyordu. `field.operation.search_panel_select_range` artık `team_id` için
-  `comodel_domain=[('active', '=', True)]` geçiriyor (tek seçimli kategori davranışı korunur;
-  view'da `domain` yalnız `select="multi"` ile kullanılabildiği için çözüm sunucu tarafında).
-  Bir regresyon testi (arşivli görünmez, aktif görünür).
+  EXIT=0, **0 failed, 0 error(s) of 44 tests**; ruff/ruff-format temiz.
 - **i18n:** pot/po koddan yeniden üretildi; **185 msgid**, tr.po'da boş çeviri yok.
 - **Kararlar:** depo = takım `base_location_id` → şirket adresi → ilk müşteri; plan bir
   sihirbaz (geçici model), kalıcı olarak işlere yalnız `route_sequence` (ve istenirse saatler)
@@ -114,7 +121,8 @@ Biçim: [tutulan sürüm] — tarih — commit — açıklama
 - **Servis formu kısayolları testleri:** `field_operation_forms_ext`'e 5 test eklendi
   (arch'ta Map/Geolocate/Open Maps, harita URL'i, çift sıfır reddi, geolocation warning/success,
   WhatsApp butonunun yokluğu).
-- **Test sayısı:** CHANGELOG'daki 42 → **45** (gerçek koşu). `field_operation_forms_ext` 5 test.
+- **Test sayısı:** CHANGELOG'daki 42 → **44** (gerçek koşu; arşivli takım testi
+  `field_operation` modülüne taşındı, orada 16 test). `field_operation_forms_ext` 5 test.
 
 ## [field_operation_sale: 19.0.1.0.3] — 2026-10-16
 
@@ -1269,7 +1277,7 @@ P0 yoktu (kurulum EXIT=0, `post_init_hook` idempotent); **9 P1** kapatıldı:
 
 | Modül | Sürüm | Lisans | Manifest adı |
 |---|---|---|---|
-| `field_operation` | `19.0.2.3.0` | AGPL-3 | Field Operation |
+| `field_operation` | `19.0.2.4.0` | AGPL-3 | Field Operation |
 | `field_operation_agreement` | `19.0.1.0.0` | AGPL-3 | Field Operation Agreement |
 | `field_operation_attendance` | `19.0.1.0.0` | AGPL-3 | Field Operation Attendance Report |
 | `field_operation_contract` | `19.0.1.0.10` | AGPL-3 | Field Operation Contract Management |

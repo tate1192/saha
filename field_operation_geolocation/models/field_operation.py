@@ -116,22 +116,6 @@ class FieldOperation(models.Model):
             ("start_date", ">=", previous_day),
         ]
 
-    @api.model
-    def search_panel_select_range(self, field_name, **kwargs):
-        """Keep archived teams out of the search panel's team category.
-
-        The web client groups the operations by ``team_id`` and lists every
-        value it finds, so one operation left pointing at an archived team keeps
-        that team in the panel forever. Passing a ``comodel_domain`` makes the
-        panel read the teams themselves with the active filter instead of
-        trusting the group image.
-        """
-        if field_name == "team_id":
-            kwargs["comodel_domain"] = [("active", "=", True)] + list(
-                kwargs.get("comodel_domain") or []
-            )
-        return super().search_panel_select_range(field_name, **kwargs)
-
     def _sorted_for_route(self):
         """The records in driving order: saved route order, then start time.
 

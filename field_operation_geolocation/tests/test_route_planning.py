@@ -163,45 +163,6 @@ class TestDayPlan(TransactionCase):
 
 
 @tagged("post_install", "-at_install")
-class TestSearchPanelTeams(TransactionCase):
-    """Archived teams must not pollute the search panel's team category."""
-
-    def test_archived_teams_are_not_listed(self):
-        partner = self.env["res.partner"].create(
-            {
-                "name": "Panel Customer",
-                "partner_latitude": TUZLA[0],
-                "partner_longitude": TUZLA[1],
-            }
-        )
-        active_team = self.env["field.operation.team"].create(
-            {"name": "Active Panel Team"}
-        )
-        archived_team = self.env["field.operation.team"].create(
-            {"name": "Archived Panel Team"}
-        )
-        for team in active_team | archived_team:
-            self.env["field.operation"].create(
-                {
-                    "subject": f"Job {team.name}",
-                    "partner_id": partner.id,
-                    "team_id": team.id,
-                    "start_date": fields.Datetime.now(),
-                }
-            )
-        archived_team.active = False
-
-        result = self.env["field.operation"].search_panel_select_range(
-            "team_id", search_domain=[], enable_counters=True
-        )
-        ids = [value["id"] for value in result["values"]]
-        self.assertIn(active_team.id, ids)
-        self.assertNotIn(
-            archived_team.id, ids, "an archived team is still in the search panel"
-        )
-
-
-@tagged("post_install", "-at_install")
 class TestRoutePlanGeolocation(TransactionCase):
     """The plan must offer a way out when the day's stops have no coordinates."""
 

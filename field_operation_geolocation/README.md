@@ -222,10 +222,6 @@ compute alanıdır (plan compute'u başka modele yazmaz).
   takıma göre gruplama `search_default_group_team_id` ile verilir. Modül ayrı bir menü/aktarma
   tanımlamaz: sihirbaz iş formundan, *Saha Servisi* listesinin ⚙ Actions menüsünden veya takım
   formundan açılır. Plan sihirbazının domain'i `status not in (done, cancel)`.
-- **Arşivli takımlar panelde görünmez:** `field.operation.search_panel_select_range`
-  `team_id` için `comodel_domain=[('active', '=', True)]` ekler; panel kayıtları
-  takıma göre gruplayıp bulduğu değeri gösterdiği için arşivli bir takıma bağlı tek bir iş
-  bile o takımı panelde tutabiliyordu.
 - `maps.website` aksiyonu `context={'search_default_active': 1}` ile arşivlenmişleri gizler,
   liste varsayılan sırası `sequence, id`'dir.
 
@@ -246,7 +242,7 @@ compute alanıdır (plan compute'u başka modele yazmaz).
 
 ## 9. Test Kapsamı
 
-Dört dosya, toplam **45 test** (hepsi `@tagged('post_install','-at_install')`):
+Dört dosya, toplam **44 test** (hepsi `@tagged('post_install','-at_install')`):
 
 - `tests/test_gps_tracking.py` — `TestGpsTrackingEndpoints` (`HttpCase`, uç sözleşmesi) +
   `TestGpsTrackingModels` (`TransactionCase`, model/güvenlik/cron) — **16 test**.
@@ -259,7 +255,7 @@ Dört dosya, toplam **45 test** (hepsi `@tagged('post_install','-at_install')`):
   `start_date` sırası, zikzak uyarısı ve düzeltmesi, sıranın `route_sequence` olarak kaydı,
   saat kaydırmanın günler arası işi koruması, bacak km'sinin satırda hesaplanması, depodan
   başlayan rota, konumsuz durağın atlanıp bildirilmesi, `route_lat_lon_url` şablonu, Mapbox
-  çok duraklı URL, `lat=0.0`, **Office User'ın kendi takımının işlerini görmesi** — **22 test**.
+  çok duraklı URL, `lat=0.0`, **Office User'ın kendi takımının işlerini görmesi** — **21 test**.
 
 - **Uç noktalar:** `get_my_team` kullanıcının kendi takımını döndürür; `update_gps` başka takıma
   yazmayı reddeder, kendi takımına yazmayı kabul eder; geçersiz `status` (`started`) tüm isteği
