@@ -10,6 +10,14 @@ from . import geo_helpers
 class FieldOperationTeam(models.Model):
     _inherit = "field.operation.team"
 
+    base_location_id = fields.Many2one(
+        "res.partner",
+        string="Route Start (Depot)",
+        domain=[("is_company", "=", True)],
+        help="Where this team's route starts and ends. When empty, the company "
+        "address is used; when that has no coordinates either, the route starts "
+        "at the first customer of the day.",
+    )
     latitude = fields.Float(digits=(10, 7))
     longitude = fields.Float(digits=(10, 7))
     accuracy = fields.Float("Accuracy (m)", tracking=True)
@@ -77,6 +85,50 @@ class FieldOperationTeam(models.Model):
             else:
                 team.is_online = False
 
+    def _route_start_point(self):
+        """The team's departure point as ``(lat, lon)``, or None.
+
+        Falls back to the company address, which is where most teams actually
+        load the van; a team without any depot coordinates keeps the first
+        customer as the start of its route.
+
+        Returns None for an empty or multi-record recordset instead of raising:
+        the route dialog is also opened before a team is picked, and a computed
+        field must not crash that form.
+        """
+        if len(self) != 1:
+            return None
+        partner = self.base_location_id or self.company_id.partner_id
+        if partner and geo_helpers.has_point(
+            partner.partner_latitude, partner.partner_longitude
+        ):
+            return (float(partner.partner_latitude), float(partner.partner_longitude))
+        return None
+
+    def action_show_day_route(self, day=None):
+        """Open the route plan of this team for one day (default: today)."""
+        self.ensure_one()
+        day = fields.Date.to_date(day) if day else fields.Date.context_today(self)
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Route Plan"),
+            "res_model": "field.operation.route.plan",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_team_id": self.id,
+                "default_date": day.isoformat(),
+            },
+        }
+
+    def action_show_today_route(self):
+        return self.action_show_day_route(fields.Date.context_today(self))
+
+    def action_show_tomorrow_route(self):
+        return self.action_show_day_route(
+            fields.Date.context_today(self) + timedelta(days=1)
+        )
+
     def action_start_gps_tracking(self):
         self.ensure_one()
         return {
@@ -100,12 +152,7 @@ class FieldOperationTeam(models.Model):
 
         maps_website = self.env.user.map_website_id
         if maps_website and maps_website.lat_lon_url:
-            url = maps_website.lat_lon_url.replace("{LATITUDE}", str(self.latitude))
-            url = url.replace("{LONGITUDE}", str(self.longitude))
-            if maps_website.requires_api_key and maps_website.api_key:
-                url = url.replace("{API_KEY}", maps_website.api_key)
-            else:
-                url = url.replace("&key={API_KEY}", "").replace("?key={API_KEY}", "")
+            url = maps_website._get_lat_lon_url(self.latitude, self.longitude)
         else:
             url = (
                 f"https://www.openstreetmap.org/?mlat={self.latitude}"

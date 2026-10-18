@@ -17,20 +17,6 @@
         </field>
     </record>
 
-    <record id="contract_field_operation_filter_view" model="ir.ui.view">
-        <field name="name">field.operation.search.contract</field>
-        <field name="model">field.operation</field>
-        <field name="inherit_id" ref="field_operation.view_field_operation_filter"/>
-        <field name="arch" type="xml">
-            <xpath expr="//search" position="inside">
-                <field name="contract_id"/>
-            </xpath>
-            <xpath expr="//searchpanel" position="inside">
-                <field name="contract_id" icon="fa-file-text-o" enable_counters="1"/>
-            </xpath>
-        </field>
-    </record>
-
     <record id="contract_field_operation_list_view" model="ir.ui.view">
         <field name="name">field.operation.list.contract</field>
         <field name="model">field.operation</field>

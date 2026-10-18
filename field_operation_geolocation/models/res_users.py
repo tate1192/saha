@@ -8,9 +8,9 @@ class ResUsers(models.Model):
     def _get_map_provider(self, map_field="map_website_id"):
         """The map provider this user picked, or a clear error when there is none.
 
-        Shared by the models that open a map link (``field.operation`` and
-        ``field.operation.forms``): the action is useless without a provider, and
-        the message must tell the user where to set one.
+        Shared by every model that opens a map link (``field.operation`` here,
+        and the service form extension in its own module): the action is useless
+        without a provider, and the message must tell the user where to set one.
         """
         self.ensure_one()
         provider = self[map_field]

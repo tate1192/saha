@@ -5,6 +5,117 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_forms_ext: 19.0.1.1.0] — 2026-10-18
+
+### Modül repoya geri geldi: servis formu harita/konum kısayolları (WhatsApp'sız)
+
+- `field.operation.forms` üzerinde **Map** (harita) ve **Geolocate** (konumlandırma) butonları,
+  listede **Open Maps**; eylemler `field_operation_geolocation`'ın `geo_helpers`'ını kullanır
+  (eski kopyadaki 0.0 koordinat tuzağı ve eşleşme yokken "success" bildirimi gitti).
+- `field_operation_whatsapp` bağımlılığı, `action_message_send` ve WhatsApp butonu kaldırıldı
+  (modül hazır olunca geri eklenecek).
+- `service_latitude` / `service_longitude` (related, stored) + `display_address` compute korunur.
+- **Testler:** 5 test (arch'ta Map/Geolocate/Open Maps, harita URL'i, çift sıfır reddi,
+  geolocation warning/success, WhatsApp butonunun yokluğu); `fo_check`
+  `-i field_operation_forms_ext --test-enable --test-tags /field_operation_forms_ext` →
+  0 failed, 5 test.
+
+## [field_operation_contract: 19.0.1.1.0] — 2026-10-18
+
+### Gereksiz arama paneli kaydı kaldırıldı
+
+- `contract_field_operation_filter_view` silindi: `field.operation` arama görünümüne
+  `contract_id` alanını ve `<searchpanel>` içine sayaçlı bir `contract_id` kategorisi ekliyordu;
+  kullanılmayan bir panel kalabalığıydı. Contract'ın form ve liste görünümleri yerinde.
+- **Güncelleme notu:** `-u field_operation_contract` ilk denemede DB'deki eski
+  `field_operation_sale_order_form_view` yüzünden `ParseError` verdi (`sale.order.field_operation_id`
+  alanı kodda yok). Önce `-u field_operation_sale` çalıştırılınca view yenilendi ve contract
+  güncellemesi geçti. Sıra: **önce `field_operation_sale`, sonra `field_operation_contract`**.
+
+## [field_operation_geolocation: 19.0.1.3.0] — 2026-10-18
+
+### Ofis/dispeçer için günlük rota planlama
+
+- **Neden:** modülün asıl kullanıcısı ofiste servis oluşturan planlamacı: müşteri konumları
+  üzerinde günün rotasını görmek, işi başlama saatine göre (bugün/yarın) filtrelemek ve
+  kayıtları servis ekibine göre görmek istiyor. Öncesinde rota yalnız elle seçilen kayıtlardan
+  açılabiliyordu, sıra recordset sırasıydı ve tek konumsuz iş tüm rotayı düşürüyordu.
+- **Gün filtreleri (`field.operation` arama görünümü):** *Today (running)* / *Tomorrow (running)*
+  `start_date < gün_sonu` ve (`start_date >= gün_başı` veya `end_date >= gün_başı` veya dün
+  başlamış açık uçlu iş) kesişimi: dün başlayıp kapatılmamış iş bugünde görünür (canlı veride
+  açık işlerin çoğunda `end_date` boş), aylardır kapatılmamış işler plana dolmaz; gün sınırı
+  kullanıcı saat diliminde (test: `test_the_day_boundary_uses_the_user_timezone`).
+  *No Coordinates* filtresi (`is_located = False`) rotaya giremeyecek işleri önceden gösterir.
+- **Rota planı sihirbazı** (`field.operation.route.plan` + `.line`, geçici): takım/gün ön
+  seçili gelir (`_default_team_id`: lider → çalışanın takımı → tek takım), duraklar planlanan
+  başlama saati sırasıyla listelenir; bacak bacak haversine km (`leg_km` satırın kendi compute
+  alanı), nearest-neighbour + 2-opt önerisi, kazanç **≥ %15 ve ≥ 5 km** ise "tutarsız" uyarısı
+  (ör. 12:00 Tuzla → Beykoz → Pendik 69,6 km yerine Tuzla → Pendik → Beykoz 39,3 km).
+  *Suggest Order*, sürükle-bırak, *Save Order* → `route_sequence`, isteğe bağlı saat kaydırma
+  (yalnız plan günü başlayan duraklar), *Durakları Konumlandır* ve *Open Map*.
+  Giriş noktaları: iş formundaki **Route Plan** butonu, *Saha Servisi* listesinde
+  ⚙ Actions > **Route Plan** ve takım formundaki **Today's / Tomorrow's Route** butonları;
+  gün filtresi listede *Today (running)* / *Tomorrow (running)* olarak durur (ayrı menü/
+  act_window yok — menüler bu turda kaldırıldı).
+- **Liste rota aksiyonu:** `action_show_selected_routes` sırayı `route_sequence`, sonra
+  `start_date` ile kurar (`_sorted_for_route`); konumsuz durakları atlar ve bus bildirimiyle
+  bildirir; seçim tek takımdansa depodan başlar. Sihirbazın coğrafi kontrolü harici
+  servis/anahtar kullanmaz (haversine + nearest-neighbour + 2-opt).
+- **Rota başlangıcı:** takıma `base_location_id` (depo) eklendi; boşsa şirket adresi, o da
+  konumsuzsa günün ilk müşterisi.
+- **Toplu konumlandırma:** *Konumlandır (seçili)* aksiyonu (`action_geolocate_selected`) sonucu
+  bulunan/bulunamayan olarak raporlar.
+- **Sağlayıcı tarafı:** `route_lat_lon_url` artık gerçekten kullanılıyor (`here`, `other`);
+  Mapbox için çok duraklı `rtext` biçimi eklendi; OSM/Google/Bing yerleşik biçimleri korunur.
+  Rotanın başlangıcı `lat=0.0` (ekvator) artık düşmüyor — kural `geo_helpers.has_point`.
+- **Office User'ın planı boş kalıyordu:** `field_operation`'ın "Office: Own Documents" kuralı
+  yalnız kullanıcının kendi + sahipsiz işlerini gösterdiği için, servisleri başka ofis
+  kullanıcıları oluşturduğunda plan boş geliyordu. `Office: My Team's Documents` kuralı
+  eklendi: ofis kullanıcısı lider/baş/üye olduğu takımların işlerini görür (başka takımı görmez;
+  yönetici kuralları zaten tümünü görür).
+- **Şema:** `field.operation.route_sequence` (Integer, default 0), `field.operation.is_located`
+  (Boolean, stored compute), `field.operation.team.base_location_id` (m2o → res.partner);
+  sürüm 19.0.1.2.0 → **19.0.1.3.0**. Migration yok.
+- **`field_operation_forms` bağımlılığı kaldırıldı:** servis formu kısayolları artık
+  `field_operation_forms_ext` modülünün işi. Bu modülden `models/field_operation_forms.py`,
+  `views/field_operation_forms_view.xml`, `tests/test_field_operation_forms_map.py` ve manifest
+  bağımlılığı kaldırıldı.
+- **Testler:** 33 → **45** (`tests/test_route_planning.py`, 22 test). Doğrulama: `fo_check`
+  `-u field_operation_geolocation --test-enable --test-tags /field_operation_geolocation` →
+  EXIT=0, **0 failed, 0 error(s) of 45 tests**; ruff/ruff-format temiz.
+- **Arşivli takımlar arama panelinden çıkarıldı:** panel, işleri `team_id`'ye göre
+  gruplayıp bulduğu her değeri listeliyordu; arşivli bir takıma bağlı tek bir iş o takımı
+  panelde tutuyordu. `field.operation.search_panel_select_range` artık `team_id` için
+  `comodel_domain=[('active', '=', True)]` geçiriyor (tek seçimli kategori davranışı korunur;
+  view'da `domain` yalnız `select="multi"` ile kullanılabildiği için çözüm sunucu tarafında).
+  Bir regresyon testi (arşivli görünmez, aktif görünür).
+- **i18n:** pot/po koddan yeniden üretildi; **185 msgid**, tr.po'da boş çeviri yok.
+- **Kararlar:** depo = takım `base_location_id` → şirket adresi → ilk müşteri; plan bir
+  sihirbaz (geçici model), kalıcı olarak işlere yalnız `route_sequence` (ve istenirse saatler)
+  yazılır; rota kontrolü harici servis/anahtar kullanmaz (haversine + 2-opt). Canlıda `-u`
+  kullanıcının adımı.
+
+### PR #7 inceleme düzeltmeleri (2026-10-18)
+
+- **Doküman/kod uyumu:** README ve CHANGELOG, "plan bir liste, sihirbaz kaldırıldı" diyordu;
+  kod ise sihirbazı gönderiyordu. İkisi de sihirbaz tasarımına göre yeniden yazıldı.
+- **`_plan_day_domain`:** `end_date` boş işler gün planından düşüyordu. Açık uçlu iş artık
+  **bir önceki günden itibaren** plana giriyor; aylardır kapatılmamış işlerin her günü
+  doldurmasını engellemek için pencere bilinçli olarak bir gün (canlı veride açık işlerin
+  426/438'inde `end_date` boş). İki test: dün açık → girer, 30 gün önce açık → girmez.
+- **`_shift_start_times`:** saat havuzu önceki günün işini de içeriyordu ve saatler günler
+  arasında taşınıyordu. Artık yalnız **plan gününde başlayan** durakların saatleri dağıtılır;
+  günler arası işin saati korunur. Regresyon testi eklendi.
+- **`_notify_missing_stops`:** `missing._notify_missing_stops(missing)` gereksiz parametresi
+  kaldırıldı; metot `self` üzerinden çalışır.
+- **`leg_km`:** plan compute'u başka modelin alanını yazıyordu; `leg_km` artık satır modelinin
+  kendi compute alanı (`@api.depends("plan_id.line_ids.sequence", ...)`), plan compute'u
+  yalnız toplamı hesaplar. Bacak km'si için test eklendi.
+- **Servis formu kısayolları testleri:** `field_operation_forms_ext`'e 5 test eklendi
+  (arch'ta Map/Geolocate/Open Maps, harita URL'i, çift sıfır reddi, geolocation warning/success,
+  WhatsApp butonunun yokluğu).
+- **Test sayısı:** CHANGELOG'daki 42 → **45** (gerçek koşu). `field_operation_forms_ext` 5 test.
+
 ## [field_operation_sale: 19.0.1.0.3] — 2026-10-16
 
 ### Düzeltme: "Create Sale" butonu satılmış serviste de görünüyordu (mükerrer sipariş üretimi)

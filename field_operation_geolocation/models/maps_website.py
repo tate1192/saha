@@ -1,6 +1,8 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
+from . import geo_helpers
+
 
 class MapsWebsite(models.Model):
     _name = "maps.website"
@@ -12,7 +14,11 @@ class MapsWebsite(models.Model):
     sequence = fields.Integer(string="Sequence", default=10)
     website_url = fields.Char(string="Provider Website")
     requires_api_key = fields.Boolean(string="Requires API Key")
-    api_key = fields.Char(string="API Key", password=True, help="Provider API Key")
+    api_key = fields.Char(
+        string="API Key",
+        help="Provider API Key; masked in the form (the 'password' attribute of "
+        "the view field - Odoo 19 no longer takes it as a field parameter).",
+    )
     lat_lon_url = fields.Char(string="Latitude/Longitude URL", required=True)
     route_lat_lon_url = fields.Char(string="Route Latitude/Longitude URL")
     provider_type = fields.Selection(
@@ -62,6 +68,12 @@ class MapsWebsite(models.Model):
                 name = f"{name} (Inactive)"
             record.display_name = name
 
+    def _resolve_api_key(self, url):
+        """Fill or strip the ``{API_KEY}`` slot of a provider URL template."""
+        if self.requires_api_key and self.api_key:
+            return url.replace("{API_KEY}", self.api_key)
+        return url.replace("&key={API_KEY}", "").replace("?key={API_KEY}", "")
+
     def _get_osm_multi_url(self, coordinates: list[tuple[float, float, str]]) -> str:
         """Generate OpenStreetMap multi-marker URL using GraphHopper."""
         self.ensure_one()
@@ -95,11 +107,7 @@ class MapsWebsite(models.Model):
         url = url.replace("{LONGITUDE}", str(longitude))
         # The template carries a {API_KEY} slot only for the providers that need
         # one; strip it otherwise so it never reaches the browser.
-        if self.requires_api_key and self.api_key:
-            url = url.replace("{API_KEY}", self.api_key)
-        else:
-            url = url.replace("&key={API_KEY}", "").replace("?key={API_KEY}", "")
-        return url
+        return self._resolve_api_key(url)
 
     def _get_multi_location_marker_url(
         self, coordinates: list[tuple[float, float, str]]
@@ -123,43 +131,82 @@ class MapsWebsite(models.Model):
             )
         return self._get_osm_multi_url(coordinates)
 
+    def _parse_waypoints(self, waypoints):
+        """Turn ``"lat,lon"`` strings into points, dropping unusable ones."""
+        points = []
+        for waypoint in waypoints or []:
+            try:
+                latitude, longitude = (float(part) for part in str(waypoint).split(","))
+            except (TypeError, ValueError):
+                continue
+            if geo_helpers.has_point(latitude, longitude):
+                points.append((latitude, longitude))
+        return points
+
     def _get_route_url(
         self, start_coords: dict[str, float], waypoints: list[str]
     ) -> str:
-        """Generate route URL based on provider type."""
+        """Generate a route URL through the start point and the waypoints.
+
+        ``waypoints`` are ``"lat,lon"`` strings and carry the destination as
+        their last element (the caller appends it). Points without usable
+        coordinates are skipped instead of failing the whole route: one
+        unlocated stop must not hide the rest of the day.
+        """
         self.ensure_one()
         if not start_coords or not waypoints:
             return False
 
+        points = []
         start_lat = start_coords.get("latitude")
         start_lon = start_coords.get("longitude")
+        # A latitude of 0.0 is the equator, not a missing value; the shared
+        # rule lives in geo_helpers.has_point.
+        if geo_helpers.has_point(start_lat, start_lon):
+            points.append((start_lat, start_lon))
+        points.extend(self._parse_waypoints(waypoints))
+        if len(points) < 2:
+            return False
+        return self._get_route_url_for_points(points)
+
+    def _get_route_url_for_points(self, points) -> str:
+        """Route URL for an ordered list of ``(lat, lon)`` points."""
+        self.ensure_one()
+        if len(points) < 2:
+            return False
 
         if self.provider_type == "openstreetmap":
-            base_url = "https://graphhopper.com/maps/?"
-            params = []
-            if start_lat and start_lon:
-                params.append(f"point={start_lat},{start_lon}")
-            params.extend(f"point={wp}" for wp in waypoints)
+            params = [f"point={lat},{lon}" for lat, lon in points]
             params.append("vehicle=car")
-            return base_url + "&".join(params) if len(params) > 1 else False
+            return "https://graphhopper.com/maps/?" + "&".join(params)
 
         if self.provider_type == "google":
-            base_url = "https://www.google.com/maps/dir/"
-            parts = []
-            if start_lat and start_lon:
-                parts.append(f"{start_lat},{start_lon}")
-            parts.extend(waypoints)
-            return base_url + "/".join(parts) if len(parts) > 1 else False
+            parts = [f"{lat},{lon}" for lat, lon in points]
+            return "https://www.google.com/maps/dir/" + "/".join(parts)
 
         if self.provider_type == "bing":
-            base_url = "https://www.bing.com/maps/directions?"
-            rtp_parts = []
-            if start_lat and start_lon:
-                rtp_parts.append(f"pos.{start_lat}_{start_lon}")
-            rtp_parts.extend(f"pos.{wp.replace(',', '_')}" for wp in waypoints)
-            return (
-                f"{base_url}rtp={'~'.join(rtp_parts)}" if len(rtp_parts) > 1 else False
-            )
+            rtp_parts = [f"pos.{lat}_{lon}" for lat, lon in points]
+            return "https://www.bing.com/maps/directions?rtp=" + "~".join(rtp_parts)
 
-        # Route URLs are only defined for the providers handled above.
-        return False
+        if self.provider_type == "mapbox":
+            # The Mapbox web directions URL takes multiple points separated by
+            # "~", so the whole day survives instead of only start and end.
+            parts = [f"{lat},{lon}" for lat, lon in points]
+            return "https://mapbox.com/maps/?rtext=" + "~".join(parts) + "&rtt=auto"
+
+        # Any other provider is described by its own route template. The
+        # template only knows start and destination, which is the limit of
+        # those providers' web URLs; the URL no longer silently disappears
+        # while the configured template is validated and shown in the form.
+        return self._get_template_route_url(points[0], points[-1])
+
+    def _get_template_route_url(self, first, last) -> str:
+        """Fill the provider's own route template with start and destination."""
+        self.ensure_one()
+        if not self.route_lat_lon_url:
+            return False
+        url = self.route_lat_lon_url.replace("{START_LATITUDE}", str(first[0]))
+        url = url.replace("{START_LONGITUDE}", str(first[1]))
+        url = url.replace("{DEST_LATITUDE}", str(last[0]))
+        url = url.replace("{DEST_LONGITUDE}", str(last[1]))
+        return self._resolve_api_key(url)

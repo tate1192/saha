@@ -26,7 +26,18 @@
                         icon="fa-route">
                     <field string="GPS History" name="location_history_count" widget="statinfo"/>
                 </button>
-
+                <button
+                        class="oe_stat_button"
+                        name="action_show_today_route"
+                        type="object"
+                        string="Today's Route"
+                        icon="fa-map-o"/>
+                <button
+                        class="oe_stat_button"
+                        name="action_show_tomorrow_route"
+                        type="object"
+                        string="Tomorrow's Route"
+                        icon="fa-map-signs"/>
             </xpath>
 
             <group name="Information" position="after">
@@ -40,6 +51,9 @@
                         <field name="last_update" readonly="1"/>
                         <field name="timestamp" readonly="1"/>
                         <field name="device_id"/>
+                    </group>
+                    <group string="Route" name="route">
+                        <field name="base_location_id"/>
                     </group>
                 </group>
 

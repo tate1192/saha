@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_field_operation_forms_map_list" model="ir.ui.view">
-        <field name="name">field.operation.forms.map.list</field>
+        <field name="name">field.operation.forms.route.list</field>
         <field name="model">field.operation.forms</field>
         <field name="inherit_id" ref="field_operation_forms.field_operation_forms_list_view"/>
         <field name="arch" type="xml">
@@ -11,14 +11,13 @@
                         type="object"
                         string="Open Maps"
                         class="btn-primary"
-                        groups="base.group_user"
                 />
             </xpath>
         </field>
     </record>
 
-    <record id="view_field_operation_forms_map_form" model="ir.ui.view">
-        <field name="name">field.operation.forms.map.form</field>
+    <record id="field_operation_forms_map_message_form_view" model="ir.ui.view">
+        <field name="name">field_operation_forms.route.form</field>
         <field name="model">field.operation.forms</field>
         <field name="inherit_id" ref="field_operation_forms.field_operation_forms_form_view"/>
         <field name="arch" type="xml">

@@ -270,10 +270,23 @@ class TestGpsTrackingModels(TransactionCase):
         )
 
     def test_maps_website_api_key_is_masked(self):
-        """``api_key`` must be stored as a password field (masked in the UI)."""
-        self.assertTrue(
-            self.env["maps.website"]._fields["api_key"].password,
-            "maps.website.api_key is not declared with password=True",
+        """The key is masked by the view's ``password`` attribute.
+
+        Odoo 19 removed the field-level ``password`` parameter: the masking is
+        declared in the form (``password="True"``), the way core does it.
+        """
+        arch = str(
+            self.env.ref(
+                "field_operation_geolocation.geolocation_map_website_form"
+            ).arch
+        )
+        self.assertIn('name="api_key"', arch)
+        self.assertIn(
+            'password="True"', arch, "the API key field is not masked in the form"
+        )
+        self.assertFalse(
+            getattr(self.env["maps.website"]._fields["api_key"], "password", False),
+            "Odoo 19 warns about the removed field parameter: drop it",
         )
 
     def test_maps_website_office_user_is_read_only(self):

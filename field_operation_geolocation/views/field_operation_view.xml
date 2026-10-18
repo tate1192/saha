@@ -37,6 +37,13 @@
                 />
                 <button
                         class="oe_stat_button"
+                        name="action_open_route_plan"
+                        type="object"
+                        string="Route Plan"
+                        icon="fa-map-o"
+                        groups="field_operation.service_group_user"/>
+                <button
+                        class="oe_stat_button"
                         name="action_geolocate_operation"
                         type="object"
                         string="Geolocate"
@@ -47,4 +54,45 @@
         </field>
     </record>
 
+    <!-- Dispatcher filters: the day's running jobs and the ones that cannot be
+         routed. "Today" in the base module only looks at start_date, so a job
+         that started yesterday and still runs today is missing from it. -->
+    <record id="view_field_operation_filter_geolocation" model="ir.ui.view">
+        <field name="name">field.operation.select.geolocation</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_filter"/>
+        <field name="arch" type="xml">
+            <filter name="today" position="after">
+                <filter
+                        name="plan_today"
+                        string="Today (running)"
+                        domain="['&amp;', ('start_date', '&lt;', context_today() + relativedelta(days=1)), '|', ('start_date', '&gt;=', context_today()), ('end_date', '&gt;=', context_today())]"
+                />
+                <filter
+                        name="plan_tomorrow"
+                        string="Tomorrow (running)"
+                        domain="['&amp;', ('start_date', '&lt;', context_today() + relativedelta(days=2)), '|', ('start_date', '&gt;=', context_today() + relativedelta(days=1)), ('end_date', '&gt;=', context_today() + relativedelta(days=1))]"
+                />
+            </filter>
+            <filter name="my_tasks" position="after">
+                <filter
+                        name="no_location"
+                        string="No Coordinates"
+                        domain="[('is_located', '=', False)]"
+                />
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_field_operation_list_geolocation" model="ir.ui.view">
+        <field name="name">field.operation.list.geolocation</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_list"/>
+        <field name="arch" type="xml">
+            <field name="address_id" position="after">
+                <field name="is_located" optional="show"/>
+                <field name="route_sequence" optional="hide"/>
+            </field>
+        </field>
+    </record>
 </odoo>

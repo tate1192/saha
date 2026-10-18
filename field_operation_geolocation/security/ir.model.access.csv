@@ -7,3 +7,5 @@ access_map_website_full,maps.website office user (read-only),model_maps_website,
 access_map_website_office_manager,maps.website office manager,model_maps_website,field_operation.service_group_manager,1,1,1,1
 access_maps_website_user,maps.website route user,model_maps_website,group_user_field_operation_route,1,0,0,0
 access_maps_website_mgr,maps.website route manager,model_maps_website,group_manager_field_operation_route,1,1,1,1
+access_field_operation_route_plan_user,field.operation.route.plan office user,model_field_operation_route_plan,field_operation.service_group_user,1,1,1,1
+access_field_operation_route_plan_line_user,field.operation.route.plan.line office user,model_field_operation_route_plan_line,field_operation.service_group_user,1,1,1,1

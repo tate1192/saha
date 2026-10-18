@@ -55,7 +55,6 @@
                     <field name="status" icon="fa-globe" color="#5a8762" enable_counters="1" select="multi"/>
                     <field name="service_type_id" icon="fa-retweet" enable_counters="1"/>
                     <field name="team_id" icon="fa-users" enable_counters="1"/>
-
                 </searchpanel>
             </search>
         </field>

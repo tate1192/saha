@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 18:11+0000\n"
-"PO-Revision-Date: 2026-10-15 18:11+0000\n"
+"POT-Creation-Date: 2026-10-18 15:23+0000\n"
+"PO-Revision-Date: 2026-10-18 15:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,52 @@ msgstr ""
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid " (Bat: %s%%)"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid ""
+"%(count)s operation(s) have no coordinates and were left out: %(names)s"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "%(count)s stop(s) have no coordinates and are left out of the route."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "%(count)s stops saved in this order for %(team)s."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid "%(located)s of %(total)s operations located."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid ""
+"%(located)s of %(total)s operations located; %(failed)s could not be found: "
+"%(names)s"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "%(located)s of %(total)s stops located."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"%(located)s of %(total)s stops located; %(failed)s not found: %(names)s"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -48,6 +94,12 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "All stops of this day already have coordinates, or have no address."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "An error occurred while retrieving the location: %s"
 msgstr ""
@@ -55,6 +107,20 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Archived"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid "At least 2 selected operations need coordinates to build a route."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"At least 2 stops of this day need coordinates to build a route. Without "
+"coordinates: %(names)s. Use 'Geolocate Stops' to locate them first."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -95,20 +161,39 @@ msgid "Could not update the GPS position."
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__create_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__create_uid
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__create_uid
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__create_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__create_date
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__create_date
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__create_date
 msgid "Created on"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__partner_id
+msgid "Customer"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.actions.server,name:field_operation_geolocation.ir_cron_company_geolocalize_ir_actions_server
 msgid "Daily Company Geolocation Update"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_field_operation_route_plan
+msgid "Daily Route Plan"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_field_operation_route_plan_line
+msgid "Daily Route Plan Stop"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -118,6 +203,11 @@ msgid ""
 "Date and time of the last automatic geolocation attempt made by the company "
 "geolocation cron. A partner is retried only once this timestamp is older "
 "than the retry window."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__date
+msgid "Day"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -143,13 +233,24 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__display_name
-#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_forms__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan_line__leg_km
+msgid "Distance driven from the previous stop (or from the depot)."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__district
+msgid "District"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -176,11 +277,6 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model,name:field_operation_geolocation.model_field_operation
 msgid "Field Operation"
-msgstr ""
-
-#. module: field_operation_geolocation
-#: model:ir.model,name:field_operation_geolocation.model_field_operation_forms
-msgid "Field Operation Forms"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -239,9 +335,20 @@ msgid "GPS tracking stopped"
 msgstr ""
 
 #. module: field_operation_geolocation
-#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_forms_map_form
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 msgid "Geolocate"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
+msgid "Geolocate Stops"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Geolocation"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -284,7 +391,8 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__id
-#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_forms__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__id
@@ -327,12 +435,16 @@ msgid "Last Update"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__write_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__write_uid
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__write_uid
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__write_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__write_date
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__write_date
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__write_date
 msgid "Last Updated on"
@@ -345,7 +457,6 @@ msgid "Lat/Lon URL must contain {LATITUDE} and {LONGITUDE}"
 msgstr ""
 
 #. module: field_operation_geolocation
-#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_forms__service_latitude
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__latitude
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__latitude
 msgid "Latitude"
@@ -354,6 +465,17 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__lat_lon_url
 msgid "Latitude/Longitude URL"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__leg_km
+msgid "Leg (km)"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__is_located
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__is_located
+msgid "Located"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -376,7 +498,6 @@ msgid "Location updated successfully."
 msgstr ""
 
 #. module: field_operation_geolocation
-#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_forms__service_longitude
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__longitude
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__longitude
 msgid "Longitude"
@@ -389,7 +510,14 @@ msgid "Manager"
 msgstr ""
 
 #. module: field_operation_geolocation
-#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_forms_map_form
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation__route_sequence
+msgid ""
+"Manual position of this operation in its day's route. Zero means the route "
+"keeps the planned start time order; a dispatcher who fixes a zig-zagging "
+"route stores explicit values here."
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 msgid "Map"
 msgstr ""
@@ -422,6 +550,7 @@ msgstr ""
 #. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Map provider does not support multi-point routing."
 msgstr ""
 
@@ -446,7 +575,6 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py:0
 #: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Missing coordinates for operation '%s'."
 msgstr ""
@@ -470,6 +598,11 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__name
 msgid "Name"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
+msgid "No Coordinates"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -528,6 +661,13 @@ msgid "No valid coordinates found."
 msgstr ""
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Nothing to do"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__break
 msgid "On Break"
 msgstr ""
@@ -538,8 +678,8 @@ msgid "Online"
 msgstr ""
 
 #. module: field_operation_geolocation
-#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_forms_map_list
-msgid "Open Maps"
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
+msgid "Open Map"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -548,8 +688,37 @@ msgid "OpenStreetMap"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__operation_id
+msgid "Operation"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__is_consistent
+msgid "Order is consistent"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Order looks consistent: %(km)s km."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Order looks inconsistent: %(current)s km now, %(suggested)s km if reordered "
+"(%(saving)s km saved)."
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__other
 msgid "Other"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__plan_id
+msgid "Plan"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -562,6 +731,7 @@ msgstr ""
 #. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Please configure a Route Map Provider."
 msgstr ""
 
@@ -575,6 +745,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "Please select at least 2 operations for route planning."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__team_id
+msgid ""
+"Preselected from the planner's own team so the office does not have to pick "
+"one; only the stops of one team belong to one route."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -599,8 +776,28 @@ msgid "Provider does not support multi-markers."
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
+msgid "Reload Stops"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__requires_api_key
 msgid "Requires API Key"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
+msgid "Route"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__total_km
+msgid "Route (km)"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__info
+msgid "Route Check"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -615,13 +812,63 @@ msgid "Route Latitude/Longitude URL"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__route_sequence
+msgid "Route Order"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
+#: model:ir.actions.server,name:field_operation_geolocation.action_plan_route_from_selection
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
+msgid "Route Plan"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__base_location_id
+msgid "Route Start (Depot)"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Route URLs"
 msgstr ""
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid "Route is incomplete"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Route saved"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
+msgid "Save Order"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Select a team and a day to load the stops."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__sequence
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__sequence
 msgid "Sequence"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__shift_times
+msgid "Shift start times with the order"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -650,6 +897,11 @@ msgid "Single Location URLs"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__start_time
+msgid "Start"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Start GPS Tracking"
 msgstr ""
@@ -665,12 +917,33 @@ msgid "Stop GPS Tracking"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__line_ids
+msgid "Stops"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__missing_count
+msgid "Stops without coordinates"
+msgstr ""
+
+#. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Success"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
+msgid "Suggest Order"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__suggested_km
+msgid "Suggested (km)"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__team_id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__team_id
 msgid "Team"
 msgstr ""
@@ -682,9 +955,23 @@ msgid "Team ID not found"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__date
+msgid ""
+"The route of this day: a job started the day before but still running counts"
+" for the day it ends on."
+msgstr ""
+
+#. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "The selected map provider does not support multi-markers."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid ""
+"The selected operations already have coordinates or have no service address."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -694,8 +981,34 @@ msgid "This browser does not support location services."
 msgstr ""
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "This day has fewer than 2 stops; there is no route to draw."
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__timestamp
 msgid "Timestamp"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
+msgid "Today (running)"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
+msgid "Today's Route"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
+msgid "Tomorrow (running)"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
+msgid "Tomorrow's Route"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -725,6 +1038,32 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__1
 msgid "Weak"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__shift_times
+msgid ""
+"When enabled, the start times already planned for the day are redistributed "
+"over the new order, so the route and the appointment times stay in the same "
+"sequence. Leave it off when the appointment times are committed to the "
+"customer."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__base_location_id
+msgid ""
+"Where this team's route starts and ends. When empty, the company address is "
+"used; when that has no coordinates either, the route starts at the first "
+"customer of the day."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation__is_located
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan_line__is_located
+msgid ""
+"Whether the service address carries usable coordinates. Stored so the "
+"dispatcher can filter and group on it; the rule itself lives in "
+"geo_helpers.has_coordinates."
 msgstr ""
 
 #. module: field_operation_geolocation

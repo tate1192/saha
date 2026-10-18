@@ -32,6 +32,28 @@ else:
         </field>
     </record>
 
+  <!-- Server Action: open the daily route planner on the selected rows' team
+       and day, so the office can start from the Field Service list. The method
+       is guarded: before the server has loaded this version the action closes
+       instead of raising an AttributeError. -->
+    <record id="action_plan_route_from_selection" model="ir.actions.server">
+        <field name="name">Route Plan</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="field_operation.model_field_operation"/>
+        <field name="binding_model_id" ref="field_operation.model_field_operation"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    try:
+        action = records.action_open_route_plan()
+    except AttributeError:
+        action = {"type": "ir.actions.act_window_close"}
+else:
+    action = env["field.operation"].action_open_route_plan()
+        </field>
+    </record>
+
   <!-- Server Action: Show Multiple TEAMS on Map -->
     <record id="action_show_multiple_teams_map" model="ir.actions.server">
         <field name="name">Show Teams on Map</field>

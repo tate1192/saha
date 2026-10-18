@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Geolocation",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "category": "Services/Field Service",
     "summary": "Adds geolocation functionality to the field operation module",
     "author": "Softteknik Bilişim",
@@ -17,10 +17,10 @@
         # Address -> coordinate conversion uses partner.geo_localize() and the
         # core geocoding flow, which are provided by 'base_geolocalize'.
         "base_geolocalize",
-        # The same map and geolocation features are exposed on the service form
-        # model (field.operation.forms) and its views, so that model's module is
-        # a real dependency instead of a copy in a third module.
-        "field_operation_forms",
+        # The route planner warns the dispatcher through user._bus_send(), which
+        # bus adds to res.users (installed transitively through mail today, but
+        # the dependency is real and therefore declared).
+        "bus",
     ],
     "data": [
         "security/security.xml",
@@ -29,11 +29,11 @@
         "data/geo_company_cron.xml",
         "data/actions_geolocation.xml",
         "views/field_operation_view.xml",
-        "views/field_operation_forms_view.xml",
         "views/maps_website_view.xml",
         "views/res_users_view.xml",
         "views/team_location_history_view.xml",
         "views/field_operation_team_view.xml",
+        "views/field_operation_route_plan_view.xml",
     ],
     "demo": [],
     "assets": {

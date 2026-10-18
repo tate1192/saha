@@ -43,6 +43,22 @@
             <field name="groups" eval="[(4, ref('field_operation_geolocation.group_manager_field_operation_route'))]"/>
         </record>
 
+        <!-- Office users plan their team's day. The base rule in
+             field_operation only shows their own and unassigned jobs
+             ("Office: Own Documents"), so a dispatcher who did not create every
+             service got an empty route plan. Group rules are OR'ed per user:
+             this widens what an office user sees to the jobs of the teams they
+             lead, head or belong to - and to nothing else. -->
+        <record id="field_operation_office_team_rule" model="ir.rule">
+            <field name="name">Office: My Team's Documents</field>
+            <field name="model_id" ref="field_operation.model_field_operation"/>
+            <field name="domain_force">['|', '|',
+                ('team_id.team_leader_id', '=', user.id),
+                ('team_id.team_head_id.user_id', '=', user.id),
+                ('team_id.team_members_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('field_operation.service_group_user'))]"/>
+        </record>
+
         <!-- GPS history is personal data: a user may only see the history of the
              teams they belong to (member, leader or head). Managers are granted
              full visibility below; group rules are OR'ed per user, so a manager

@@ -1,9 +1,10 @@
 """Helpers shared by the models that expose the map and geolocation actions.
 
-``field.operation`` and ``field.operation.forms`` both carry the coordinates of
-the service address and both offer the same two buttons; the logic behind them
-lives here (with the URL building in ``maps.website`` and the provider lookup in
-``res.users``) instead of in one copy per model.
+Several models carry the coordinates of their service address and offer the same
+two buttons; the logic behind them lives here (with the URL building in
+``maps.website`` and the provider lookup in ``res.users``) instead of in one copy
+per model. ``field.operation`` uses it directly; the service form model is
+extended by another module that reuses the same helpers.
 
 These are plain functions rather than an ``AbstractModel`` mixin on purpose.
 An abstract mixin that defines no field of its own is not part of the
@@ -12,10 +13,27 @@ reflected the mixin is not, ``_reflect_inherits`` then writes an
 ``ir_model_inherit`` row with a NULL parent and the registry refuses to load.
 A plain Python mixin class is not an option either, because Odoo 19 reassigns
 ``Model.__bases__`` during setup.
+
+The distance helpers at the bottom back the daily route planner: they only need
+the stored coordinates, so no external routing service (and no API key) is
+involved in telling a dispatcher that a stop order zig-zags across the city.
 """
+
+from itertools import pairwise
+from math import asin, cos, radians, sin, sqrt
 
 from odoo import _
 from odoo.exceptions import UserError
+
+# Mean earth radius, kilometres.
+EARTH_RADIUS_KM = 6371.0
+
+# A stop order is reported as geographically inconsistent only when a better
+# order saves at least this much driving *and* this share of the current route.
+# Small savings are noise: reordering a route around a one-way street or a
+# bridge toll still costs more in practice than the few kilometres saved.
+ROUTE_MIN_SAVING_KM = 5.0
+ROUTE_MIN_SAVING_RATIO = 0.15
 
 
 def has_point(latitude, longitude) -> bool:
@@ -40,6 +58,13 @@ def has_coordinates(record) -> bool:
     """Whether the record carries usable coordinates (see :func:`has_point`)."""
     record.ensure_one()
     return has_point(record.service_latitude, record.service_longitude)
+
+
+def record_point(record):
+    """The record's ``(latitude, longitude)`` pair, or None when it has none."""
+    if not has_coordinates(record):
+        return None
+    return (float(record.service_latitude), float(record.service_longitude))
 
 
 def coordinates_or_error(record) -> dict[str, float]:
@@ -114,3 +139,113 @@ def geolocation_notification(record) -> dict:
             "sticky": False,
         },
     }
+
+
+# ---------------------------------------------------------------------------
+# Distance and stop-order helpers (daily route planner)
+# ---------------------------------------------------------------------------
+
+
+def haversine_km(first, second) -> float:
+    """Great-circle distance in kilometres between two ``(lat, lon)`` points."""
+    if not first or not second:
+        return 0.0
+    lat1, lon1 = first
+    lat2, lon2 = second
+    delta_lat = radians(lat2 - lat1)
+    delta_lon = radians(lon2 - lon1)
+    haversine = (
+        sin(delta_lat / 2) ** 2
+        + cos(radians(lat1)) * cos(radians(lat2)) * sin(delta_lon / 2) ** 2
+    )
+    return 2 * EARTH_RADIUS_KM * asin(sqrt(haversine))
+
+
+def route_length_km(points) -> float:
+    """Total length of the polyline through ``points`` (None entries skipped)."""
+    usable = [point for point in points if point]
+    return sum(haversine_km(first, second) for first, second in pairwise(usable))
+
+
+def path_length_km(points, order=None, start=None) -> float:
+    """Length of the route visiting ``points`` in the given ``order``.
+
+    ``start`` is an optional depot point; ``order`` indexes into ``points`` and
+    defaults to the current order. Points that are None (a stop without
+    coordinates) are skipped, exactly as the URL builders do.
+    """
+    indexes = range(len(points)) if order is None else order
+    route = ([start] if start else []) + [
+        points[index] for index in indexes if points[index]
+    ]
+    return route_length_km(route)
+
+
+def suggest_route_order(points, start=None):
+    """A shorter visiting order for ``points``, as a list of indexes.
+
+    Nearest-neighbour from ``start`` (or from the first stop when no depot is
+    known) followed by a 2-opt pass. Stops without coordinates are appended at
+    the end in their original order, so a dispatcher still sees them.
+
+    The first stop stays first when there is no depot: the dispatcher planned
+    the day around that first appointment, and a suggestion that also moves the
+    starting point is a bigger change than the warning asked for.
+    """
+    located = [index for index, point in enumerate(points) if point]
+    missing = [index for index, point in enumerate(points) if not point]
+    if len(located) < 3:
+        return located + missing
+    order = _nearest_neighbour_order(points, located, start)
+    order = _two_opt_order(points, order, start)
+    return order + missing
+
+
+def distance_gain_is_significant(current_km, suggested_km) -> bool:
+    """Whether a suggested order saves enough driving to be worth reporting."""
+    if not current_km or suggested_km is None:
+        return False
+    saving = current_km - suggested_km
+    return (
+        saving >= ROUTE_MIN_SAVING_KM and saving / current_km >= ROUTE_MIN_SAVING_RATIO
+    )
+
+
+def _nearest_neighbour_order(points, located, start):
+    remaining = list(located)
+    if start:
+        order = []
+        current = start
+    else:
+        first = remaining.pop(0)
+        order = [first]
+        current = points[first]
+    while remaining:
+        nearest = min(remaining, key=lambda index: haversine_km(current, points[index]))
+        remaining.remove(nearest)
+        order.append(nearest)
+        current = points[nearest]
+    return order
+
+
+def _two_opt_order(points, order, start, max_passes=50):
+    """Improve ``order`` by reversing segments while that shortens the path."""
+    order = list(order)
+    # Without a depot the first stop is the anchor and must not move.
+    first_movable = 1 if start is None else 0
+    best = path_length_km(points, order, start)
+    for _pass in range(max_passes):
+        improved = False
+        for i in range(first_movable, len(order) - 1):
+            for j in range(i + 1, len(order)):
+                candidate = (
+                    order[:i] + list(reversed(order[i : j + 1])) + order[j + 1 :]
+                )
+                length = path_length_km(points, candidate, start)
+                if length < best - 1e-9:
+                    order = candidate
+                    best = length
+                    improved = True
+        if not improved:
+            break
+    return order

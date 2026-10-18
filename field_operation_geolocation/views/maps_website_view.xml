@@ -26,6 +26,7 @@
                             <field name="website_url" widget="url"/>
                             <field name="requires_api_key"/>
                             <field name="api_key"
+                                   password="True"
                                    placeholder="Enter your API key here"
                                    invisible="requires_api_key == False"
                                    help="API key required for this provider"/>
