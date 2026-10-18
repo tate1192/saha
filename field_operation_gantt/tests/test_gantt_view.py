@@ -36,14 +36,25 @@ class TestFieldOperationGantt(TransactionCase):
             'date_start="start_date"',
             'date_stop="end_date"',
             # The team is both the name of a row and the row's group: the bars
-            # along the timeline are the team's services.
-            'label="team_id"',
+            # along the timeline are the team's services. The group produces
+            # the row label, so no `label` attribute is needed.
             'group_by="team_id"',
             'progress="gantt_progress"',
             'color="gantt_color"',
             'default_range="month"',
         ):
             self.assertIn(expected, arch)
+
+    def test_the_view_has_no_translatable_field_name(self):
+        """A field name must not sit in the translatable ``label`` attribute.
+
+        Odoo extracts ``label`` as a translation term. Writing a field name
+        there puts it in the ``.pot``; translating it would turn the field
+        name into a label and make the arch invalid in that language.
+        """
+        view = self.env.ref("field_operation_gantt.view_field_operation_gantt_soft")
+        arch = self.env["field.operation"].get_view(view.id, "gantt_soft")["arch"]
+        self.assertNotIn('label="team_id"', arch)
 
     def test_the_action_offers_the_gantt_mode(self):
         self.assertIn("gantt_soft", self.action.view_mode.split(","))

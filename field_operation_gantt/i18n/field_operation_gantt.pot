@@ -61,8 +61,3 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:field_operation_gantt.view_field_operation_gantt_soft
 msgid "Schedule"
 msgstr ""
-
-#. module: field_operation_gantt
-#: model_terms:ir.ui.view,arch_db:field_operation_gantt.view_field_operation_gantt_soft
-msgid "team_id"
-msgstr ""

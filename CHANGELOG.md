@@ -5,6 +5,22 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_gantt: 19.0.1.1.0] — 2026-10-18
+
+### `label` niteliği kaldırıldı: çevrilebilir alan adı riski
+
+- View `label="team_id"` kullanıyordu. Gruplu görünümde satır etiketi zaten `group_by="team_id"`dan
+  geliyordu; `label` bu view'da görünür bir etki yapmıyordu.
+- Daha önemlisi Odoo `label` niteliğini çevrilebilir metin olarak POT'a alıyor. `tr.po`da bu terim
+  çevrilirse arch `label="Ekip"` olur ve `soft_gantt` bir alan adı beklediği için view kırılır.
+  `label` kaldırıldı; `team_id` terimi POT/PO'dan çıkarıldı.
+- `tr.po`daki eksik çeviriler tamamlandı (Gantt Rengi, İlerleme (%), Plan, iki help metni).
+- README'deki tarih/saat ifadesi (UTC saklanır, kullanıcının saat diliminde çizilir), `label`
+  satırı ve soft_gantt test sayıları güncellendi.
+- **Testler:** 10 → **11** (`test_the_view_has_no_translatable_field_name`); scratch
+  `soft_gantt_check`, `-i field_operation_gantt --test-enable --test-tags /field_operation_gantt`
+  → 0 failed, 11 test.
+
 ## [field_operation: 19.0.2.4.0] — 2026-10-18
 
 ### Arşivli takımlar arama panelinden çıkarıldı

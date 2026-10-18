@@ -8,8 +8,8 @@ def uninstall_hook(env):
     ``view_mode`` is a comma separated Char: nothing removes a mode when the
     module that added it disappears, so the action would keep advertising a
     view mode no view type can answer any more. The action is targeted by its
-    xml id rather than searched globally, so a ``gantt_soft`` mode added by
-    another module is left alone.
+    xml id rather than searched globally, so the same mode on another action
+    is left alone.
     """
     action = env.ref("field_operation.action_field_operation", raise_if_not_found=False)
     if not action:

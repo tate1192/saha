@@ -6,9 +6,16 @@
         the planned end date, coloured and filled from the status through the
         two computed fields of ``models/field_operation.py``.
 
-        ``start_date`` and ``end_date`` are datetimes; the view type draws them
-        in UTC, so a record is never shifted by the timezone of whoever opens
-        the screen.
+        ``start_date`` and ``end_date`` are datetimes, stored in UTC; the view
+        type draws them in the reader's timezone, so a record is never shifted
+        by the timezone of whoever opens the screen.
+
+        ``group_by`` names the row and its label: the ``label`` attribute is
+        deliberately not used here. Odoo treats ``label`` as a translatable
+        attribute, so a field name written there would become a translation
+        term, and translating it would turn the field name into a label and
+        break the view. The row label is the team's display name, produced by
+        the group itself.
 
         ``default_order`` is chronological, and the read is bounded by the
         ``default_range`` window instead of by a row count: the view fetches the
@@ -27,7 +34,6 @@
                 string="Schedule"
                 date_start="start_date"
                 date_stop="end_date"
-                label="team_id"
                 progress="gantt_progress"
                 color="gantt_color"
                 default_order="start_date asc, id asc"

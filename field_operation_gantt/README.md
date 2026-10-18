@@ -3,7 +3,7 @@
 > `field.operation` kayıtları için **Gantt (zaman çizelgesi) görünümü** — `soft_gantt`
 > view tipi üzerinde. Sürükle-bırak ile yeniden planlama, duruma göre renk/ilerleme,
 > arama-filtre, kayıt açma.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.0.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.0`
 > Modül: `apps/saha/field_operation_gantt` · yeni iş modeli yok (view + 2 hesaplanmış alan)
 
 ## 1. Neden yeniden yazıldı
@@ -31,14 +31,13 @@ hesaplanmış alan** içerir.
 
 | Nitelik | Alan | Not |
 |---|---|---|
-| `date_start` / `date_stop` | `start_date` / `end_date` | **Datetime**, UTC çizilir (eski sürümdeki yerel saat hatası düzeldi) |
+| `date_start` / `date_stop` | `start_date` / `end_date` | **Datetime**, UTC saklanır ve kullanıcının saat diliminde çizilir (eski sürümdeki yerel saat hatası düzeldi) |
 | `progress` | `gantt_progress` | Hesaplanmış `Float`, **yüzde** (0–100) |
 | `color` | `gantt_color` | Hesaplanmış `Integer` → `o_gantt_soft_color_<index>` |
 | `mode` / `scales` | — | `week` açılış, `day,week,month` seçenekleri |
 | `default_order` | — | `start_date asc, id asc` (pencere içinde kronolojik) |
 | `default_range` | — | `month` — açılış penceresi: içinde bulunulan takvim ayı |
-| `group_by` | — | `team_id` — **satır = ekip**, o ekibin servisleri satır boyunca tarih ekseninde çubuklar |
-| `label` | — | `team_id` (gruplu görünümde sol sütun zaten grup adı; `label` grupsuz satırlar için) |
+| `group_by` | — | `team_id` — **satır = ekip**, o ekibin servisleri satır boyunca tarih ekseninde çubuklar; satır etiketi grubun görünen adıdır |
 | `limit` | — | 1000 kayıt; artık yalnız **güvenlik ağı** (hangisinin görüneceğini pencere belirler) |
 | `<field>` | `subject`, `team_id`, `partner_id`, `status` | çubuk ipucunda |
 
@@ -78,7 +77,7 @@ hesaplanmış alan** içerir.
   bölünür ve o kadar büyür; ekibi boş kayıtlar "Not set" satırında görünür. Çubuğa tıklama
   yine kaydın detay kartını açar (satır adına tıklamak gruplu satırda bir şey açmaz: satır
   birden çok kaydı temsil eder).
-- **Sol sütun ve detay:** sol sütunda **ekip** adı görünür (`label="team_id"` + `group_by="team_id"`;
+- **Sol sütun ve detay:** sol sütunda **ekip** adı görünür (`group_by="team_id"`;
   satır adı gruplu görünümde grup adıdır), boş ekipli kayıtlar "Not set" satırında toplanır.
   Çubuğa **tıklamak** detay kartını açar (Başlangıç/Bitiş, Konu, Ekip, Müşteri, Durum + "Aç" → form);
   **sürüklemek** kaydı taşır.
@@ -93,14 +92,15 @@ hesaplanmış alan** içerir.
 
 ## 4. Testler
 
-`tests/test_gantt_view.py` (post_install, **10 test**): görünümün model tarafından çözülmesi,
-arch'ın beklenen alanları adlandırması, aksiyonun `gantt_soft` modunu sunması, **modun diğer modları
+`tests/test_gantt_view.py` (post_install, **11 test**): görünümün model tarafından çözülmesi,
+arch'ın beklenen alanları adlandırması, **çevrilebilir `label` niteliğinde alan adı bulunmaması**,
+aksiyonun `gantt_soft` modunu sunması, **modun diğer modları
 düşürmeden eklendiği** (kardeş modül dizesini ezse bile geri geldiği), fonksiyonun **idempotent**
 olması, **açılış görünümünün `list` kalması**, 5 durum için ilerleme ve renk eşlemesi, uninstall
 hook'unun modu düşürmesi.
 
-View tipinin kendisi `soft_gantt` modülünde kapsanır: `tests/test_gantt_view.py`'de **21 python testi**
-ve `static/tests/*.js` (6 dosya) içinde **101 JS testi** (ölçüm: `test(` sayımı) — pencere matematiği
+View tipinin kendisi `soft_gantt` modülünde kapsanır: `tests/test_gantt_view.py`'de **28 python testi**
+ve `static/tests/*.js` (8 dosya) içinde **139 JS testi** — pencere matematiği
 (`windowRange`/`shiftWindow`, takvim ayı/çeyrek/yıl sınırları, pencerelerin boşluksuz bitişmesi), arch
 ayrıştırma, sanallaştırılmış çizim, detay kartı, alan metni; ayrıca arch doğrulama, ACL ve tarih
 matematiği uçları.
@@ -111,9 +111,14 @@ matematiği uçları.
 ## 5. Geliştirici notları
 
 - Paket bağımlılığı: `field_operation`, `soft_gantt`. Çeviri: `i18n/field_operation_gantt.pot`
-  + `i18n/tr.po` (`odoo-bin i18n export ... field_operation_gantt -l pot|tr_TR`; 10 msgid, iki
+  + `i18n/tr.po` (`odoo-bin i18n export ... field_operation_gantt -l pot|tr_TR`; 9 msgid, iki
   dosyanın msgid seti aynı). Yeni iş modeli yok, ACL dosyası yok
   (erişim tamamen `field.operation` ACL'inden gelir).
+- `soft_gantt`ın `label` arch niteliği **alan adı** taşır ama Odoo bu niteliği çevrilebilir metin
+  olarak POT'a alır. Bir view'da `label="team_id"` yazıp bu terimi çevirmek arch'ı
+  `label="Ekip"` yapar ve view'ı kırar. Bu yüzden bu modül `label` kullanmaz; satır etiketi
+  `group_by`dan gelir. Başka bir gantt view'ı `label` kullanacaksa `.po` dosyasına o terimi
+  **çeviri olarak eklememelidir**.
 - `store=False` hesaplanmış alanlar okuma sırasında hesaplanır; `status` dışında bağımlılığı
   yoktur, bu yüzden liste/gantt okumalarını yavaşlatmaz.
 - `view_mode` bir `Char` olduğu için mod **eklenerek** yazılır (`models/ir_actions_act_window.py` +

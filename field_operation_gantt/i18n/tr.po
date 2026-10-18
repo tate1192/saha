@@ -23,12 +23,12 @@ msgstr "Eylem Penceresi"
 #. module: field_operation_gantt
 #: model:ir.model.fields,help:field_operation_gantt.field_field_operation__gantt_color
 msgid "Colour index of the bar in the Gantt view."
-msgstr ""
+msgstr "Gantt görünümündeki çubuğun renk indeksi."
 
 #. module: field_operation_gantt
 #: model:ir.model.fields,help:field_operation_gantt.field_field_operation__gantt_progress
 msgid "Completion drawn as a progress bar in the Gantt view."
-msgstr ""
+msgstr "Gantt görünümünde ilerleme çubuğu olarak gösterilen tamamlanma oranı."
 
 #. module: field_operation_gantt
 #: model:ir.model.fields,field_description:field_operation_gantt.field_field_operation__display_name
@@ -44,25 +44,20 @@ msgstr "Saha Operasyonu"
 #. module: field_operation_gantt
 #: model:ir.model.fields,field_description:field_operation_gantt.field_field_operation__gantt_color
 msgid "Gantt Colour"
-msgstr ""
+msgstr "Gantt Rengi"
 
 #. module: field_operation_gantt
 #: model:ir.model.fields,field_description:field_operation_gantt.field_field_operation__id
 #: model:ir.model.fields,field_description:field_operation_gantt.field_ir_actions_act_window__id
 msgid "ID"
-msgstr ""
+msgstr "Kimlik"
 
 #. module: field_operation_gantt
 #: model:ir.model.fields,field_description:field_operation_gantt.field_field_operation__gantt_progress
 msgid "Progress (%)"
-msgstr ""
+msgstr "İlerleme (%)"
 
 #. module: field_operation_gantt
 #: model_terms:ir.ui.view,arch_db:field_operation_gantt.view_field_operation_gantt_soft
 msgid "Schedule"
-msgstr ""
-
-#. module: field_operation_gantt
-#: model_terms:ir.ui.view,arch_db:field_operation_gantt.view_field_operation_gantt_soft
-msgid "team_id"
-msgstr ""
+msgstr "Plan"
