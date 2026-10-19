@@ -22,7 +22,7 @@
         <field name="model">field.operation</field>
         <field name="inherit_id" ref="field_operation.view_field_operation_form"/>
         <field name="arch" type="xml">
-            <field name="create_date" position="after">
+            <field name="person_ids" position="after">
                 <field name="service_latitude"/>
                 <field name="service_longitude"/>
                 <field name="date_localization"/>
@@ -90,7 +90,7 @@
         <field name="inherit_id" ref="field_operation.view_field_operation_list"/>
         <field name="arch" type="xml">
             <field name="address_id" position="after">
-                <field name="is_located" optional="show"/>
+                <field name="is_located" optional="hide"/>
                 <field name="route_sequence" optional="hide"/>
             </field>
         </field>

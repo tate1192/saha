@@ -5,7 +5,7 @@
 > rota planlama ve rota/çoklu nokta harita bağlantıları. Servis formu
 > (`field.operation.forms`) kısayolları `field_operation_forms_ext` modülündedir;
 > bu modül artık `field_operation_forms`'a **bağımlı değildir**.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.3.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.4.0`
 > Modül: `apps/saha/field_operation_geolocation` · 37 dosya · 2 yeni model + 5 genişletme
 
 Bu doküman modül kodundan üretilmiştir (manifest + Python + XML + JS). Kodda kanıtı

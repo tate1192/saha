@@ -5,6 +5,20 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_geolocation: 19.0.1.4.0] — 2026-10-19
+
+### Form ve liste görünümünde alan yerleşimi
+
+- **Form görünümü:** `service_latitude`, `service_longitude` ve `date_localization` alanları
+  `create_date` sonrasından `person_ids` bloğunun altına taşındı; konum bilgisi artık ekip/kişi
+  bloğunun hemen altında görünüyor. Devralma konumu (`person_ids`) `field.operation` form
+  görünümünde mevcut.
+- **Liste görünümü:** `is_located` kolonu `optional="show"` → `optional="hide"`. Varsayılan
+  olarak gizli, kullanıcı kolon seçicisinden açabilir; `No Coordinates` filtresi ve
+  `is_located` üzerine kurulu domain'ler değişmedi.
+- **Doğrulama:** `fo_check -u field_operation_geolocation` → hatasız yüklendi (view devralma
+  hatası yok). Kod/test değişikliği yok, migration gerekmez.
+
 ## [field_operation_gantt: 19.0.1.1.0] — 2026-10-18
 
 ### `label` niteliği kaldırıldı: çevrilebilir alan adı riski
