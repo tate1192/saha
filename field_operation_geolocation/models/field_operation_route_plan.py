@@ -39,6 +39,17 @@ class FieldOperationRoutePlan(models.TransientModel):
     line_ids = fields.One2many(
         "field.operation.route.plan.line", "plan_id", string="Stops"
     )
+    route_start_mode = fields.Selection(
+        related="team_id.route_start_mode", string="Route Start", readonly=True
+    )
+    start_location_id = fields.Many2one(
+        "res.partner",
+        string="Start / End",
+        compute="_compute_route",
+        help="The address the route really starts and ends at: the home when "
+        "it has coordinates, otherwise the company address. Empty when "
+        "neither has coordinates.",
+    )
     shift_times = fields.Boolean(
         string="Shift start times with the order",
         help="When enabled, the start times already planned for the day are "
@@ -47,7 +58,16 @@ class FieldOperationRoutePlan(models.TransientModel):
         "times are committed to the customer.",
     )
     total_km = fields.Float(
-        string="Route (km)", compute="_compute_route", digits=(10, 1)
+        string="Route (km)",
+        compute="_compute_route",
+        digits=(10, 1),
+        help="The whole loop: start -> stops -> start, including the return leg.",
+    )
+    return_km = fields.Float(
+        string="Return (km)",
+        compute="_compute_route",
+        digits=(10, 1),
+        help="Distance from the last stop back to the start point.",
     )
     suggested_km = fields.Float(
         string="Suggested (km)", compute="_compute_route", digits=(10, 1)
@@ -149,11 +169,24 @@ class FieldOperationRoutePlan(models.TransientModel):
             for index, operation in enumerate(self._day_operations())
         ]
 
-    def _depot_point(self):
-        """The team's departure point, falling back to the company address."""
+    def _start_point(self):
+        """The point the day's loop starts and ends at, or None."""
         if not self.team_id:
             return None
         return self.team_id._route_start_point()
+
+    def _start_partner(self):
+        """The address the route really uses as its start and end.
+
+        Empty when the selected point has no coordinates: the form must not
+        claim a start point the distance calculation cannot use.
+        """
+        if not self.team_id:
+            return self.env["res.partner"]
+        partner = self.team_id._route_start_partner()
+        if self.team_id._route_point_of(partner):
+            return partner
+        return self.env["res.partner"]
 
     def _point_of(self, operation):
         # A stop line whose operation disappeared must not take the dialog down
@@ -177,19 +210,30 @@ class FieldOperationRoutePlan(models.TransientModel):
             for index, operation in enumerate(self._day_operations())
         ]
 
-    @api.depends("line_ids.sequence", "line_ids.operation_id", "team_id", "date")
+    @api.depends(
+        "line_ids.sequence",
+        "line_ids.operation_id",
+        "team_id",
+        "date",
+        "team_id.route_start_mode",
+        "team_id.team_head_id.home_location_id",
+        "team_id.base_location_id",
+    )
     def _compute_route(self):
         for plan in self:
             if not plan.team_id or not plan.date:
                 # The dialog is also opened from the menu, without a team yet:
-                # there is nothing to measure and no depot to look up.
+                # there is nothing to measure and no start point to look up.
                 plan.total_km = 0.0
+                plan.return_km = 0.0
                 plan.suggested_km = 0.0
+                plan.start_location_id = False
                 plan.is_consistent = True
                 plan.missing_count = 0
                 plan.info = _("Select a team and a day to load the stops.")
                 continue
-            depot = plan._depot_point()
+            start = plan._start_point()
+            plan.start_location_id = plan._start_partner()
             ordered = plan._ordered_lines()
             points = [plan._point_of(line.operation_id) for line in ordered]
 
@@ -197,21 +241,31 @@ class FieldOperationRoutePlan(models.TransientModel):
             # the line (its own compute); a plan compute writes nothing on
             # another model.
             total = 0.0
-            previous = depot
+            previous = start
+            last_point = None
             for point in points:
-                total += (
-                    geo_helpers.haversine_km(previous, point)
-                    if previous and point
-                    else 0.0
-                )
+                if previous and point:
+                    total += geo_helpers.haversine_km(previous, point)
                 if point:
                     previous = point
-            plan.total_km = total
+                    last_point = point
+            # The day is a loop: drive back to where it started. Without a
+            # start point there is nothing to return to, so the route stays
+            # open and the return leg is zero.
+            return_km = (
+                geo_helpers.haversine_km(last_point, start)
+                if start and last_point
+                else 0.0
+            )
+            plan.total_km = total + return_km
+            plan.return_km = return_km
             plan.missing_count = sum(1 for point in points if not point)
 
-            suggestion = geo_helpers.suggest_route_order(points, start=depot)
+            # The suggestion must optimize the loop, not the one-way trip:
+            # otherwise it leaves the stop next to home as the last one.
+            suggestion = geo_helpers.suggest_route_order(points, start=start, end=start)
             plan.suggested_km = geo_helpers.path_length_km(
-                points, suggestion, start=depot
+                points, suggestion, start=start, end=start
             )
             plan.is_consistent = not geo_helpers.distance_gain_is_significant(
                 plan.total_km, plan.suggested_km
@@ -226,9 +280,67 @@ class FieldOperationRoutePlan(models.TransientModel):
                         count=plan.missing_count,
                     )
                 )
-            if plan.is_consistent:
+            team = plan.team_id
+            # Only warn about a home that is configured but unusable. A team
+            # without a home address is a normal state (it starts at the
+            # company); warning on every plan would train the dispatcher to
+            # ignore the message.
+            home = team._route_home_partner()
+            if (
+                team.route_start_mode == "home"
+                and home
+                and not team._route_start_is_home()
+            ):
+                if start:
+                    messages.append(
+                        _(
+                            "Home address has no coordinates; the route starts "
+                            "and ends at the company."
+                        )
+                    )
+                else:
+                    messages.append(
+                        _(
+                            "Neither the home nor the company address has "
+                            "coordinates; the route starts at the first stop and "
+                            "has no return."
+                        )
+                    )
+            elif not start:
                 messages.append(
-                    _("Order looks consistent: %(km)s km.", km=round(plan.total_km, 1))
+                    _(
+                        "The company address has no coordinates; the route "
+                        "starts at the first stop and has no return."
+                    )
+                )
+            if plan.is_consistent:
+                if start:
+                    messages.append(
+                        _(
+                            "Order looks consistent: %(km)s km (return "
+                            "%(return_km)s km).",
+                            km=round(plan.total_km, 1),
+                            return_km=round(plan.return_km, 1),
+                        )
+                    )
+                else:
+                    messages.append(
+                        _(
+                            "Order looks consistent: %(km)s km.",
+                            km=round(plan.total_km, 1),
+                        )
+                    )
+            elif start:
+                messages.append(
+                    _(
+                        "Order looks inconsistent: %(current)s km now, "
+                        "%(suggested)s km if reordered (%(saving)s km saved); "
+                        "return is %(return_km)s km.",
+                        current=round(plan.total_km, 1),
+                        suggested=round(plan.suggested_km, 1),
+                        saving=round(plan.total_km - plan.suggested_km, 1),
+                        return_km=round(plan.return_km, 1),
+                    )
                 )
             else:
                 messages.append(
@@ -263,10 +375,10 @@ class FieldOperationRoutePlan(models.TransientModel):
     def action_suggest_order(self):
         """Apply the shorter (nearest-neighbour + 2-opt) visiting order."""
         self.ensure_one()
-        depot = self._depot_point()
+        start = self._start_point()
         ordered = self._ordered_lines()
         points = [self._point_of(line.operation_id) for line in ordered]
-        suggestion = geo_helpers.suggest_route_order(points, start=depot)
+        suggestion = geo_helpers.suggest_route_order(points, start=start, end=start)
         for position, index in enumerate(suggestion):
             ordered[index].sequence = (position + 1) * 10
         return self._reopen()
@@ -422,14 +534,15 @@ class FieldOperationRoutePlan(models.TransientModel):
                 )
             )
 
-        depot = self._depot_point()
-        points = []
-        if depot:
-            points.append(depot)
+        start = self._start_point()
+        points = [start] if start else []
         points.extend(
             (float(operation.service_latitude), float(operation.service_longitude))
             for operation in located
         )
+        if start:
+            # Close the loop: the same point is the destination of the day.
+            points.append(start)
         url = maps_website._get_route_url_for_points(points)
         if not url:
             raise UserError(_("Map provider does not support multi-point routing."))
@@ -460,23 +573,25 @@ class FieldOperationRoutePlanLine(models.TransientModel):
         string="Leg (km)",
         digits=(10, 1),
         compute="_compute_leg_km",
-        help="Distance driven from the previous stop (or from the depot).",
+        help="Distance driven from the previous stop (or from the start point).",
     )
 
     @api.depends(
         "plan_id.line_ids.sequence",
         "plan_id.line_ids.operation_id",
+        "plan_id.team_id",
+        "plan_id.team_id.route_start_mode",
         "sequence",
         "operation_id",
     )
     def _compute_leg_km(self):
-        """Distance from the previous stop (or the depot) to this one."""
+        """Distance from the previous stop (or the start point) to this one."""
         for line in self:
             plan = line.plan_id
             line.leg_km = 0.0
             if not plan:
                 continue
-            previous = plan._depot_point()
+            previous = plan._start_point()
             for candidate in plan._ordered_lines():
                 point = plan._point_of(candidate.operation_id)
                 if candidate == line:

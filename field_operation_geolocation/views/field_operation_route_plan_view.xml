@@ -30,10 +30,13 @@
                     <group>
                         <field name="team_id" options="{'no_create': True}"/>
                         <field name="date"/>
+                        <field name="route_start_mode"/>
+                        <field name="start_location_id"/>
                         <field name="shift_times"/>
                     </group>
                     <group>
                         <field name="total_km"/>
+                        <field name="return_km"/>
                         <field name="suggested_km"/>
                         <field name="missing_count" invisible="1"/>
                         <field name="is_consistent" invisible="1"/>

@@ -357,6 +357,68 @@ class TestGpsTrackingModels(TransactionCase):
             result = Partner.action_cron_update_company_geolocations(limit=50)
         self.assertTrue(result)
 
+    def test_location_history_cleanup_drops_rows_older_than_the_window(self):
+        # The cron is global: start from an empty table so the count is exact
+        # (the transaction is rolled back after the test).
+        self.env["team.location.history"].search([]).unlink()
+        team = self.env["field.operation.team"].create({"name": "Cleanup Team"})
+        history = self.env["team.location.history"]
+        now = fields.Datetime.now()
+        old = history.create(
+            {
+                "team_id": team.id,
+                "latitude": 41.0,
+                "longitude": 29.0,
+                "timestamp": now - timedelta(days=61),
+            }
+        )
+        fresh = history.create(
+            {
+                "team_id": team.id,
+                "latitude": 41.0,
+                "longitude": 29.0,
+                "timestamp": now - timedelta(days=10),
+            }
+        )
+        removed = history._cron_cleanup(days=60)
+        self.assertEqual(removed, 1)
+        self.assertFalse(old.exists(), "the row outside the window was kept")
+        self.assertTrue(fresh.exists(), "the row inside the window was deleted")
+        self.assertTrue(
+            self.env.ref(
+                "field_operation_geolocation.ir_cron_cleanup_team_location_history"
+            ).active,
+            "the cleanup cron must be active",
+        )
+
+    def test_location_history_cleanup_reads_the_retention_parameter(self):
+        self.env["team.location.history"].search([]).unlink()
+        self.env["ir.config_parameter"].sudo().set_param(
+            "field_operation_geolocation.location_history_retention_days", "30"
+        )
+        team = self.env["field.operation.team"].create({"name": "Param Team"})
+        history = self.env["team.location.history"]
+        now = fields.Datetime.now()
+        old = history.create(
+            {
+                "team_id": team.id,
+                "latitude": 41.0,
+                "longitude": 29.0,
+                "timestamp": now - timedelta(days=31),
+            }
+        )
+        fresh = history.create(
+            {
+                "team_id": team.id,
+                "latitude": 41.0,
+                "longitude": 29.0,
+                "timestamp": now - timedelta(days=10),
+            }
+        )
+        self.assertEqual(history._cron_cleanup(), 1)
+        self.assertFalse(old.exists())
+        self.assertTrue(fresh.exists())
+
     def test_route_history_keeps_the_newest_points(self):
         """With more than 50 points in 24h, the ``order`` must keep the newest."""
         team = self.env["field.operation.team"].create({"name": "Route Team"})

@@ -14,14 +14,34 @@ class FieldOperationTeam(models.Model):
         "res.partner",
         string="Route Start (Depot)",
         domain=[("is_company", "=", True)],
-        help="Where this team's route starts and ends. When empty, the company "
-        "address is used; when that has no coordinates either, the route starts "
-        "at the first customer of the day.",
+        help="Where this team's route starts and ends when it starts at the "
+        "company. When empty, the company address is used; when that has no "
+        "coordinates either, the route starts at the first customer of the day.",
+    )
+    route_start_mode = fields.Selection(
+        [("home", "Home"), ("company", "Company")],
+        string="Route Start",
+        default="home",
+        required=True,
+        help="Home: the day starts and ends at the team head's home address. "
+        "Company: it starts and ends at the team's base or the company "
+        "address.",
+    )
+    home_location_id = fields.Many2one(
+        "res.partner",
+        string="Home Address",
+        related="team_head_id.home_location_id",
+        readonly=False,
+        domain=[("is_company", "=", False)],
+        help="Home address of the team head. Used when the route starts from "
+        "home; when it is empty or has no coordinates, the route falls back to "
+        "the company address. Editing it here also updates the employee's home "
+        "address, because both fields are the same value.",
     )
     latitude = fields.Float(digits=(10, 7))
     longitude = fields.Float(digits=(10, 7))
-    accuracy = fields.Float("Accuracy (m)", tracking=True)
-    device_id = fields.Char("Device ID", tracking=True)
+    accuracy = fields.Float("Accuracy (m)")
+    device_id = fields.Char("Device ID")
     timestamp = fields.Datetime("GPS Timestamp")
     last_update = fields.Datetime("Last Update")
     # Not stored on purpose: "online" is relative to *now*, so a stored value is
@@ -45,7 +65,6 @@ class FieldOperationTeam(models.Model):
         ],
         default="idle",
         string="Status",
-        tracking=True,
     )
     battery_level = fields.Integer("Battery %")
     signal_strength = fields.Selection(
@@ -57,7 +76,6 @@ class FieldOperationTeam(models.Model):
             ("4", "Excellent"),
         ],
         string="Signal Strength",
-        tracking=True,
     )
 
     @api.depends("location_history_ids")
@@ -85,12 +103,55 @@ class FieldOperationTeam(models.Model):
             else:
                 team.is_online = False
 
-    def _route_start_point(self):
-        """The team's departure point as ``(lat, lon)``, or None.
+    def _route_home_partner(self):
+        """The home address of the team head, or an empty recordset."""
+        self.ensure_one()
+        return self.team_head_id.home_location_id
 
-        Falls back to the company address, which is where most teams actually
-        load the van; a team without any depot coordinates keeps the first
-        customer as the start of its route.
+    def _route_company_partner(self):
+        """The company point: the team's located base, else the company address."""
+        self.ensure_one()
+        if self._route_point_of(self.base_location_id):
+            return self.base_location_id
+        return self.company_id.partner_id
+
+    def _route_point_of(self, partner):
+        """The ``(lat, lon)`` of a partner, or None when it has no coordinates."""
+        if partner and geo_helpers.has_point(
+            partner.partner_latitude, partner.partner_longitude
+        ):
+            return (float(partner.partner_latitude), float(partner.partner_longitude))
+        return None
+
+    def _route_start_is_home(self):
+        """Whether the route really starts at the home (not at the fallback)."""
+        self.ensure_one()
+        if self.route_start_mode != "home":
+            return False
+        return bool(self._route_point_of(self._route_home_partner()))
+
+    def _route_start_partner(self):
+        """The address the route really starts and ends at, or an empty set.
+
+        ``home`` is only used when it carries coordinates: an employee without
+        a located home must not leave the day without a start point, so the
+        company address takes over. The caller can tell the two apart with
+        :meth:`_route_start_is_home` and warn the dispatcher.
+        """
+        self.ensure_one()
+        if self.route_start_mode == "home":
+            home = self._route_home_partner()
+            if self._route_point_of(home):
+                return home
+        return self._route_company_partner()
+
+    def _route_start_point(self):
+        """The team's departure and return point as ``(lat, lon)``, or None.
+
+        The route is a loop: it leaves this point in the morning and comes back
+        to it in the evening, so the same point is both the start and the end.
+        It is the team head's home when the team starts from home and the home
+        has coordinates, and the company/depot address otherwise.
 
         Returns None for an empty or multi-record recordset instead of raising:
         the route dialog is also opened before a team is picked, and a computed
@@ -98,12 +159,7 @@ class FieldOperationTeam(models.Model):
         """
         if len(self) != 1:
             return None
-        partner = self.base_location_id or self.company_id.partner_id
-        if partner and geo_helpers.has_point(
-            partner.partner_latitude, partner.partner_longitude
-        ):
-            return (float(partner.partner_latitude), float(partner.partner_longitude))
-        return None
+        return self._route_point_of(self._route_start_partner())
 
     def action_show_day_route(self, day=None):
         """Open the route plan of this team for one day (default: today)."""

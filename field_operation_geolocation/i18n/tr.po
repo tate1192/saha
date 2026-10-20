@@ -1,6 +1,3 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# * field_operation_geolocation
 #
 msgid ""
 msgstr ""
@@ -9,53 +6,48 @@ msgstr ""
 "POT-Creation-Date: 2026-10-18 15:23+0000\n"
 "PO-Revision-Date: 2026-10-18 15:23+0000\n"
 "Last-Translator: \n"
-"Language: tr\n"
 "Language-Team: \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.10.3\n"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid " (Bat: %s%%)"
 msgstr " (Pil: %s%%)"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#, python-format
-msgid "%(count)s operation(s) have no coordinates and were left out: %(names)s"
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid ""
+"%(count)s operation(s) have no coordinates and were left out: %(names)s"
 msgstr "%(count)s işin koordinatı yok ve rotaya alınmadı: %(names)s"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "%(count)s stop(s) have no coordinates and are left out of the route."
 msgstr "%(count)s durağın koordinatı yok ve rotaya alınmadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "%(count)s stops saved in this order for %(team)s."
 msgstr "%(team)s için %(count)s durak bu sırayla kaydedildi."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "%(located)s of %(total)s operations located."
 msgstr "%(total)s işin %(located)s tanesi konumlandırıldı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid ""
 "%(located)s of %(total)s operations located; %(failed)s could not be found: "
 "%(names)s"
@@ -65,67 +57,80 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "%(located)s of %(total)s stops located."
 msgstr "%(total)s durağın %(located)s tanesi konumlandırıldı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
-msgid "%(located)s of %(total)s stops located; %(failed)s not found: %(names)s"
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"%(located)s of %(total)s stops located; %(failed)s not found: %(names)s"
 msgstr ""
 "%(total)s durağın %(located)s tanesi konumlandırıldı; %(failed)s tanesi "
 "bulunamadı: %(names)s"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__api_key
 msgid "API Key"
 msgstr "API Anahtarı"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "API key required for this provider"
 msgstr "Bu sağlayıcı için API anahtarı gerekli"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__accuracy
 msgid "Accuracy"
 msgstr "Hassasiyet"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__accuracy
 msgid "Accuracy (m)"
 msgstr "Hassasiyet (m)"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__active
 msgid "Active"
 msgstr "Aktif"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_hr_employee__home_location_id
+msgid ""
+"Address where this employee's working day starts and ends when the route "
+"starts from home. The route planner uses its coordinates as the first and "
+"the last point of the day."
+msgstr ""
+"Rota evden başladığında bu personelin iş gününün başladığı ve bittiği adres."
+" Rota planlayıcı koordinatlarını günün ilk ve son noktası olarak kullanır."
+
+#. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "All stops of this day already have coordinates, or have no address."
 msgstr "Bu günün tüm duraklarının zaten koordinatı var veya adresi yok."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "An error occurred while retrieving the location: %s"
 msgstr "Konum alınırken bir hata oluştu: %s"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Archived"
 msgstr "Arşivlendi"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "At least 2 selected operations need coordinates to build a route."
 msgstr "Rota oluşturmak için seçilen en az 2 işin koordinatı olmalı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid ""
 "At least 2 stops of this day need coordinates to build a route. Without "
 "coordinates: %(names)s. Use 'Geolocate Stops' to locate them first."
@@ -135,62 +140,86 @@ msgstr ""
 "konumlandırın."
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Basic Information"
 msgstr "Temel Bilgiler"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__battery_level
 msgid "Battery %"
 msgstr "Pil Yüzdesi"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__battery_level
 msgid "Battery Level"
 msgstr "Pil Seviyesi"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__bing
 msgid "Bing Maps"
 msgstr "Bing Haritalar"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__route_start_mode__company
+msgid "Company"
+msgstr "Firma"
+
+#. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_res_partner
 msgid "Contact"
 msgstr "İletişim"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Could not retrieve your team."
 msgstr "Takımınız alınamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Could not update the GPS position."
 msgstr "GPS konumu güncellenemedi."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__create_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__create_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__create_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__create_uid
 msgid "Created by"
 msgstr "Oluşturan"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__create_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__create_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__create_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__create_date
 msgid "Created on"
 msgstr "Oluşturulma tarihi"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__partner_id
 msgid "Customer"
 msgstr "Müşteri"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.server,name:field_operation_geolocation.ir_cron_company_geolocalize_ir_actions_server
 msgid "Daily Company Geolocation Update"
 msgstr "Günlük Şirket Konumlandırma Güncellemesi"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_field_operation_route_plan
 msgid "Daily Route Plan"
 msgstr "Günlük Rota Planı"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_field_operation_route_plan_line
 msgid "Daily Route Plan Stop"
 msgstr "Günlük Rota Planı Durağı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_res_partner__geo_localize_attempted
+#: model:ir.model.fields,help:field_operation_geolocation.field_res_users__geo_localize_attempted
 msgid ""
 "Date and time of the last automatic geolocation attempt made by the company "
 "geolocation cron. A partner is retried only once this timestamp is older "
@@ -201,248 +230,368 @@ msgstr ""
 "deneme penceresinden eski olduğunda tekrar denenir."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__date
 msgid "Day"
 msgstr "Gün"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__map_website_id
 msgid "Default Map Provider"
 msgstr "Varsayılan Harita Sağlayıcısı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__route_map_website_id
 msgid "Default Route Map Provider"
 msgstr "Varsayılan Rota Harita Sağlayıcısı"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/res_users.py
+#: code:addons/field_operation_geolocation/models/res_users.py:0
 msgid "Default map settings (OpenStreetMap) applied."
 msgstr "Varsayılan harita ayarları (OpenStreetMap) uygulandı."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__device_id
 msgid "Device ID"
 msgstr "Cihaz ID'si"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__display_name
 msgid "Display Name"
 msgstr "Görünen Ad"
 
 #. module: field_operation_geolocation
-msgid "Distance driven from the previous stop (or from the depot)."
-msgstr "Önceki duraktan (veya depodan) sürülen mesafe."
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan_line__leg_km
+msgid "Distance driven from the previous stop (or from the start point)."
+msgstr "Önceki duraktan (veya başlangıç noktasından) sürülen mesafe."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__return_km
+msgid "Distance from the last stop back to the start point."
+msgstr "Son duraktan başlangıç noktasına dönüş mesafesi."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__district
 msgid "District"
 msgstr "İlçe"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_hr_employee
+msgid "Employee"
+msgstr "Çalışan"
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Enter your API key here"
 msgstr "API anahtarınızı buraya girin"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "Error"
 msgstr "Hata"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__4
 msgid "Excellent"
 msgstr "Mükemmel"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__2
 msgid "Fair"
 msgstr "Orta"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_field_operation
 msgid "Field Operation"
 msgstr "Saha Operasyonu"
 
 #. module: field_operation_geolocation
+#: model:ir.module.category,name:field_operation_geolocation.module_category_field_operation_route
 msgid "Field Operation Route"
 msgstr "Saha Operasyonu Rotası"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_field_operation_team
 msgid "Field Operation Team"
 msgstr "Saha Operasyon Ekibi"
 
 #. module: field_operation_geolocation
 #. odoo-javascript
-#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js
+#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js:0
 msgid "Field Tracking"
 msgstr "Saha Takibi"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_team_location_history_list
 msgid "GPS History"
 msgstr "GPS Geçmişi"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.server,name:field_operation_geolocation.ir_cron_cleanup_team_location_history_ir_actions_server
+msgid "GPS History Cleanup"
+msgstr "GPS Geçmişi Temizliği"
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "GPS Information"
 msgstr "GPS Bilgileri"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_team_location_history
 msgid "GPS Location History"
 msgstr "GPS Konum Geçmişi"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__timestamp
 msgid "GPS Timestamp"
 msgstr "GPS Zaman Damgası"
 
 #. module: field_operation_geolocation
 #. odoo-javascript
-#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js
-#, python-format
+#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js:0
 msgid "GPS tracking could not be started: %s"
 msgstr "GPS takibi başlatılamadı: %s"
 
 #. module: field_operation_geolocation
 #. odoo-javascript
-#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js
+#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js:0
 msgid "GPS tracking started"
 msgstr "GPS takibi başlatıldı"
 
 #. module: field_operation_geolocation
 #. odoo-javascript
-#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js
+#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js:0
 msgid "GPS tracking stopped"
 msgstr "GPS takibi durduruldu"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 msgid "Geolocate"
 msgstr "Konumlandır"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Geolocate Stops"
 msgstr "Durakları Konumlandır"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Geolocation"
 msgstr "Konumlandırma"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__geo_localize_attempted
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__geo_localize_attempted
 msgid "Geolocation Last Attempt"
 msgstr "Son Konumlandırma Denemesi"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Geolocation completed successfully."
 msgstr "Konumlandırma başarıyla tamamlandı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Geolocation failed: %(error)s"
 msgstr "Konumlandırma başarısız: %(error)s"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__3
 msgid "Good"
 msgstr "İyi"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__google
 msgid "Google Maps"
 msgstr "Google Haritalar"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__here
 msgid "Here Maps"
 msgstr "Here Haritalar"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__location_history_count
 msgid "History Count"
 msgstr "Geçmiş Sayısı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__route_start_mode__home
+msgid "Home"
+msgstr "Ev"
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__home_location_id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__home_location_id
+msgid "Home Address"
+msgstr "Ev Adresi"
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Home address has no coordinates; the route starts and ends at the company."
+msgstr "Ev adresinin koordinatı yok; rota firmadan başlayıp firmada bitiyor."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__home_location_id
+msgid ""
+"Home address of the team head. Used when the route starts from home; when it"
+" is empty or has no coordinates, the route falls back to the company "
+"address. Editing it here also updates the employee's home address, because "
+"both fields are the same value."
+msgstr ""
+"Takım şefinin ev adresi. Rota evden başladığında kullanılır; boşsa veya "
+"koordinatı yoksa rota firma adresine düşer. Buradan düzenlemek personel "
+"kartındaki ev adresini de günceller; ikisi aynı değerdir."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__route_start_mode
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__route_start_mode
+msgid ""
+"Home: the day starts and ends at the team head's home address. Company: it "
+"starts and ends at the team's base or the company address."
+msgstr ""
+"Ev: gün, takım şefinin ev adresinde başlar ve biter. Firma: takımın "
+"deposunda veya firma adresinde başlar ve biter."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__id
 msgid "ID"
 msgstr "ID"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__idle
 msgid "Idle"
 msgstr "Beklemede"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Invalid latitude."
 msgstr "Geçersiz enlem."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Invalid longitude."
 msgstr "Geçersiz boylam."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Invalid timestamp."
 msgstr "Geçersiz zaman damgası."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__last_online
 msgid "Last Online"
 msgstr "Son Çevrimiçi"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__last_update
 msgid "Last Update"
 msgstr "Son Güncelleme"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__write_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__write_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__write_uid
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__write_uid
 msgid "Last Updated by"
 msgstr "Son Güncelleyen"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__write_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__write_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__write_date
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__write_date
 msgid "Last Updated on"
 msgstr "Son Güncelleme Tarihi"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/maps_website.py
+#: code:addons/field_operation_geolocation/models/maps_website.py:0
 msgid "Lat/Lon URL must contain {LATITUDE} and {LONGITUDE}"
 msgstr "Enlem/Boylam URL'si {LATITUDE} ve {LONGITUDE} içermelidir"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__latitude
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__latitude
 msgid "Latitude"
 msgstr "Enlem"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__lat_lon_url
 msgid "Latitude/Longitude URL"
 msgstr "Enlem/Boylam URL'si"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__leg_km
 msgid "Leg (km)"
 msgstr "Bacak (km)"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__is_located
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__is_located
 msgid "Located"
 msgstr "Konumlu"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.act_window,name:field_operation_geolocation.action_field_team_location_history
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__location_history_ids
 msgid "Location History"
 msgstr "Konum Geçmişi"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Location Not Found"
 msgstr "Konum Bulunamadı"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Location updated successfully."
 msgstr "Konum başarıyla güncellendi."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__longitude
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__longitude
 msgid "Longitude"
 msgstr "Boylam"
 
 #. module: field_operation_geolocation
+#: model:res.groups,name:field_operation_geolocation.group_manager_field_operation_route
+#: model:res.groups.privilege,name:field_operation_geolocation.privilege_manager_field_operation_route
 msgid "Manager"
 msgstr "Yönetici"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation__route_sequence
 msgid ""
 "Manual position of this operation in its day's route. Zero means the route "
 "keeps the planned start time order; a dispatcher who fixes a zig-zagging "
@@ -453,101 +602,125 @@ msgstr ""
 "düzelten dispeçer buraya açık değerler yazar."
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 msgid "Map"
 msgstr "Harita"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/res_users.py
+#: code:addons/field_operation_geolocation/models/res_users.py:0
 msgid "Map Settings Updated"
 msgstr "Harita Ayarları Güncellendi"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_maps_website
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Map Website"
 msgstr "Harita Web Sitesi"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.act_window,name:field_operation_geolocation.geolocation_map_website_action
+#: model:ir.ui.menu,name:field_operation_geolocation.menu_map_geolocation_website
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_list
 msgid "Map Websites"
 msgstr "Harita Web Siteleri"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Map provider '%s' is not properly configured."
 msgstr "Harita sağlayıcısı '%s' düzgün yapılandırılmamış."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Map provider does not support multi-point routing."
 msgstr "Harita sağlayıcısı çok noktalı rotayı desteklemiyor."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/res_users.py
-msgid "Map provider is not configured. Please set it in your user preferences."
+#: code:addons/field_operation_geolocation/models/res_users.py:0
+msgid ""
+"Map provider is not configured. Please set it in your user preferences."
 msgstr ""
 "Harita sağlayıcısı yapılandırılmamış. Lütfen kullanıcı tercihlerinizden "
 "ayarlayın."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__mapbox
 msgid "Mapbox"
 msgstr "Mapbox"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_view_users_form
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_view_users_form_simple
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_list
 msgid "Maps"
 msgstr "Haritalar"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Missing coordinates for operation '%s'."
 msgstr "Operasyon '%s' için eksik koordinatlar."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "Missing required parameters (team_id, latitude, longitude)."
 msgstr "Gerekli parametreler eksik (team_id, latitude, longitude)."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__moving
 msgid "Moving"
 msgstr "Hareket halinde"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__multi_locations_map_website_id
 msgid "Multi-Location Map Provider"
 msgstr "Çoklu Konum Harita Sağlayıcısı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__name
 msgid "Name"
 msgstr "Ad"
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Neither the home nor the company address has coordinates; the route starts "
+"at the first stop and has no return."
+msgstr ""
+"Ne ev ne firma adresinin koordinatı var; rota ilk duraktan başlıyor ve dönüş"
+" yok."
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
 msgid "No Coordinates"
 msgstr "Konumsuz"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid "No GPS coordinates available"
 msgstr "GPS koordinatı mevcut değil"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__0
 msgid "No Signal"
 msgstr "Sinyal Yok"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "No coordinates could be found for the selected address."
 msgstr "Seçilen adres için koordinat bulunamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid ""
 "No geographic coordinates could be found automatically for the selected "
 "address."
@@ -555,76 +728,86 @@ msgstr "Seçilen adres için coğrafi koordinatlar otomatik olarak bulunamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid "No location history found for the last 24 hours."
 msgstr "Son 24 saat için konum geçmişi bulunamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "No records selected."
 msgstr "Hiç kayıt seçilmedi."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid "No teams selected."
 msgstr "Hiç takım seçilmedi."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid "No valid GPS coordinates found."
 msgstr "Geçerli GPS koordinatı bulunamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "No valid coordinates found."
 msgstr "Geçerli koordinat bulunamadı."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Nothing to do"
 msgstr "Yapılacak iş yok"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__break
 msgid "On Break"
 msgstr "Mola Veriyor"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__is_online
 msgid "Online"
 msgstr "Çevrimiçi"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Open Map"
 msgstr "Haritayı Aç"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__openstreetmap
 msgid "OpenStreetMap"
 msgstr "OpenStreetMap"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__operation_id
 msgid "Operation"
 msgstr "İş"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__is_consistent
 msgid "Order is consistent"
 msgstr "Sıra tutarlı"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Order looks consistent: %(km)s km (return %(return_km)s km)."
+msgstr "Sıra tutarlı görünüyor: %(km)s km (dönüş %(return_km)s km)."
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Order looks consistent: %(km)s km."
 msgstr "Sıra tutarlı görünüyor: %(km)s km."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#, python-format
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid ""
 "Order looks inconsistent: %(current)s km now, %(suggested)s km if reordered "
 "(%(saving)s km saved)."
@@ -633,40 +816,53 @@ msgstr ""
 "%(suggested)s km (%(saving)s km tasarruf)."
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Order looks inconsistent: %(current)s km now, %(suggested)s km if reordered "
+"(%(saving)s km saved); return is %(return_km)s km."
+msgstr ""
+"Sıra tutarsız görünüyor: şu an %(current)s km, yeniden sıralanırsa "
+"%(suggested)s km (%(saving)s km tasarruf); dönüş %(return_km)s km."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__other
 msgid "Other"
 msgstr "Diğer"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__plan_id
 msgid "Plan"
 msgstr "Plan"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid "Please configure a Multi-Location Map Provider."
 msgstr "Lütfen bir Çoklu Konum Harita Sağlayıcısı yapılandırın."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Please configure a Route Map Provider."
 msgstr "Lütfen bir Rota Harita Sağlayıcısı yapılandırın."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Please select an address first."
 msgstr "Lütfen önce bir adres seçin."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "Please select at least 2 operations for route planning."
 msgstr "Rota planlaması için en az 2 operasyon seçin."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__team_id
 msgid ""
 "Preselected from the planner's own team so the office does not have to pick "
 "one; only the stops of one team belong to one route."
@@ -675,230 +871,320 @@ msgstr ""
 "seçilir; bir rotaya yalnızca tek takımın durakları girer."
 
 #. module: field_operation_geolocation
-msgid "Provider API Key"
-msgstr "Sağlayıcı API Anahtarı"
+#: model:ir.model.fields,help:field_operation_geolocation.field_maps_website__api_key
+msgid ""
+"Provider API Key; masked in the form (the 'password' attribute of the view "
+"field - Odoo 19 no longer takes it as a field parameter)."
+msgstr ""
+"Sağlayıcı API anahtarı; formda maskelenir (view alanının 'password' "
+"özniteliği - Odoo 19 alan parametresi olarak kabul etmez)."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__provider_type
 msgid "Provider Type"
 msgstr "Sağlayıcı Türü"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__website_url
 msgid "Provider Website"
 msgstr "Sağlayıcı Web Sitesi"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
 msgid "Provider does not support multi-markers."
 msgstr "Sağlayıcı çoklu işaretçiyi desteklemiyor."
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Reload Stops"
 msgstr "Durakları Yenile"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__requires_api_key
 msgid "Requires API Key"
 msgstr "API Anahtarı Gerekli"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__return_km
+msgid "Return (km)"
+msgstr "Dönüş (km)"
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Route"
 msgstr "Rota"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__total_km
 msgid "Route (km)"
 msgstr "Rota (km)"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__info
 msgid "Route Check"
 msgstr "Rota Kontrolü"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/maps_website.py
+#: code:addons/field_operation_geolocation/models/maps_website.py:0
 msgid "Route Lat/Lon URL must contain required placeholders"
 msgstr "Rota Enlem/Boylam URL'si gerekli yer tutucuları içermelidir"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__route_lat_lon_url
 msgid "Route Latitude/Longitude URL"
 msgstr "Rota Enlem/Boylam URL'si"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__route_sequence
 msgid "Route Order"
 msgstr "Rota Sırası"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
-#: code:addons/field_operation_geolocation/models/field_operation_team.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+#: code:addons/field_operation_geolocation/models/field_operation_team.py:0
+#: model:ir.actions.server,name:field_operation_geolocation.action_plan_route_from_selection
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Route Plan"
 msgstr "Rota Planı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__route_start_mode
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__route_start_mode
+msgid "Route Start"
+msgstr "Rota Başlangıcı"
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__base_location_id
 msgid "Route Start (Depot)"
 msgstr "Rota Başlangıcı (Depo)"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Route URLs"
 msgstr "Rota URL'leri"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "Route is incomplete"
 msgstr "Rota eksik"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Route saved"
 msgstr "Rota kaydedildi"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Save Order"
 msgstr "Sırayı Kaydet"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Select a team and a day to load the stops."
 msgstr "Durakları yüklemek için bir takım ve gün seçin."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__sequence
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__sequence
 msgid "Sequence"
 msgstr "Sıra"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__shift_times
 msgid "Shift start times with the order"
 msgstr "Başlama saatlerini sırayla birlikte kaydır"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.server,name:field_operation_geolocation.action_show_multiple_mark_locations
 msgid "Show Multiple Locations on Map"
 msgstr "Haritada Çoklu Konumları Göster"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.server,name:field_operation_geolocation.action_show_selected_routes
 msgid "Show Selected Routes on Map"
 msgstr "Haritada Seçilen Rotaları Göster"
 
 #. module: field_operation_geolocation
+#: model:ir.actions.server,name:field_operation_geolocation.action_show_multiple_teams_map
 msgid "Show Teams on Map"
 msgstr "Haritada Ekipleri Göster"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__signal_strength
 msgid "Signal Strength"
 msgstr "Sinyal Gücü"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Single Location URLs"
 msgstr "Tek Konum URL'leri"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__start_time
 msgid "Start"
 msgstr "Başlangıç"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__start_location_id
+msgid "Start / End"
+msgstr "Başlangıç / Bitiş"
+
+#. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Start GPS Tracking"
 msgstr "GPS İzlemeyi Başlat"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__status
 msgid "Status"
 msgstr "Durum"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Stop GPS Tracking"
 msgstr "GPS İzlemeyi Durdur"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__line_ids
 msgid "Stops"
 msgstr "Duraklar"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__missing_count
 msgid "Stops without coordinates"
 msgstr "Konumsuz duraklar"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/geo_helpers.py
+#: code:addons/field_operation_geolocation/models/geo_helpers.py:0
 msgid "Success"
 msgstr "Başarılı"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Suggest Order"
 msgstr "Sıra Öner"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__suggested_km
 msgid "Suggested (km)"
 msgstr "Önerilen (km)"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__team_id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__team_id
 msgid "Team"
 msgstr "Takım"
 
 #. module: field_operation_geolocation
 #. odoo-javascript
-#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js
+#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js:0
 msgid "Team ID not found"
 msgstr "Takım ID bulunamadı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__start_location_id
 msgid ""
-"The route of this day: a job started the day before but still running counts"
-" for the day it ends on."
-msgstr "Bu günün rotası: bir önceki gün başlayıp hâlâ süren iş, bittiği güne sayılır."
+"The address the route really starts and ends at: the home when it has "
+"coordinates, otherwise the company address. Empty when neither has "
+"coordinates."
+msgstr ""
+"Rotanın gerçekten başladığı ve bittiği adres: koordinatı varsa ev, yoksa "
+"firma adresi. İkisinin de koordinatı yoksa boştur."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"The company address has no coordinates; the route starts at the first stop "
+"and has no return."
+msgstr ""
+"Firma adresinin koordinatı yok; rota ilk duraktan başlıyor ve dönüş yok."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__date
+msgid ""
+"The route of this day: a job started the day before but still running counts"
+" for the day it ends on."
+msgstr ""
+"Bu günün rotası: bir önceki gün başlayıp hâlâ süren iş, bittiği güne "
+"sayılır."
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid "The selected map provider does not support multi-markers."
 msgstr "Seçilen harita sağlayıcısı çoklu işaretçiyi desteklemiyor."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation.py
-msgid "The selected operations already have coordinates or have no service address."
+#: code:addons/field_operation_geolocation/models/field_operation.py:0
+msgid ""
+"The selected operations already have coordinates or have no service address."
 msgstr "Seçilen işlerin zaten koordinatı var veya servis adresi yok."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__total_km
+msgid "The whole loop: start -> stops -> start, including the return leg."
+msgstr "Tüm döngü: başlangıç -> duraklar -> başlangıç, dönüş bacağı dahil."
+
+#. module: field_operation_geolocation
 #. odoo-javascript
-#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js
+#: code:addons/field_operation_geolocation/static/src/js/gps_tracking.js:0
 msgid "This browser does not support location services."
 msgstr "Bu tarayıcı konum servislerini desteklemiyor."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "This day has fewer than 2 stops; there is no route to draw."
 msgstr "Bu günde 2'den az durak var; çizilecek bir rota yok."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__timestamp
 msgid "Timestamp"
 msgstr "Zaman Damgası"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
 msgid "Today (running)"
 msgstr "Bugün (süren)"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Today's Route"
 msgstr "Bugünün Rotası"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
 msgid "Tomorrow (running)"
 msgstr "Yarın (süren)"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Tomorrow's Route"
 msgstr "Yarının Rotası"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "URL Configuration"
 msgstr "URL Yapılandırması"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "Use {LATITUDE} and {LONGITUDE} as placeholders"
 msgstr "{LATITUDE} ve {LONGITUDE} kullanarak yer tutucu olarak kullanın"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid ""
 "Use {START_LATITUDE}, {START_LONGITUDE}, {DEST_LATITUDE}, {DEST_LONGITUDE} "
 "as placeholders"
@@ -907,14 +1193,19 @@ msgstr ""
 "kullanarak yer tutucu olarak kullanın"
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_res_users
+#: model:res.groups,name:field_operation_geolocation.group_user_field_operation_route
+#: model:res.groups.privilege,name:field_operation_geolocation.privilege_user_field_operation_route
 msgid "User"
 msgstr "Kullanıcı"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__signal_strength__1
 msgid "Weak"
 msgstr "Zayıf"
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__shift_times
 msgid ""
 "When enabled, the start times already planned for the day are redistributed "
 "over the new order, so the route and the appointment times stay in the same "
@@ -926,15 +1217,19 @@ msgstr ""
 "taahhüt edilmişse kapalı bırakın."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__base_location_id
 msgid ""
-"Where this team's route starts and ends. When empty, the company address is "
-"used; when that has no coordinates either, the route starts at the first "
-"customer of the day."
+"Where this team's route starts and ends when it starts at the company. When "
+"empty, the company address is used; when that has no coordinates either, the"
+" route starts at the first customer of the day."
 msgstr ""
-"Bu ekibin rotasının başladığı ve bittiği yer. Boşsa şirket adresi "
-"kullanılır; onda da koordinat yoksa rota günün ilk müşterisinden başlar."
+"Bu ekibin rotası firmadan başladığında nerede başlar ve biter. Boşsa şirket "
+"adresi kullanılır; onda da koordinat yoksa rota günün ilk müşterisinden "
+"başlar."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation__is_located
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan_line__is_located
 msgid ""
 "Whether the service address carries usable coordinates. Stored so the "
 "dispatcher can filter and group on it; the rule itself lives in "
@@ -945,26 +1240,30 @@ msgstr ""
 "geo_helpers.has_coordinates içindedir."
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__status__working
 msgid "Working"
 msgstr "Çalışıyor"
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "You are not authorized to update this team."
 msgstr "Bu takımı güncelleme yetkiniz yok."
 
 #. module: field_operation_geolocation
 #. odoo-python
-#: code:addons/field_operation_geolocation/controllers/gps_tracking.py
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
 msgid "You have not been assigned to any field team."
 msgstr "Herhangi bir saha takımına atanmadınız."
 
 #. module: field_operation_geolocation
-msgid "https://maps.example.com/route?from={START_LATITUDE},{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}"
-msgstr "https://maps.example.com/route?from={START_LATITUDE},{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}"
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
+msgid ""
+"https://maps.example.com/route?from={START_LATITUDE},{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}"
+msgstr ""
+"https://maps.example.com/route?from={START_LATITUDE},{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}"
 
 #. module: field_operation_geolocation
+#: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "https://maps.example.com?lat={LATITUDE}&lon={LONGITUDE}"
 msgstr "https://maps.example.com?lat={LATITUDE}&lon={LONGITUDE}"
-

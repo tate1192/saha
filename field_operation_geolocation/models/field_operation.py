@@ -163,7 +163,12 @@ class FieldOperation(models.Model):
         return None
 
     def _route_url_for_records(self, maps_website, records, start_point=None):
-        """Route URL through the located records, optionally from a depot."""
+        """Route URL through the located records, optionally from a start point.
+
+        When a start point is known the route is closed: it ends at the same
+        point it started from, which is how a day that leaves from and returns
+        to home or the office is drawn.
+        """
         located = records.filtered("is_located")
         if len(located) < 2:
             return False
@@ -174,6 +179,8 @@ class FieldOperation(models.Model):
             (float(operation.service_latitude), float(operation.service_longitude))
             for operation in located
         )
+        if start_point:
+            points.append(start_point)
         return maps_website._get_route_url_for_points(points)
 
     def _notify_missing_stops(self):

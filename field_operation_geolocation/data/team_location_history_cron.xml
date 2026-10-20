@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Deletes samples older than the retention window (default 60 days,
+         overridable with the system parameter
+         field_operation_geolocation.location_history_retention_days).
+         Active on purpose: this is the only cleanup the history table has. -->
+    <record id="ir_cron_cleanup_team_location_history" model="ir.cron">
+        <field name="name">GPS History Cleanup</field>
+        <field name="model_id" ref="model_team_location_history"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_cleanup()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

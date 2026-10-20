@@ -53,6 +53,8 @@
                         <field name="device_id"/>
                     </group>
                     <group string="Route" name="route">
+                        <field name="route_start_mode"/>
+                        <field name="home_location_id" invisible="not team_head_id"/>
                         <field name="base_location_id"/>
                     </group>
                 </group>

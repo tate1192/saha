@@ -1,5 +1,6 @@
 from . import maps_website
 from . import res_users
+from . import hr_employee
 from . import geo_helpers
 from . import field_operation
 from . import field_operation_team

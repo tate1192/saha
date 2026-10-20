@@ -21,6 +21,16 @@ TUZLA = (40.817, 29.300)
 BEYKOZ = (41.130, 29.090)
 PENDIK = (40.877, 29.232)
 DEPOT = (41.000, 29.000)
+HOME = (40.990, 29.020)
+
+
+def route_points(url):
+    """The ``point=lat,lon`` pairs of a GraphHopper URL, in order."""
+    points = []
+    for chunk in url.split("point=")[1:]:
+        coordinates = chunk.split("&")[0]
+        points.append(tuple(float(value) for value in coordinates.split(",")))
+    return points
 
 
 @tagged("post_install", "-at_install")
@@ -52,6 +62,31 @@ class TestGeoHelpers(TransactionCase):
         self.assertEqual(
             geo_helpers.path_length_km(points, order, start=DEPOT),
             geo_helpers.path_length_km([TUZLA, PENDIK], start=DEPOT),
+        )
+
+    def test_a_closed_route_adds_the_return_leg(self):
+        points = [TUZLA, PENDIK]
+        expected = (
+            geo_helpers.haversine_km(DEPOT, TUZLA)
+            + geo_helpers.haversine_km(TUZLA, PENDIK)
+            + geo_helpers.haversine_km(PENDIK, DEPOT)
+        )
+        self.assertAlmostEqual(
+            geo_helpers.path_length_km(points, start=DEPOT, end=DEPOT),
+            expected,
+            delta=0.1,
+        )
+
+    def test_the_suggestion_accounts_for_the_return_leg(self):
+        home = (0.0, 0.0)
+        points = [(1.0, 0.0), (1.0, 1.0), (10.0, 0.0)]
+        one_way = geo_helpers.path_length_km(points, [0, 1, 2], start=home)
+        order = geo_helpers.suggest_route_order(points, start=home, end=home)
+        self.assertEqual(order, [0, 2, 1])
+        self.assertLess(
+            geo_helpers.path_length_km(points, order, start=home, end=home),
+            one_way + geo_helpers.haversine_km(points[2], home) - 0.5,
+            "the suggestion left the stop next to home as the last one",
         )
 
 
@@ -169,6 +204,7 @@ class TestRoutePlanGeolocation(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env.user.lang = "en_US"
         cls.provider = cls.env["maps.website"].search([], limit=1)
         if not cls.provider:
             cls.provider = cls.env["maps.website"].create(
@@ -181,6 +217,10 @@ class TestRoutePlanGeolocation(TransactionCase):
             )
         cls.env.user.route_map_website_id = cls.provider
         cls.team = cls.env["field.operation.team"].create({"name": "Geo Plan Team"})
+        # Keep the company address out of the leg expectations below.
+        cls.env.company.partner_id.write(
+            {"partner_latitude": 0.0, "partner_longitude": 0.0}
+        )
         cls.day = fields.Date.context_today(cls.env.user)
         located_partner = cls.env["res.partner"].create(
             {
@@ -382,6 +422,11 @@ class TestSelectedRouteAction(TransactionCase):
         )
         cls.env.user.route_map_website_id = cls.provider
         cls.env.user.map_website_id = cls.provider
+        # These expectations start at the depot below; keep the company
+        # fallback out of them.
+        cls.env.company.partner_id.write(
+            {"partner_latitude": 0.0, "partner_longitude": 0.0}
+        )
         cls.day = fields.Date.context_today(cls.env.user)
         cls.depot = cls.env["res.partner"].create(
             {
@@ -422,12 +467,7 @@ class TestSelectedRouteAction(TransactionCase):
         return self.env["field.operation"].create(vals)
 
     def _points(self, url):
-        """The ``point=lat,lon`` pairs of a GraphHopper URL, in order."""
-        points = []
-        for chunk in url.split("point=")[1:]:
-            coordinates = chunk.split("&")[0]
-            points.append(tuple(float(value) for value in coordinates.split(",")))
-        return points
+        return route_points(url)
 
     def test_the_route_follows_the_planned_start_time(self):
         tuzla = self._operation("Tuzla", TUZLA, 12)
@@ -437,7 +477,8 @@ class TestSelectedRouteAction(TransactionCase):
         action = (pendik | tuzla | beykoz).action_show_selected_routes()
         points = self._points(action["url"])
         self.assertEqual(points[0], DEPOT, "the route must start at the depot")
-        self.assertEqual(points[1:], [TUZLA, BEYKOZ, PENDIK])
+        self.assertEqual(points[1:-1], [TUZLA, BEYKOZ, PENDIK])
+        self.assertEqual(points[-1], DEPOT, "the route must return to the depot")
 
     def test_a_manual_route_order_wins_over_the_start_time(self):
         tuzla = self._operation("Tuzla", TUZLA, 12)
@@ -459,7 +500,9 @@ class TestSelectedRouteAction(TransactionCase):
             action = selection.action_show_selected_routes()
         self.assertTrue(notify.called, "the skipped stop was not reported")
         self.assertEqual(notify.call_args[0][0], nowhere)
-        self.assertEqual(self._points(action["url"]), [DEPOT, TUZLA, BEYKOZ])
+        self.assertEqual(
+            self._points(action["url"]), [DEPOT, TUZLA, BEYKOZ, DEPOT]
+        )
 
     def test_an_unsequenced_job_lands_after_the_saved_order(self):
         tuzla = self._operation("Tuzla", TUZLA, 12)
@@ -478,6 +521,118 @@ class TestSelectedRouteAction(TransactionCase):
         nowhere = self._operation("Nowhere", None, 16)
         with self.assertRaises(UserError):
             (tuzla | nowhere).action_show_selected_routes()
+
+
+@tagged("post_install", "-at_install")
+class TestRouteStart(TransactionCase):
+    """The route starts and ends at home or at the company, as a loop."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env.user.lang = "en_US"
+        cls.provider = cls.env["maps.website"].create(
+            {
+                "name": "Start Route OSM",
+                "provider_type": "openstreetmap",
+                "lat_lon_url": "https://example.com/?lat={LATITUDE}&lon={LONGITUDE}",
+            }
+        )
+        cls.env.user.route_map_website_id = cls.provider
+        cls.day = fields.Date.context_today(cls.env.user)
+        cls.company_partner = cls.env.company.partner_id
+        cls.company_partner.write(
+            {"partner_latitude": DEPOT[0], "partner_longitude": DEPOT[1]}
+        )
+        cls.home_partner = cls.env["res.partner"].create(
+            {
+                "name": "Employee Home",
+                "partner_latitude": HOME[0],
+                "partner_longitude": HOME[1],
+            }
+        )
+        cls.employee = cls.env["hr.employee"].create(
+            {"name": "Route Owner", "home_location_id": cls.home_partner.id}
+        )
+        cls.team = cls.env["field.operation.team"].create(
+            {"name": "Home Team", "team_head_id": cls.employee.id}
+        )
+
+    def _operation(self, name, point, hour):
+        vals = {
+            "subject": name,
+            "team_id": self.team.id,
+            "start_date": fields.Datetime.to_datetime(
+                datetime.combine(self.day, time(hour))
+            ),
+        }
+        if point:
+            vals["partner_id"] = (
+                self.env["res.partner"]
+                .create(
+                    {
+                        "name": name,
+                        "partner_latitude": point[0],
+                        "partner_longitude": point[1],
+                    }
+                )
+                .id
+            )
+        else:
+            vals["partner_id"] = (
+                self.env["res.partner"].create({"name": name, "city": "Nowhere"}).id
+            )
+        return self.env["field.operation"].create(vals)
+
+    def _plan(self):
+        return self.env["field.operation.route.plan"].create(
+            {"team_id": self.team.id, "date": self.day}
+        )
+
+    def test_the_route_starts_and_ends_at_home(self):
+        self._operation("Tuzla", TUZLA, 10)
+        self._operation("Beykoz", BEYKOZ, 12)
+        plan = self._plan()
+        self.assertEqual(plan.start_location_id, self.home_partner)
+        expected = (
+            geo_helpers.haversine_km(HOME, TUZLA)
+            + geo_helpers.haversine_km(TUZLA, BEYKOZ)
+            + geo_helpers.haversine_km(BEYKOZ, HOME)
+        )
+        self.assertAlmostEqual(plan.total_km, expected, delta=0.2)
+        self.assertAlmostEqual(
+            plan.return_km, geo_helpers.haversine_km(BEYKOZ, HOME), delta=0.2
+        )
+        action = plan.action_open_map()
+        points = route_points(action["url"])
+        self.assertEqual(points[0], HOME)
+        self.assertEqual(points[-1], HOME)
+
+    def test_a_home_without_coordinates_falls_back_to_the_company(self):
+        self.home_partner.write({"partner_latitude": 0.0, "partner_longitude": 0.0})
+        self._operation("Tuzla", TUZLA, 10)
+        self._operation("Beykoz", BEYKOZ, 12)
+        plan = self._plan()
+        self.assertEqual(plan.start_location_id, self.company_partner)
+        self.assertIn("Home address", plan.info)
+        self.assertGreater(plan.return_km, 0.0)
+
+    def test_a_team_without_a_home_starts_at_the_company_silently(self):
+        """No home is a normal state, not a configuration error to warn about."""
+        self.employee.home_location_id = False
+        self._operation("Tuzla", TUZLA, 10)
+        self._operation("Beykoz", BEYKOZ, 12)
+        plan = self._plan()
+        self.assertEqual(plan.start_location_id, self.company_partner)
+        self.assertNotIn("Home address", plan.info)
+
+    def test_company_mode_starts_at_the_company(self):
+        self.team.route_start_mode = "company"
+        self._operation("Tuzla", TUZLA, 10)
+        self._operation("Beykoz", BEYKOZ, 12)
+        plan = self._plan()
+        self.assertEqual(plan.start_location_id, self.company_partner)
+        self.assertNotIn("Home address", plan.info)
 
 
 @tagged("post_install", "-at_install")
@@ -504,6 +659,17 @@ class TestRouteProviders(TransactionCase):
         )
         self.assertIn("from=41.0,29.0", url)
         self.assertIn("to=40.0,28.0", url)
+
+    def test_a_round_trip_keeps_the_last_stop_as_destination(self):
+        """A template knows only two points: do not turn the loop into X -> X."""
+        provider = self._provider(
+            "other",
+            route_lat_lon_url="https://example.com/route?from={START_LATITUDE},"
+            "{START_LONGITUDE}&to={DEST_LATITUDE},{DEST_LONGITUDE}",
+        )
+        url = provider._get_route_url_for_points([TUZLA, BEYKOZ, PENDIK, TUZLA])
+        self.assertIn("from=40.817,29.3", url)
+        self.assertIn("to=40.877,29.232", url)
 
     def test_mapbox_keeps_every_stop(self):
         provider = self._provider("mapbox")

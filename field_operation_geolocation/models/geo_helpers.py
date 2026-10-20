@@ -161,43 +161,54 @@ def haversine_km(first, second) -> float:
     return 2 * EARTH_RADIUS_KM * asin(sqrt(haversine))
 
 
-def route_length_km(points) -> float:
-    """Total length of the polyline through ``points`` (None entries skipped)."""
+def route_length_km(points, end=None) -> float:
+    """Total length of the polyline through ``points`` (None entries skipped).
+
+    ``end`` closes the tour with a return leg from the last usable point, which
+    is how a route that starts and ends at home is measured.
+    """
     usable = [point for point in points if point]
-    return sum(haversine_km(first, second) for first, second in pairwise(usable))
+    length = sum(haversine_km(first, second) for first, second in pairwise(usable))
+    if end and usable:
+        length += haversine_km(usable[-1], end)
+    return length
 
 
-def path_length_km(points, order=None, start=None) -> float:
+def path_length_km(points, order=None, start=None, end=None) -> float:
     """Length of the route visiting ``points`` in the given ``order``.
 
-    ``start`` is an optional depot point; ``order`` indexes into ``points`` and
-    defaults to the current order. Points that are None (a stop without
-    coordinates) are skipped, exactly as the URL builders do.
+    ``start`` is an optional start point and ``end`` an optional return point;
+    ``order`` indexes into ``points`` and defaults to the current order. Points
+    that are None (a stop without coordinates) are skipped, exactly as the URL
+    builders do.
     """
     indexes = range(len(points)) if order is None else order
     route = ([start] if start else []) + [
         points[index] for index in indexes if points[index]
     ]
-    return route_length_km(route)
+    return route_length_km(route, end=end)
 
 
-def suggest_route_order(points, start=None):
+def suggest_route_order(points, start=None, end=None):
     """A shorter visiting order for ``points``, as a list of indexes.
 
-    Nearest-neighbour from ``start`` (or from the first stop when no depot is
-    known) followed by a 2-opt pass. Stops without coordinates are appended at
-    the end in their original order, so a dispatcher still sees them.
+    Nearest-neighbour from ``start`` (or from the first stop when no start is
+    known) followed by a 2-opt pass. When ``end`` is given the tour is closed:
+    the cost includes the leg from the last stop back to ``end``, so a stop
+    next to the office/home is not left as the last one of the day. Stops
+    without coordinates are appended at the end in their original order, so a
+    dispatcher still sees them.
 
-    The first stop stays first when there is no depot: the dispatcher planned
-    the day around that first appointment, and a suggestion that also moves the
-    starting point is a bigger change than the warning asked for.
+    The first stop stays first when there is no start point: the dispatcher
+    planned the day around that first appointment, and a suggestion that also
+    moves the starting point is a bigger change than the warning asked for.
     """
     located = [index for index, point in enumerate(points) if point]
     missing = [index for index, point in enumerate(points) if not point]
     if len(located) < 3:
         return located + missing
     order = _nearest_neighbour_order(points, located, start)
-    order = _two_opt_order(points, order, start)
+    order = _two_opt_order(points, order, start, end)
     return order + missing
 
 
@@ -228,12 +239,12 @@ def _nearest_neighbour_order(points, located, start):
     return order
 
 
-def _two_opt_order(points, order, start, max_passes=50):
+def _two_opt_order(points, order, start, end=None, max_passes=50):
     """Improve ``order`` by reversing segments while that shortens the path."""
     order = list(order)
-    # Without a depot the first stop is the anchor and must not move.
+    # Without a start point the first stop is the anchor and must not move.
     first_movable = 1 if start is None else 0
-    best = path_length_km(points, order, start)
+    best = path_length_km(points, order, start, end)
     for _pass in range(max_passes):
         improved = False
         for i in range(first_movable, len(order) - 1):
@@ -241,7 +252,7 @@ def _two_opt_order(points, order, start, max_passes=50):
                 candidate = (
                     order[:i] + list(reversed(order[i : j + 1])) + order[j + 1 :]
                 )
-                length = path_length_km(points, candidate, start)
+                length = path_length_km(points, candidate, start, end)
                 if length < best - 1e-9:
                     order = candidate
                     best = length

@@ -5,6 +5,55 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_geolocation: 19.0.1.6.0] — 2026-10-19
+
+### GPS geçmişi saklama ve chatter gürültüsü
+
+- `team.location.history` için günlük **GPS History Cleanup** cron'u eklendi
+  (`ir_cron_cleanup_team_location_history`): `timestamp`'i 60 günden eski kayıtları siler.
+  Süre `field_operation_geolocation.location_history_retention_days` sistem parametresiyle
+  değiştirilir; geçersiz değerde varsayılan 60 güne döner. Cron aktiftir; ilk çalışmada
+  mevcut eski kayıtları da temizler.
+- GPS telemetri alanlarındaki (`accuracy`, `device_id`, `status`, `signal_strength`)
+  `tracking=True` kaldırıldı; controller artık `tracking_disable=True` ile yazıyor. Böylece
+  her ping takım chatter'ına tracking mesajı bırakmıyor.
+- **Yükseltme:** `migrations/19.0.1.6.0/post-migration.py` mevcut takımları (arşivliler
+  dahil) `company` moduna alır; yeni takımlar `home` başlar. Ev adresi hiç tanımlı değilse
+  plan artık uyarı basmaz; uyarı yalnız ev tanımlı ama koordinatsızsa gösterilir.
+- Testler: 50 → **53** post-test; `test_location_history_cleanup_drops_rows_older_than_the_window`,
+  `test_location_history_cleanup_reads_the_retention_parameter` ve
+  `test_a_team_without_a_home_starts_at_the_company_silently` eklendi.
+- Yeni alan yok; saklama penceresi sistem parametresinden okunur. 1.5.0'ın yeni alanları
+  için migration gerekmez.
+
+## [field_operation_geolocation: 19.0.1.5.0] — 2026-10-19
+
+### Rota evden/firmadan başlar ve aynı noktada biter
+
+- **Kapalı döngü:** `total_km` artık `başlangıç → duraklar → başlangıç` toplamı;
+  dönüş bacağı ayrıca `return_km` alanında gösterilir. `leg_km` satırlarının
+  toplamı gidiş bacağını verir.
+- **Başlangıç noktası seçimi:** `field.operation.team.route_start_mode`
+  (`home` / `company`, varsayılan `home`). `home`, takım şefinin
+  `hr.employee.home_location_id` adresini kullanır; adres yoksa veya koordinatı
+  yoksa firmaya (`base_location_id` → şirket adresi) düşer ve plan ekranı bunu
+  uyarı olarak yazar.
+- **Yeni alanlar:** `hr.employee.home_location_id` (personel formunda **Ev
+  Adresi**), `field.operation.team.home_location_id` (related, takım formunda
+  düzenlenebilir), plan sihirbazında `route_start_mode`, `start_location_id`,
+  `return_km`.
+- **Öneri:** nearest-neighbour + 2-opt artık dönüş bacağını maliyete katar
+  (`geo_helpers.suggest_route_order(..., end=)`); aksi hâlde eve en yakın durak
+  günün sonuna bırakılabiliyordu.
+- **Harita:** çok noktalı sağlayıcılarda rota başlangıç noktasında kapanır;
+  yalnız başlangıç+varış destekleyen şablon sağlayıcılarda son müşteri varış
+  kalır (X→X üretilmez).
+- **Testler:** `uzman_v19_test -u field_operation_geolocation --test-enable
+  --test-tags /field_operation_geolocation` → 0 failed, 50 post-test; rota
+  planlama dosyası 21 → **27 test**.
+- Bu sürümde migration yok; yeni alanlar boş, `route_start_mode` varsayılanı `home`.
+  Mevcut takımların `company` moduna alınması 19.0.1.6.0 migration'ında yapılır.
+
 ## [field_operation_geolocation: 19.0.1.4.0] — 2026-10-19
 
 ### Form ve liste görünümünde alan yerleşimi

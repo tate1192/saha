@@ -171,7 +171,11 @@ class FieldTeamAPI(http.Controller):
 
         team = request.env["field.operation.team"].sudo().browse(team_id)
         try:
-            team.write(update_vals)
+            # A GPS ping is telemetry, not a business change: it must never
+            # write a tracking message into the team's chatter. The telemetry
+            # fields are no longer tracked, and this context keeps any future
+            # tracked field written here out of the log as well.
+            team.with_context(tracking_disable=True).write(update_vals)
             history_saved = self._store_history(
                 team_id,
                 latitude,

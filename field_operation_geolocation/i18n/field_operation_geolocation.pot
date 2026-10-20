@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-18 15:23+0000\n"
-"PO-Revision-Date: 2026-10-18 15:23+0000\n"
+"POT-Creation-Date: 2026-10-20 17:56+0000\n"
+"PO-Revision-Date: 2026-10-20 17:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -93,6 +93,14 @@ msgid "Active"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_hr_employee__home_location_id
+msgid ""
+"Address where this employee's working day starts and ends when the route "
+"starts from home. The route planner uses its coordinates as the first and "
+"the last point of the day."
+msgstr ""
+
+#. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "All stops of this day already have coordinates, or have no address."
@@ -141,6 +149,11 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields.selection,name:field_operation_geolocation.selection__maps_website__provider_type__bing
 msgid "Bing Maps"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__route_start_mode__company
+msgid "Company"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -236,6 +249,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__display_name
@@ -245,12 +259,22 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan_line__leg_km
-msgid "Distance driven from the previous stop (or from the depot)."
+msgid "Distance driven from the previous stop (or from the start point)."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__return_km
+msgid "Distance from the last stop back to the start point."
 msgstr ""
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__district
 msgid "District"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_hr_employee
+msgid "Employee"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -299,6 +323,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_team_location_history_list
 msgid "GPS History"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.actions.server,name:field_operation_geolocation.ir_cron_cleanup_team_location_history_ir_actions_server
+msgid "GPS History Cleanup"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -390,10 +419,46 @@ msgid "History Count"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields.selection,name:field_operation_geolocation.selection__field_operation_team__route_start_mode__home
+msgid "Home"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__home_location_id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__home_location_id
+msgid "Home Address"
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Home address has no coordinates; the route starts and ends at the company."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__home_location_id
+msgid ""
+"Home address of the team head. Used when the route starts from home; when it"
+" is empty or has no coordinates, the route falls back to the company "
+"address. Editing it here also updates the employee's home address, because "
+"both fields are the same value."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__route_start_mode
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__route_start_mode
+msgid ""
+"Home: the day starts and ends at the team head's home address. Company: it "
+"starts and ends at the team's base or the company address."
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__id
@@ -601,6 +666,14 @@ msgid "Name"
 msgstr ""
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Neither the home nor the company address has coordinates; the route starts "
+"at the first stop and has no return."
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_filter_geolocation
 msgid "No Coordinates"
 msgstr ""
@@ -700,6 +773,12 @@ msgstr ""
 #. module: field_operation_geolocation
 #. odoo-python
 #: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid "Order looks consistent: %(km)s km (return %(return_km)s km)."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
 msgid "Order looks consistent: %(km)s km."
 msgstr ""
 
@@ -709,6 +788,14 @@ msgstr ""
 msgid ""
 "Order looks inconsistent: %(current)s km now, %(suggested)s km if reordered "
 "(%(saving)s km saved)."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"Order looks inconsistent: %(current)s km now, %(suggested)s km if reordered "
+"(%(saving)s km saved); return is %(return_km)s km."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -756,7 +843,9 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #: model:ir.model.fields,help:field_operation_geolocation.field_maps_website__api_key
-msgid "Provider API Key"
+msgid ""
+"Provider API Key; masked in the form (the 'password' attribute of the view "
+"field - Odoo 19 no longer takes it as a field parameter)."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -783,6 +872,11 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__requires_api_key
 msgid "Requires API Key"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__return_km
+msgid "Return (km)"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -825,6 +919,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_form
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Route Plan"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__route_start_mode
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__route_start_mode
+msgid "Route Start"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -902,6 +1002,11 @@ msgid "Start"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan__start_location_id
+msgid "Start / End"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Start GPS Tracking"
 msgstr ""
@@ -955,6 +1060,22 @@ msgid "Team ID not found"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__start_location_id
+msgid ""
+"The address the route really starts and ends at: the home when it has "
+"coordinates, otherwise the company address. Empty when neither has "
+"coordinates."
+msgstr ""
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/models/field_operation_route_plan.py:0
+msgid ""
+"The company address has no coordinates; the route starts at the first stop "
+"and has no return."
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__date
 msgid ""
 "The route of this day: a job started the day before but still running counts"
@@ -972,6 +1093,11 @@ msgstr ""
 #: code:addons/field_operation_geolocation/models/field_operation.py:0
 msgid ""
 "The selected operations already have coordinates or have no service address."
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_route_plan__total_km
+msgid "The whole loop: start -> stops -> start, including the return leg."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -1052,9 +1178,9 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields,help:field_operation_geolocation.field_field_operation_team__base_location_id
 msgid ""
-"Where this team's route starts and ends. When empty, the company address is "
-"used; when that has no coordinates either, the route starts at the first "
-"customer of the day."
+"Where this team's route starts and ends when it starts at the company. When "
+"empty, the company address is used; when that has no coordinates either, the"
+" route starts at the first customer of the day."
 msgstr ""
 
 #. module: field_operation_geolocation

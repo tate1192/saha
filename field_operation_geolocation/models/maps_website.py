@@ -198,7 +198,14 @@ class MapsWebsite(models.Model):
         # template only knows start and destination, which is the limit of
         # those providers' web URLs; the URL no longer silently disappears
         # while the configured template is validated and shown in the form.
-        return self._get_template_route_url(points[0], points[-1])
+        first, last = points[0], points[-1]
+        if len(points) > 2 and first == last:
+            # A round trip (home -> stops -> home): the template cannot draw
+            # the return leg, and the repeated point would turn the URL into
+            # origin == destination. Keep the last customer as the destination
+            # so the day is still visible.
+            last = points[-2]
+        return self._get_template_route_url(first, last)
 
     def _get_template_route_url(self, first, last) -> str:
         """Fill the provider's own route template with start and destination."""
