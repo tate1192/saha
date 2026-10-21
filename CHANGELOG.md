@@ -5,6 +5,21 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_geolocation: 19.0.1.6.1] — 2026-10-20
+
+### Erişim hatası: `home_location_id` genel profilde yoktu
+
+- HR yetkisi olmayan bir kullanıcı çalışan kaydını okuduğunda Odoo genel profile
+  (`hr.employee.public`) düşüyor; `home_location_id` orada tanımlı olmadığı için
+  `Erişim Hatası: "home_location_id" ... çalışanların genel profilleri için
+  kullanılamaz` veriyordu (takım formundan çalışan kartı açmak, liste export'u,
+  kayıtlı filtre vb.).
+- Alan `hr.employee.public` üzerine **stored olmayan related** alan olarak eklendi
+  (`models/hr_employee_public.py`): okuma başarılı olur, değer çalışanın kendi
+  kaydında kalır, kolon çoğaltılmaz.
+- Görünürlük notu: ev adresi artık genel profil üzerinden de okunabilir; KVKK
+  başlığındaki "kimler görür" maddesi bu gerçeğe göre değerlendirilmeli.
+
 ## [field_operation_geolocation: 19.0.1.6.0] — 2026-10-19
 
 ### GPS geçmişi saklama ve chatter gürültüsü
