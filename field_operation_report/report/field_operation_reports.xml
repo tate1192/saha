@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_field_operation_report" model="report.paperformat">
+        <field name="name">Field Operation Report</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing">10</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_field_operation_team" model="ir.actions.report">
+        <field name="name">Field Service Team Report</field>
+        <field name="model">field.operation.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">field_operation_report.field_operation_team_report</field>
+        <field name="report_file">field_operation_report.field_operation_team_report</field>
+        <field name="paperformat_id" ref="paperformat_field_operation_report"/>
+        <field name="print_report_name">'Field Service Team Report - %s' % (object.date_from)</field>
+    </record>
+
+    <record id="action_report_field_operation_detail" model="ir.actions.report">
+        <field name="name">Field Service Detail</field>
+        <field name="model">field.operation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">field_operation_report.field_operation_detail_report</field>
+        <field name="report_file">field_operation_report.field_operation_detail_report</field>
+        <field name="paperformat_id" ref="paperformat_field_operation_report"/>
+        <field name="binding_model_id" ref="field_operation.model_field_operation"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Field Service Detail - %s' % (object.name)</field>
+    </record>
+
+</odoo>

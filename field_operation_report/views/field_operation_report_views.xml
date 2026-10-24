@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The analysis screens come from field_operation: this module only adds
+         the reporting fields to them, so the database holds one pivot and one
+         graph instead of two competing copies. -->
+    <record id="view_field_operation_pivot_report" model="ir.ui.view">
+        <field name="name">field.operation.pivot.report</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_pivot"/>
+        <field name="arch" type="xml">
+            <xpath expr="//pivot/field[@name='start_date']" position="after">
+                <field name="report_date" type="row" interval="month"/>
+                <field name="person_count" type="measure"/>
+                <field name="duration_per_person" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_field_operation_graph_report" model="ir.ui.view">
+        <field name="name">field.operation.graph.report</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_graph"/>
+        <field name="arch" type="xml">
+            <xpath expr="//graph/field[@name='start_date']" position="after">
+                <field name="report_date" interval="month"/>
+                <field name="person_count" type="measure"/>
+                <field name="duration_per_person" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_field_operation_report_list" model="ir.ui.view">
+        <field name="name">field.operation.report.list</field>
+        <field name="model">field.operation</field>
+        <field name="arch" type="xml">
+            <list string="Field Services" create="0" delete="0">
+                <field name="report_date"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="district_id"/>
+                <field name="team_id"/>
+                <field name="service_type_id"/>
+                <field name="status"
+                       widget="badge"
+                       decoration-success="status == 'done'"
+                       decoration-warning="status == 'progress'"
+                       decoration-muted="status == 'cancel'"/>
+                <field name="person_count" string="Team Size" optional="show"/>
+                <field name="total_work" string="Duration (h)" sum="Total Duration"/>
+                <field name="duration_per_person" optional="hide"/>
+                <field name="service_price" sum="Total Amount"/>
+                <field name="signed" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_field_operation_report_search" model="ir.ui.view">
+        <field name="name">field.operation.report.search</field>
+        <field name="model">field.operation</field>
+        <field name="arch" type="xml">
+            <search string="Field Service Analysis">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="team_id"/>
+                <field name="service_type_id"/>
+                <field name="district_id"/>
+                <field name="person_ids"/>
+                <filter name="filter_period"
+                        string="Period"
+                        date="report_date"/>
+                <separator/>
+                <filter name="filter_done"
+                        string="Done"
+                        domain="[('status', '=', 'done')]"/>
+                <filter name="filter_open"
+                        string="Open"
+                        domain="[('status', 'in', ('draft', 'planned', 'progress'))]"/>
+                <separator/>
+                <filter name="filter_not_measured"
+                        string="Duration Not Measured"
+                        domain="[('total_work', '=', 0)]"
+                        help="Services without a start or end date: the duration cannot be measured."/>
+                <filter name="filter_not_signed"
+                        string="Not Signed"
+                        domain="[('signed', '=', False)]"/>
+                <filter name="filter_no_staff"
+                        string="No Staff"
+                        domain="[('person_ids', '=', False)]"/>
+                <filter name="filter_no_amount"
+                        string="No Amount"
+                        domain="[('service_price', '=', 0)]"/>
+                <separator/>
+                <filter name="filter_group_team"
+                        string="Team"
+                        context="{'group_by': 'team_id'}"/>
+                <filter name="filter_group_type"
+                        string="Service Type"
+                        context="{'group_by': 'service_type_id'}"/>
+                <filter name="filter_group_district"
+                        string="District"
+                        context="{'group_by': 'district_id'}"/>
+                <filter name="filter_group_month"
+                        string="Month"
+                        context="{'group_by': 'report_date:month'}"/>
+                <filter name="filter_group_status"
+                        string="Status"
+                        context="{'group_by': 'status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_field_operation_report_analysis" model="ir.actions.act_window">
+        <field name="name">Field Service Analysis</field>
+        <field name="res_model">field.operation</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="search_view_id" ref="view_field_operation_report_search"/>
+        <field name="domain">[('status', '!=', 'cancel')]</field>
+        <field name="context">{'pivot_measures': ['id', 'total_work', 'duration_per_person', 'service_price'],
+            'pivot_row_groupby': ['report_date:month', 'team_id'],
+            'pivot_column_groupby': ['service_type_id'],
+            'graph_measure': 'total_work',
+            'graph_groupby': ['report_date:month', 'team_id']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No field service in the selected period.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_field_operation_report_analysis_view_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_field_operation_report_list"/>
+        <field name="act_window_id" ref="action_field_operation_report_analysis"/>
+    </record>
+
+    <record id="action_field_operation_report_quality" model="ir.actions.act_window">
+        <field name="name">Data Quality</field>
+        <field name="res_model">field.operation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_field_operation_report_search"/>
+        <field name="view_id" ref="view_field_operation_report_list"/>
+        <field name="domain">['|', '|', ('end_date', '=', False), ('person_ids', '=', False), ('service_price', '=', 0)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                Every service carries an end date, staff and an amount.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_field_operation_report_wizard" model="ir.actions.act_window">
+        <field name="name">Team Report</field>
+        <field name="res_model">field.operation.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_field_operation_report_analysis"
+              name="Field Service Analysis"
+              parent="field_operation.menu_field_operation_reports"
+              action="action_field_operation_report_analysis"
+              groups="field_operation.service_group_all"
+              sequence="10"/>
+
+    <menuitem id="menu_field_operation_report_team"
+              name="Team Report"
+              parent="field_operation.menu_field_operation_reports"
+              action="action_field_operation_report_wizard"
+              groups="field_operation.service_group_all"
+              sequence="20"/>
+
+    <menuitem id="menu_field_operation_report_quality"
+              name="Data Quality"
+              parent="field_operation.menu_field_operation_reports"
+              action="action_field_operation_report_quality"
+              groups="field_operation.service_group_manager"
+              sequence="30"/>
+
+</odoo>

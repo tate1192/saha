@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="field_operation_team_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wizard">
+                <t t-set="data" t-value="wizard._get_report_data()"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="mt-0">Field Service Team Report</h2>
+                        <div class="row mb-3">
+                            <div class="col-5">
+                                <strong>Period:</strong>
+                                <span t-field="wizard.date_from"/>
+                                -
+                                <span t-field="wizard.date_to"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Services:</strong>
+                                <span t-out="data['totals']['services']"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Teams:</strong>
+                                <span t-out="len(data['teams'])"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-bordered o_main_table">
+                            <thead>
+                                <tr>
+                                    <th>Team</th>
+                                    <th class="text-end">Services</th>
+                                    <th class="text-end">Done</th>
+                                    <th class="text-end">Open</th>
+                                    <th class="text-end">Signed</th>
+                                    <th class="text-end">Measured</th>
+                                    <th class="text-end">Avg Duration (h)</th>
+                                    <th class="text-end">Total Duration (h)</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data['teams']" t-as="row">
+                                    <td><span t-out="row['team']"/></td>
+                                    <td class="text-end"><span t-out="row['services']"/></td>
+                                    <td class="text-end"><span t-out="row['done']"/></td>
+                                    <td class="text-end"><span t-out="row['open']"/></td>
+                                    <td class="text-end"><span t-out="row['signed']"/></td>
+                                    <td class="text-end"><span t-out="row['measured']"/></td>
+                                    <td class="text-end">
+                                        <span t-out="'%.1f' % row['duration_avg']"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="'%.1f' % row['duration_total']"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="row['amount']"
+                                              t-options="{'widget': 'monetary', 'display_currency': data['currency']}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold">
+                                    <td>Total</td>
+                                    <td class="text-end"><span t-out="data['totals']['services']"/></td>
+                                    <td class="text-end"><span t-out="data['totals']['done']"/></td>
+                                    <td class="text-end"><span t-out="data['totals']['open']"/></td>
+                                    <td class="text-end"><span t-out="data['totals']['signed']"/></td>
+                                    <td class="text-end"><span t-out="data['totals']['measured']"/></td>
+                                    <td class="text-end"/>
+                                    <td class="text-end"/>
+                                    <td class="text-end">
+                                        <span t-out="data['totals']['amount']"
+                                              t-options="{'widget': 'monetary', 'display_currency': data['currency']}"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <h3 class="mt-4">Service Types</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Service Type</th>
+                                    <th class="text-end">Services</th>
+                                    <th class="text-end">Avg Duration (h)</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data['types']" t-as="row">
+                                    <td><span t-out="row['service_type']"/></td>
+                                    <td class="text-end"><span t-out="row['services']"/></td>
+                                    <td class="text-end">
+                                        <span t-out="'%.1f' % row['duration_avg']"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="row['amount']"
+                                              t-options="{'widget': 'monetary', 'display_currency': data['currency']}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="text-muted small" t-if="data['totals']['measured'] &lt; data['totals']['services']">
+                            <t t-out="data['totals']['services'] - data['totals']['measured']"/>
+                            services have no start or end date, so their duration is not measured.
+                        </p>
+                        <p class="text-muted small" t-if="wizard.multi_currency">
+                            Warning: the services in this period are priced in more than one
+                            currency. The amounts above are summed without conversion and shown
+                            in the company currency.
+                        </p>
+                        <p class="text-muted small">
+                            Printed by <span t-out="wizard.create_uid.name"/>
+                            on <span t-out="wizard.create_date.strftime('%d.%m.%Y %H:%M')"/>.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="field_operation_detail_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="mt-0">Field Service Detail</h2>
+                    <table class="table table-sm table-bordered o_main_table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Reference</th>
+                                <th>Customer</th>
+                                <th>District</th>
+                                <th>Team</th>
+                                <th>Service Type</th>
+                                <th class="text-end">Duration (h)</th>
+                                <th class="text-end">Amount</th>
+                                <th>Status</th>
+                                <th>Signed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="operation">
+                                <td><span t-out="operation.report_date"/></td>
+                                <td><span t-out="operation.name"/></td>
+                                <td><span t-out="operation.partner_id.name"/></td>
+                                <td><span t-out="operation.district_id"/></td>
+                                <td><span t-out="operation.team_id.name"/></td>
+                                <td><span t-out="operation.service_type_id.name"/></td>
+                                <td class="text-end">
+                                    <span t-out="'%.1f' % operation.total_work"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-out="operation.service_price"
+                                          t-options="{'widget': 'monetary', 'display_currency': operation.currency_id}"/>
+                                </td>
+                                <td><span t-out="dict(operation._fields['status'].selection).get(operation.status)"/></td>
+                                <td><span t-out="'Yes' if operation.signed else 'No'"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>
