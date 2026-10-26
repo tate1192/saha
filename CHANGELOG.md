@@ -5,6 +5,40 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_report: 19.0.1.1.0 · field_operation: 19.0.2.5.0] — 2026-10-24
+
+### Saha raporlama katmanı ve merge sonrası sayaç tazeleme
+
+- **Yeni modül `field_operation_report`** (salt-okunur): `field.operation` üzerinde
+  `report_date`, `person_count`, `duration_per_person`; Saha Hizmet Analizi
+  (pivot/graph), Takım Raporu (PDF), Saha Hizmet Dökümü (PDF, Print menüsünde) ve
+  Veri Kalitesi listesi + filtreleri.
+- **Süre tek kaynaktan:** çekirdek `total_work` kullanılıyor. Modülün ilk taslağındaki
+  `duration_hours` alanı kaldırıldı — `close_date` yedeği ve negatif kırpma yüzünden
+  aynı hizmet için iki farklı süre üretiyordu (`total_work` ile çelişki).
+- **`report_date` şirket saat diliminde** kesilir (`res.company.partner_id.tz`);
+  UTC'de kesildiğinde 01:00 İstanbul'da başlayan hizmet bir önceki güne düşüyordu.
+  Stored compute olduğu için kullanıcı tz'sine bağlanmaz; bilinmeyen tz'de UTC'ye düşer.
+- **Analiz ekranı çoğaltılmadı:** modülün kendi pivot/graph kopyaları yerine çekirdek
+  `view_field_operation_pivot` / `view_field_operation_graph` inherit edilip rapor
+  alanları eklendi; menü `act_window.view` ile aynı analizi açıyor.
+- **Para birimi:** toplamlar şirket para biriminde, kur çevrimi yapılmadan; dönemde
+  birden fazla para birimi varsa wizard `multi_currency` bayrağıyla PDF'te uyarı basar.
+- **`field_operation` — merge sayacı:** `base_partner_merge._merge` sonrası stored
+  `field_operation_count` bayat kalıyordu (sihirbaz FK'leri düz SQL ile taşıyor, ORM
+  görmüyor). Merge **öncesi** toplanan tüm atalar (kaynak + hedef taraf) tazeleniyor:
+  yalnız `parent_id` yetmiyor (şirket > şube > kontak) ve kaynağın eski ebeveyni
+  hizmeti kaybediyor. v19'da `res.partner`'da `parent_path`/`_parent_store` yok,
+  `parent_id` zinciri döngü korumasıyla elle yürünüyor. Tazeleme varsayılan context'te
+  yapılır: ata yürüyüşü için açılan `active_test=False` context'i sayaca sızarsa
+  arşivlenmiş hizmetler de sayılıyor ve akıllı butonla uyuşmuyordu.
+- Testler: **9 yeni** (7 raporlama + 2 merge). İzole temiz kurulumda `25 test,
+  0 failed, 0 error`, 0 skipped. Düzeltmeler geri alındığında merge ve tz testleri
+  kırılıyor (koruma kanıtı); arşiv context'i düzeltmesi geri alındığında yeni merge
+  testi `3 != 2` ile düşüyor.
+- i18n: `.pot` Odoo `i18n export` ile yeniden üretildi; `tr.po` 71/71 senkron
+  (3 bilinen untranslated: iki `print_report_name` ifadesi ve `"on"`).
+
 ## [field_operation_geolocation: 19.0.1.6.1] — 2026-10-20
 
 ### Erişim hatası: `home_location_id` genel profilde yoktu

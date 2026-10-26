@@ -1,0 +1,405 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* field_operation_report
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-24 16:13+0000\n"
+"PO-Revision-Date: 2026-10-24 16:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: field_operation_report
+#: model:ir.actions.report,print_report_name:field_operation_report.action_report_field_operation_detail
+msgid "'Field Service Detail - %s' % (object.name)"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.actions.report,print_report_name:field_operation_report.action_report_field_operation_team
+msgid "'Field Service Team Report - %s' % (object.date_from)"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "<strong>Period:</strong>"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "<strong>Services:</strong>"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "<strong>Teams:</strong>"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Amount"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Avg Duration (h)"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,help:field_operation_report.field_field_operation__report_date
+msgid ""
+"Calendar day of the planned start, in the company timezone, used to group "
+"services by day, week or month. Falls back to the creation date when no "
+"start date is set."
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+msgid "Customer"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.actions.act_window,name:field_operation_report.action_field_operation_report_quality
+#: model:ir.ui.menu,name:field_operation_report.menu_field_operation_report_quality
+msgid "Data Quality"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+msgid "Date"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation__display_name
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "District"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Done"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_list
+msgid "Duration (h)"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Duration Not Measured"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation__duration_per_person
+msgid "Duration per Person (hours)"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__date_to
+msgid "End Date"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.actions.act_window,help:field_operation_report.action_field_operation_report_quality
+msgid "Every service carries an end date, staff and an amount."
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model,name:field_operation_report.model_field_operation
+msgid "Field Operation"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model,name:field_operation_report.model_field_operation_report_wizard
+msgid "Field Operation Team Report"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.actions.act_window,name:field_operation_report.action_field_operation_report_analysis
+#: model:ir.ui.menu,name:field_operation_report.menu_field_operation_report_analysis
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Field Service Analysis"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.actions.report,name:field_operation_report.action_report_field_operation_detail
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+msgid "Field Service Detail"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.actions.report,name:field_operation_report.action_report_field_operation_team
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Field Service Team Report"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_list
+msgid "Field Services"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_wizard_form
+msgid "Filters"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation__id
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,help:field_operation_report.field_field_operation_report_wizard__service_type_ids
+msgid "Leave empty to report every service type."
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,help:field_operation_report.field_field_operation_report_wizard__team_ids
+msgid "Leave empty to report every team."
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Measured"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__multi_currency
+msgid "Mixed Currencies"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Month"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "No Amount"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "No Staff"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.actions.act_window,help:field_operation_report.action_field_operation_report_analysis
+msgid "No field service in the selected period."
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Not Signed"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,help:field_operation_report.field_field_operation__person_count
+msgid "Number of staff assigned to the service."
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Open"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Period"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_wizard_form
+msgid "Print PDF"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Printed by"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+msgid "Reference"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation__report_date
+msgid "Report Date"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Service Type"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__service_type_ids
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Service Types"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Services"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__operation_count
+msgid "Services in Scope"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Services without a start or end date: the duration cannot be measured."
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Signed"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__date_from
+msgid "Start Date"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Status"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_detail_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_search
+msgid "Team"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.actions.act_window,name:field_operation_report.action_field_operation_report_wizard
+#: model:ir.ui.menu,name:field_operation_report.menu_field_operation_report_team
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_wizard_form
+msgid "Team Report"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation__person_count
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_list
+msgid "Team Size"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,field_description:field_operation_report.field_field_operation_report_wizard__team_ids
+msgid "Teams"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Total"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_list
+msgid "Total Amount"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.view_field_operation_report_list
+msgid "Total Duration"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "Total Duration (h)"
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,help:field_operation_report.field_field_operation_report_wizard__multi_currency
+msgid ""
+"True when the services in scope are priced in more than one currency: the "
+"printed totals are not converted."
+msgstr ""
+
+#. module: field_operation_report
+#. odoo-python
+#: code:addons/field_operation_report/wizard/field_operation_report_wizard.py:0
+msgid "Unassigned"
+msgstr ""
+
+#. module: field_operation_report
+#. odoo-python
+#: code:addons/field_operation_report/wizard/field_operation_report_wizard.py:0
+msgid "Unspecified"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid ""
+"Warning: the services in this period are priced in more than one\n"
+"                            currency. The amounts above are summed without conversion and shown\n"
+"                            in the company currency."
+msgstr ""
+
+#. module: field_operation_report
+#: model:ir.model.fields,help:field_operation_report.field_field_operation__duration_per_person
+msgid ""
+"Worked hours (the core 'Total Work' value) divided by the number of staff "
+"assigned to the service."
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "on"
+msgstr ""
+
+#. module: field_operation_report
+#: model_terms:ir.ui.view,arch_db:field_operation_report.field_operation_team_report
+msgid "services have no start or end date, so their duration is not measured."
+msgstr ""

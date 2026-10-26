@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_field_operation_report_wizard_form" model="ir.ui.view">
+        <field name="name">field.operation.report.wizard.form</field>
+        <field name="model">field.operation.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Team Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="operation_count"/>
+                    </group>
+                </group>
+                <group string="Filters">
+                    <field name="team_ids" widget="many2many_tags"/>
+                    <field name="service_type_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_print_pdf"
+                            string="Print PDF"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

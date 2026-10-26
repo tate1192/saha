@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_field_operation_report_wizard_all,Field Operation Report Wizard,model_field_operation_report_wizard,field_operation.service_group_all,1,1,1,1
