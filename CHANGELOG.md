@@ -5,6 +5,57 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_pest: 19.0.1.1.2] — 2026-10-27
+
+### Pest türü alanı ana iş formunda da servis türüne bağlandı
+
+- PR #21 `pest_type_ids`'i iki forma ekliyordu ama yalnız servis formunu
+  (`field.operation.forms`) koşula bağlamıştı; `field.operation` formu
+  (`views/field_operation_view.xml`) alanı her servis türünde gösteriyordu.
+  Birleşik arch ölçümü: `pest_type_ids | invisible=None`.
+- Alan `invisible="service_type_id.type != 'pest'"` ile bağlandı:
+  `field.operation` üzerinde `service_type` selection'ı yok, `service_type_id.type`
+  ise pest modülüyle `pest` değerini alıyor.
+- Testler: pest **5 → 6** — yeni `test_06_pest_type_is_gated_on_the_operation_form`
+  birleşik arch'ı `get_view()` ile okuyor; gate geri alınınca kırmızı
+  (`{'pest_type_ids': None}` beklenen ifadeye eşit değil).
+
+## [field_operation_disinfect: 19.0.1.1.1 · field_operation_pest: 19.0.1.1.1] — 2026-10-26
+
+### Dezenfeksiyon etiketleri ve haşere alanlarının servis türüne bağlanması
+
+- **`field_operation_disinfect` — i18n:** `before_ph`, `before_cl`, `after_ph`, `after_cl`
+  alanları ile `Before Cleaning` / `After Cleaning` grup başlıkları `tr_TR`'de İngilizce
+  kalıyordu. Sebep iki katmanlıydı: `tr.po`'da `Before PH` / `Before CL` msgstr'leri boştu,
+  `After PH` / `After CL` değerleri ise DB'ye hiç yüklenmemişti (`ir_model_fields.field_description`
+  yalnız `en_US` taşıyordu); grup başlıklarının msgid'i potta **hiç yoktu** — pot, view
+  `..._disinfection_view` iken üretilmiş, sonra view `..._disinfect_view` olarak yeniden
+  adlandırılmıştı. Pot yeniden üretildi (56 → 62 giriş; `Dispenser Type` → `Disinfection Lines`
+  yeniden adlandırması, `Email`, `Created By User` ve iki `UserError`/`AccessError` metni de
+  pota girdi), `tr.po` pottan mekanik olarak yeniden kuruldu, **58/62** çevrili.
+- **Çevrilen metinler:** `Öncesi pH`, `Sonrası pH`, `Öncesi Cl`, `Sonrası Cl`,
+  `Temizlik Öncesi`, `Temizlik Sonrası` (+ yeni giren `Dezenfeksiyon Satırları`,
+  `Oluşturan Kullanıcı`, `E-posta` ve iki hata mesajı). Kalan 4 boş giriş bilinçli:
+  e-posta şablonunun HTML gövdesi (aşağıdaki açık madde), `<span>Form No:</span>`, `ID`,
+  `Marc Demo`.
+- **`field_operation_pest` — görünürlük:** `pest_type_ids`, `picking_type_id`,
+  `source_location_id`, `destination_location_id` ebeveyn formun ana gruplarına koşulsuz
+  ekleniyordu (`person_ids` ve `signed` sonrası), bu yüzden depo/dezenfeksiyon formunda da
+  çıkıyordu. Dördü de `invisible="service_type != 'pest'"` ile bağlandı; view'ın diğer pest
+  blokları (`group name="pest"`, `page name="pesticide"`) zaten servis tipine bağlıydı.
+- Testler: pest **4 → 5** (yeni test dört alanın koşulunu view arch'ında doğrular; koşullar geri
+  alınınca kırmızı), disinfect **4/4** yeşil. Doğrulama taze scratch DB'de
+  (`soft_ds_check`, repo kodundan `-i`): `0 failed, 0 error(s) of 5 tests` / `of 4 tests`.
+- DB kanıtı (`soft_ds_check`): dört alanın `field_description->>'tr_TR'` değeri Türkçe,
+  `field_operation_forms_disinfect_view` `arch_db->>'tr_TR'` içinde `Temizlik Öncesi` /
+  `Temizlik Sonrası` var.
+- **Bilinen açık maddeler (bu turda değiştirilmedi):**
+  - `field_operation_pest.action_transfer` hiçbir view'da butona bağlı değil; pest irsaliyesi
+    UI'dan oluşturulamıyor (`picking_count` bu yüzden her zaman 0). `field_operation_stock` ile
+    ilgisi yok — pest `stock`'a bağlı ve picking'i kendi yaratıyor.
+  - `field_operation_disinfect/data/email_template.xml:13` gövdesi başka bir şablonun
+    ("Purchase Request") kopyası; içerik düzeltilmeli (çevirisi bu yüzden boş bırakıldı).
+
 ## [field_operation_report: 19.0.1.1.0 · field_operation: 19.0.2.5.0] — 2026-10-24
 
 ### Saha raporlama katmanı ve merge sonrası sayaç tazeleme
@@ -1411,7 +1462,7 @@ P0 yoktu (kurulum EXIT=0, `post_init_hook` idempotent); **9 P1** kapatıldı:
 | `field_operation_contract` | `19.0.1.0.10` | AGPL-3 | Field Operation Contract Management |
 | `field_operation_contract_repeat` | `19.0.1.0.0` | AGPL-3 | Field Operation Contract Repeat Wizard |
 | `field_operation_contractor` | `19.0.1.0.0` | AGPL-3 | Field Operation Contractor |
-| `field_operation_disinfect` | `19.0.1.0.0` | AGPL-3 | Field Operation Disinfect Form |
+| `field_operation_disinfect` | `19.0.1.1.1` | AGPL-3 | Field Operation Disinfect Form |
 | `field_operation_forms` | `19.0.1.0.1` | AGPL-3 | Field Operation Forms |
 | ~~`field_operation_forms_ext`~~ | — | — | **Kaldırıldı (2026-10-12):** servis formu kısayolları `field_operation_geolocation` (harita/konum) ve `field_operation_whatsapp` (WhatsApp) modüllerine taşındı |
 | `field_operation_gantt` | `19.0.1.0.0` | AGPL-3 | Field Operation Gantt |
@@ -1420,7 +1471,7 @@ P0 yoktu (kurulum EXIT=0, `post_init_hook` idempotent); **9 P1** kapatıldı:
 | `field_operation_invoice` | `19.0.1.0.0` | AGPL-3 | Field Operation Invoice |
 | `field_operation_machine` | `19.0.1.0.0` | AGPL-3 | Field Operation Machine |
 | `field_operation_map` | `19.0.1.0.0` | AGPL-3 | Field Operation Map |
-| `field_operation_pest` | `19.0.1.0.0` | AGPL-3 | Field Operation Pest Form |
+| `field_operation_pest` | `19.0.1.1.1` | AGPL-3 | Field Operation Pest Form |
 | `field_operation_resequence` | `19.0.1.0.0` | AGPL-3 | Field Operation Resequence |
 | `field_operation_sale` | `19.0.1.0.0` | AGPL-3 | Field Operation Sale |
 | `field_operation_stock` | `19.0.1.0.0` | AGPL-3 | Field Operation Stock |

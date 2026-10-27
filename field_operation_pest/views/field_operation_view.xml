@@ -9,6 +9,7 @@
         <field name="arch" type="xml">
             <field name="currency_id" position="after">
                 <field name="pest_type_ids" widget="many2many_tags"
+                       invisible="service_type_id.type != 'pest'"
                        options="{'color_field': 'color', 'no_create_edit': True, 'no_create': True,}"/>
             </field>
         </field>

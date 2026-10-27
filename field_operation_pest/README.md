@@ -1,7 +1,7 @@
 # Field Operation Pest Form
 
 > Field service operation pest control forms
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.0.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.2`
 > Modül: `apps/saha/field_operation_pest` · 28 dosya · 2 yeni model + 1 yüklenmeyen model + 7 model genişletmesi
 
 Bu doküman modül kodundan üretilmiştir (manifest + models + views + data + pdf + security).

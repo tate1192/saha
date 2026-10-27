@@ -2,7 +2,7 @@
 
 > Saha servis formları için dezenfeksiyon / biyosidal uygulama kayıtları — tank ve dozaj
 > ünitesi satırları, PH/CL ölçümleri, imzalı PDF raporu ve e-posta şablonu.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.0.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.1`
 > Modül: `apps/saha/field_operation_disinfect` · 21 dosya · 2 yeni model içerir
 
 Bu doküman modül kodundan üretilmiştir (manifest + models + views + security + pdf + i18n).

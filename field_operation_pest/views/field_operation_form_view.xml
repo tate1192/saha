@@ -8,17 +8,21 @@
         <field name="arch" type="xml">
             <field name="person_ids" position="after">
                 <field name="pest_type_ids" widget="many2many_tags"
+                                   invisible="service_type != 'pest'"
                                    options="{'color_field': 'color', 'no_create_edit': True, 'no_create': True}"/>
             </field>
             <field name="signed" position="after">
                 <field name="picking_type_id" string="Picking Type"
                        domain="[('code', '=', 'outgoing')]"
+                       invisible="service_type != 'pest'"
                        options="{'no_create_edit': True, 'no_create': True,}"/>
                 <field name="source_location_id" string="Source Location"
                        domain="[('usage', '=', 'internal')]"
+                       invisible="service_type != 'pest'"
                        options="{'no_create_edit': True, 'no_create': True,}"/>
                 <field name="destination_location_id" string="Destination Location"
                        domain="[('usage', '=', 'customer')]"
+                       invisible="service_type != 'pest'"
                        options="{'no_create_edit': True, 'no_create': True,}"/>
             </field>
             <xpath expr="//notebook" position="before">

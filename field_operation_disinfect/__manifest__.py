@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Disinfect Form",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.1.1",
     "category": "Services/Field Service",
     "summary": "Field service operation disinfection forms",
     "description": """

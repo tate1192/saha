@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-25 20:39+0000\n"
-"PO-Revision-Date: 2024-12-25 20:39+0000\n"
+"POT-Creation-Date: 2026-10-26 22:07+0000\n"
+"PO-Revision-Date: 2026-10-26 22:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,14 +17,31 @@ msgstr ""
 
 #. module: field_operation_disinfect
 #: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_layout
-msgid "2023-01-01"
-msgstr ""
-
-#. module: field_operation_disinfect
-#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_layout
 msgid ""
 "<br/>\n"
 "                    <span>Date:</span>"
+msgstr ""
+
+#. module: field_operation_disinfect
+#: model:mail.template,body_html:field_operation_disinfect.email_field_operation_form_biocidal
+msgid ""
+"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); \">\n"
+"                    <p>Purchase Request\n"
+"                        <t t-out=\"object.name\"/>\n"
+"                        for approval\n"
+"                    </p>\n"
+"\n"
+"                    <p>Details:</p>\n"
+"                    <p>Requested by:\n"
+"                        <t t-out=\"object.user_id.name or ''\"/>\n"
+"                    </p>\n"
+"\n"
+"                    <p>Start Date :\n"
+"                        <t t-out=\"object.start_date\"/>\n"
+"                    </p>\n"
+"\n"
+"                </div>\n"
+"            "
 msgstr ""
 
 #. module: field_operation_disinfect
@@ -55,22 +72,32 @@ msgid "Active"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__after_cl
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__after_cl
 msgid "After CL"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__after_ph
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_operation_forms_disinfect_view
+msgid "After Cleaning"
+msgstr ""
+
+#. module: field_operation_disinfect
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__after_ph
 msgid "After PH"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__before_cl
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__before_cl
 msgid "Before CL"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__before_ph
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_operation_forms_disinfect_view
+msgid "Before Cleaning"
+msgstr ""
+
+#. module: field_operation_disinfect
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__before_ph
 msgid "Before PH"
 msgstr ""
 
@@ -91,9 +118,13 @@ msgid "Company"
 msgstr ""
 
 #. module: field_operation_disinfect
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__user_id
+msgid "Created By User"
+msgstr ""
+
+#. module: field_operation_disinfect
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_disinfect_product__create_uid
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__create_uid
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__user_id
 msgid "Created by"
 msgstr ""
 
@@ -116,6 +147,7 @@ msgstr ""
 #. module: field_operation_disinfect
 #: model:ir.actions.report,name:field_operation_disinfect.action_field_disinfect_pdf
 #: model:ir.model.fields.selection,name:field_operation_disinfect.selection__field_operation_type__type__disinfect
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_operation_forms_disinfect_view
 msgid "Disinfect"
 msgstr ""
 
@@ -128,7 +160,6 @@ msgstr ""
 #. module: field_operation_disinfect
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__disinfection
 #: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_layout
-#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_operation_forms_disinfection_view
 msgid "Disinfection"
 msgstr ""
 
@@ -138,6 +169,14 @@ msgid "Disinfection Certificate"
 msgstr ""
 
 #. module: field_operation_disinfect
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__disinfect_ids
+msgid "Disinfection Lines"
+msgstr ""
+
+#. module: field_operation_disinfect
+#: model:mail.template,description:field_operation_disinfect.email_field_operation_form_biocidal
+#: model:mail.template,name:field_operation_disinfect.email_field_operation_form_biocidal
+#: model:mail.template,subject:field_operation_disinfect.email_field_operation_form_biocidal
 #: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_layout
 msgid "Disinfection Service Form"
 msgstr ""
@@ -148,14 +187,17 @@ msgid "Dispenser"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__disinfect_ids
-msgid "Dispenser Type"
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_disinfect_product__display_name
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__display_name
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__display_name
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_type__display_name
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_res_company__display_name
+msgid "Display Name"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_disinfect_product__display_name
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__display_name
-msgid "Display Name"
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_operation_forms_disinfect_mail_view
+msgid "Email"
 msgstr ""
 
 #. module: field_operation_disinfect
@@ -185,8 +227,8 @@ msgstr ""
 
 #. module: field_operation_disinfect
 #: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_product_form_view
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_product_list_view
 #: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_product_search_view
-#: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_product_tree_view
 #: model_terms:ir.ui.view,arch_db:field_operation_disinfect.field_disinfect_product_view_pivot
 msgid "Field Product"
 msgstr ""
@@ -205,6 +247,9 @@ msgstr ""
 #. module: field_operation_disinfect
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_disinfect_product__id
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__id
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_forms__id
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_type__id
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_res_company__id
 msgid "ID"
 msgstr ""
 
@@ -232,16 +277,12 @@ msgstr ""
 
 #. module: field_operation_disinfect
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_disinfect_product__name
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__name
 msgid "Name"
 msgstr ""
 
 #. module: field_operation_disinfect
 #. odoo-python
 #: code:addons/field_operation_disinfect/models/field_operation_disinfect.py:0
-#: code:addons/field_operation_disinfect/models/field_operation_disinfect.py:0
-#: code:addons/field_operation_disinfect/models/field_operation_disinfect.py:0
-#, python-format
 msgid "New"
 msgstr ""
 
@@ -267,7 +308,7 @@ msgid "Product"
 msgstr ""
 
 #. module: field_operation_disinfect
-#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__code
+#: model:ir.model.fields,field_description:field_operation_disinfect.field_field_operation_disinfect__name
 msgid "Reference"
 msgstr ""
 
@@ -317,6 +358,18 @@ msgid "Tank/Dispenser"
 msgstr ""
 
 #. module: field_operation_disinfect
+#. odoo-python
+#: code:addons/field_operation_disinfect/models/field_operation_form.py:0
+msgid "The disinfection form e-mail template is missing."
+msgstr ""
+
+#. module: field_operation_disinfect
 #: model:ir.model.fields,field_description:field_operation_disinfect.field_field_disinfect_product__type
 msgid "Type"
+msgstr ""
+
+#. module: field_operation_disinfect
+#. odoo-python
+#: code:addons/field_operation_disinfect/models/field_operation_form.py:0
+msgid "You are not allowed to e-mail this form."
 msgstr ""
