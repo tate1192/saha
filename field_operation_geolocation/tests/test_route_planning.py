@@ -500,9 +500,7 @@ class TestSelectedRouteAction(TransactionCase):
             action = selection.action_show_selected_routes()
         self.assertTrue(notify.called, "the skipped stop was not reported")
         self.assertEqual(notify.call_args[0][0], nowhere)
-        self.assertEqual(
-            self._points(action["url"]), [DEPOT, TUZLA, BEYKOZ, DEPOT]
-        )
+        self.assertEqual(self._points(action["url"]), [DEPOT, TUZLA, BEYKOZ, DEPOT])
 
     def test_an_unsequenced_job_lands_after_the_saved_order(self):
         tuzla = self._operation("Tuzla", TUZLA, 12)

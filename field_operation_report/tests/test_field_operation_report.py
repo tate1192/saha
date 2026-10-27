@@ -25,7 +25,9 @@ class TestFieldOperationReport(TransactionCase):
         super().setUpClass()
         cls.company = cls.env.company
         cls.team = cls.env["field.operation.team"].create({"name": "Report Team"})
-        cls.service_type = cls.env["field.operation.type"].create({"name": "Report Type"})
+        cls.service_type = cls.env["field.operation.type"].create(
+            {"name": "Report Type"}
+        )
         cls.employee_a = cls.env["hr.employee"].create({"name": "Report Employee A"})
         cls.employee_b = cls.env["hr.employee"].create({"name": "Report Employee B"})
 

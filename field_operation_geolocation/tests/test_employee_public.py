@@ -11,7 +11,6 @@ from the team form (or exporting the employee list) raised
 This test pins the field on the public model so the read keeps working.
 """
 
-from odoo.exceptions import AccessError
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -52,11 +51,13 @@ class TestEmployeePublicHomeLocation(TransactionCase):
     def test_a_user_without_hr_rights_can_read_the_home_address(self):
         if self.office_user.has_group("hr.group_hr_user"):
             self.skipTest("The probe user unexpectedly has HR rights.")
-        employee_as_user = self.env["hr.employee"].with_user(self.office_user).browse(
-            self.employee.id
+        employee_as_user = (
+            self.env["hr.employee"].with_user(self.office_user).browse(self.employee.id)
         )
         values = employee_as_user.read(["name", "home_location_id"])[0]
-        self.assertEqual(values["home_location_id"], (self.home.id, self.home.display_name))
+        self.assertEqual(
+            values["home_location_id"], (self.home.id, self.home.display_name)
+        )
 
     def test_the_public_record_returns_the_same_address(self):
         public = (

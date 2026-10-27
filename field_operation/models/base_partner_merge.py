@@ -31,9 +31,10 @@ class BasePartnerMergeAutomaticWizard(models.TransientModel):
         # Sources are deleted by now; the destination is what survives. Every
         # ancestor seen before the merge is recomputed: the destination parents
         # gained a service, the former parents of the sources lost one.
-        to_compute = Partner.browse(partner_ids).exists() | Partner.browse(
-            sorted(ancestor_ids)
-        ).exists()
+        to_compute = (
+            Partner.browse(partner_ids).exists()
+            | Partner.browse(sorted(ancestor_ids)).exists()
+        )
         if to_compute:
             # Recompute in the default context: ``Partner`` above carries
             # active_test=False (needed to reach archived parents), and the

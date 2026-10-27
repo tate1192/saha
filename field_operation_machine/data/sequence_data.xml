@@ -24,7 +24,7 @@
         <field name="state">code</field>
         <field name="code">model._cron_notify_expiring_warranties()</field>
         <field name="interval_number">1</field>
-        <field name="interval_type">days</field>        
+        <field name="interval_type">days</field>
         <field name="active" eval="True"/>
     </record>
 
@@ -34,7 +34,7 @@
         <field name="state">code</field>
         <field name="code">model._cron_notify_expiring_insurance()</field>
         <field name="interval_number">1</field>
-        <field name="interval_type">days</field>       
+        <field name="interval_type">days</field>
         <field name="active" eval="True"/>
     </record>
 
@@ -44,7 +44,7 @@
         <field name="state">code</field>
         <field name="code">model._cron_notify_upcoming_maintenance()</field>
         <field name="interval_number">1</field>
-        <field name="interval_type">days</field>        
+        <field name="interval_type">days</field>
         <field name="active" eval="True"/>
     </record>
 
@@ -54,7 +54,7 @@
         <field name="state">code</field>
         <field name="code">model._cron_generate_maintenance()</field>
         <field name="interval_number">1</field>
-        <field name="interval_type">days</field>        
+        <field name="interval_type">days</field>
         <field name="active" eval="True"/>
     </record>
 </odoo>

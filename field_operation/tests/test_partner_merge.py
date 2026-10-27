@@ -44,7 +44,11 @@ class TestPartnerMergeCounter(TransactionCase):
         wizard._merge([source.id, target.id], target)
 
         self.assertFalse(source.exists(), "the source contact is deleted by the merge")
-        self.assertEqual(operation.partner_id, target, "the service moved to the target")
+        self.assertEqual(
+            operation.partner_id,
+            target,
+            "the service moved to the target",
+        )
         self.assertEqual(
             target.field_operation_count,
             1,
@@ -73,7 +77,7 @@ class TestPartnerMergeCounter(TransactionCase):
                 self.env["field.operation"].search_count(
                     [("partner_id", "child_of", partner.id)]
                 ),
-                "counter and search disagree on %s" % partner.name,
+                f"counter and search disagree on {partner.name}",
             )
 
     def test_merge_counter_counts_active_services_only(self):
