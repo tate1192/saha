@@ -19,11 +19,18 @@
 
         ``default_order`` is chronological, and the read is bounded by the
         ``default_range`` window instead of by a row count: the view fetches the
-        operations overlapping one calendar month, so a table holding years of
+        operations overlapping one calendar week, so a table holding years of
         history (13k+ rows in production) is never read whole. The arrows in the
         control panel move that window, which is the paging of this view.
 
-        Trade-off: what is *shown* is one month; an operation outside it is one
+        ``default_range`` is the *week*, not the month: this is a planning
+        screen and planning is written forward. Opening on the calendar month
+        showed up to four weeks of finished work before today (on the 29th, 28
+        of the 31 visible days were the past), which is history, not a plan. A
+        week window opens on the week being planned, keeps a day or two of
+        context behind and the rest of the week ahead.
+
+        Trade-off: what is *shown* is one week; an operation outside it is one
         arrow away, not on screen.
     -->
     <record id="view_field_operation_gantt_soft" model="ir.ui.view">
@@ -37,7 +44,7 @@
                 progress="gantt_progress"
                 color="gantt_color"
                 default_order="start_date asc, id asc"
-                default_range="month"
+                default_range="week"
                 group_by="team_id"
                 mode="week"
                 scales="day,week,month"

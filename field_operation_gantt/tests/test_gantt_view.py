@@ -41,7 +41,9 @@ class TestFieldOperationGantt(TransactionCase):
             'group_by="team_id"',
             'progress="gantt_progress"',
             'color="gantt_color"',
-            'default_range="month"',
+            # The opening window is the week being planned, not the calendar
+            # month: a month opened on up to four weeks of finished work.
+            'default_range="week"',
         ):
             self.assertIn(expected, arch)
 

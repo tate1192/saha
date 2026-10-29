@@ -5,6 +5,20 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_gantt: 19.0.1.1.1] — 2026-10-29
+
+### Gantt açılış penceresi: ay yerine hafta
+
+Planlama ekranı ileriye yazılır; ay penceresi (`default_range="month"`) ayın 29'unda
+31 günün 28'ini bitmiş işlerle dolduruyordu. Pencere artık **içinde bulunulan takvim
+haftası**: geride bir iki gün bağlam, önünde haftanın kalanı, oklar hafta atlıyor.
+
+- Görünüm arch'ı: `default_range="month"` → `default_range="week"` (`mode="week"` zaten
+  hafta ölçeğindeydi; ikisi ayrı nitelik olduğu için pencere ayla açılıyordu).
+- `test_the_view_names_the_expected_fields` beklenen niteliği `week` olarak sabitliyor.
+- README: pencere bölümü ve nitelik tablosu gerekçesiyle güncellendi.
+- Not: pencere daraldığı için ay penceresindeki ~200–400 satırlık okuma ~50–120 satıra iner.
+
 ## [field_operation_pest: 19.0.1.1.2] — 2026-10-27
 
 ### Pest türü alanı ana iş formunda da servis türüne bağlandı
