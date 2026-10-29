@@ -3,7 +3,7 @@
 
 {
     "name": "Field Operation Gantt",
-    "version": "19.0.1.1.1",
+    "version": "19.0.1.1.2",
     "category": "Services/Field Service",
     "summary": "Gantt view of the field operations (soft_gantt view type)",
     "description": """

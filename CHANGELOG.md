@@ -5,6 +5,26 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_gantt: 19.0.1.1.2] — 2026-10-29
+
+### İnceleme (2026-10-29) sonrası: tanıtım ikonu, durum eşlemesi nöbetçi testi, doküman sayıları
+
+Bu tur ürün davranışını değiştirmez: yeni alan, yeni nitelik, yeni ekran yok.
+
+- `static/description/icon.png` eklendi (256×256, `field_operation` ikonunun paleti:
+  koyu teal çerçeve, teal/nefti çubuklar, bugün çizgisi). Modül Apps listesinde
+  ikonsuz satır değil; önceki turlarda `static/description` hiç yoktu.
+- **Nöbetçi test:** `test_the_mapping_covers_every_status` — `field.operation.status`
+  seçiminin anahtarları `STATUS_PROGRESS` ve `STATUS_COLOR_INDEX` sözlüklerinin anahtar
+  kümeleriyle birebir karşılaştırılıyor. İkisi de bilinmeyen durumda sessizce `0.0` /
+  palet 0'a düştüğü için, modele yeni bir durum eklendiğinde çizelge renksiz/boş çubuk
+  gösteriyordu; artık test kırmızı oluyor.
+- README: kendi test sayısı **11 → 12**, `soft_gantt` tarafındaki sayılar
+  **28/139 → 31 python / 169 hoot** (inceleme ölçümü; 169, `soft_gantt` PR #26 sonrası), başlıktaki sürüm satırı
+  `19.0.1.1.0` → `19.0.1.1.2`.
+- Testler: `-u field_operation_gantt --test-enable --test-tags field_operation_gantt`
+  → **12 test, 0 failed**.
+
 ## [field_operation_gantt: 19.0.1.1.1] — 2026-10-29
 
 ### Gantt açılış penceresi: ay yerine hafta

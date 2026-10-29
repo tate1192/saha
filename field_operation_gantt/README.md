@@ -3,7 +3,7 @@
 > `field.operation` kayıtları için **Gantt (zaman çizelgesi) görünümü** — `soft_gantt`
 > view tipi üzerinde. Sürükle-bırak ile yeniden planlama, duruma göre renk/ilerleme,
 > arama-filtre, kayıt açma.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.2`
 > Modül: `apps/saha/field_operation_gantt` · yeni iş modeli yok (view + 2 hesaplanmış alan)
 
 ## 1. Neden yeniden yazıldı
@@ -96,15 +96,16 @@ hesaplanmış alan** içerir.
 
 ## 4. Testler
 
-`tests/test_gantt_view.py` (post_install, **11 test**): görünümün model tarafından çözülmesi,
+`tests/test_gantt_view.py` (post_install, **12 test**): görünümün model tarafından çözülmesi,
 arch'ın beklenen alanları adlandırması, **çevrilebilir `label` niteliğinde alan adı bulunmaması**,
 aksiyonun `gantt_soft` modunu sunması, **modun diğer modları
 düşürmeden eklendiği** (kardeş modül dizesini ezse bile geri geldiği), fonksiyonun **idempotent**
-olması, **açılış görünümünün `list` kalması**, 5 durum için ilerleme ve renk eşlemesi, uninstall
-hook'unun modu düşürmesi.
+olması, **açılış görünümünün `list` kalması**, 5 durum için ilerleme ve renk eşlemesi,
+**eşlemenin her durumu kapsadığı** (yeni bir durum eklendiğinde kırmızı olan nöbetçi test),
+uninstall hook'unun modu düşürmesi.
 
-View tipinin kendisi `soft_gantt` modülünde kapsanır: `tests/test_gantt_view.py`'de **28 python testi**
-ve `static/tests/*.js` (8 dosya) içinde **139 JS testi** — pencere matematiği
+View tipinin kendisi `soft_gantt` modülünde kapsanır: `tests/test_gantt_view.py`'de **31 python testi**
+ve `static/tests/*.js` (8 dosya) içinde **169 hoot testi** — pencere matematiği
 (`windowRange`/`shiftWindow`, takvim ayı/çeyrek/yıl sınırları, pencerelerin boşluksuz bitişmesi), arch
 ayrıştırma, sanallaştırılmış çizim, detay kartı, alan metni; ayrıca arch doğrulama, ACL ve tarih
 matematiği uçları.
