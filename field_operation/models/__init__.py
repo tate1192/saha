@@ -7,3 +7,4 @@ from . import res_users
 from . import res_partner
 from . import base_partner_merge
 from . import res_config_settings
+from . import res_groups_privilege

@@ -3,3 +3,4 @@
 from . import field_operation_forms
 from . import field_operation
 from . import res_partner
+from . import res_groups_privilege

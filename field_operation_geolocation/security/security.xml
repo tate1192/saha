@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="module_category_field_operation_route" model="ir.module.category">
-        <field name="name">Field Operation Route</field>
-        <field name="sequence">23</field>
-    </record>
-
-    <record id="privilege_user_field_operation_route" model="res.groups.privilege">
-        <field name="name">User</field>
-        <field name="category_id" ref="module_category_field_operation_route"/>
+    <!--
+        One privilege for the module, in the category the suite shares: its two
+        levels (User / Manager) are its dropdown, the way core's "Employees" or
+        "Fleet" rows work. Each level used to be a privilege of its own in a
+        category of the module's own, so the user form carried a second box for
+        the same product.
+    -->
+    <record id="privilege_route" model="res.groups.privilege">
+        <field name="name">Route</field>
+        <field name="category_id" ref="field_operation.module_category_saha_operation"/>
+        <field name="sequence">30</field>
     </record>
 
     <record id="group_user_field_operation_route" model="res.groups">
         <field name="name">User</field>
-        <field name="privilege_id" ref="privilege_user_field_operation_route"/>
+        <field name="privilege_id" ref="privilege_route"/>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-    </record>
-
-    <record id="privilege_manager_field_operation_route" model="res.groups.privilege">
-        <field name="name">Manager</field>
-        <field name="category_id" ref="module_category_field_operation_route"/>
     </record>
 
     <record id="group_manager_field_operation_route" model="res.groups">
         <field name="name">Manager</field>
-        <field name="privilege_id" ref="privilege_manager_field_operation_route"/>
+        <field name="privilege_id" ref="privilege_route"/>
         <field name="implied_ids" eval="[(4, ref('group_user_field_operation_route'))]"/>
         <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
+
+    <!--
+        A data record cannot delete what it no longer declares: the two
+        per-level privileges and the module's own category are removed here.
+    -->
+    <function model="res.groups.privilege" name="_field_operation_geolocation_drop_legacy_privileges"/>
 
     <data noupdate="0">
         <record id="field_operation_route_user_rule" model="ir.rule">

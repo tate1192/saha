@@ -315,11 +315,6 @@ msgid "Field Operation"
 msgstr "Saha Operasyonu"
 
 #. module: field_operation_geolocation
-#: model:ir.module.category,name:field_operation_geolocation.module_category_field_operation_route
-msgid "Field Operation Route"
-msgstr "Saha Operasyonu Rotası"
-
-#. module: field_operation_geolocation
 #: model:ir.model,name:field_operation_geolocation.model_field_operation_team
 msgid "Field Operation Team"
 msgstr "Saha Operasyon Ekibi"
@@ -1267,3 +1262,22 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_map_website_form
 msgid "https://maps.example.com?lat={LATITUDE}&lon={LONGITUDE}"
 msgstr "https://maps.example.com?lat={LATITUDE}&lon={LONGITUDE}"
+
+#. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_res_groups_privilege
+msgid "Privileges"
+msgstr "Yetkiler"
+
+#. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_hr_employee_public
+msgid "Public Employee"
+msgstr "Herkese Açık Çalışan"
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_hr_employee_public__home_location_id
+msgid ""
+"Mirror of the employee's home address, so a user without HR rights can read"
+" the team's start address without an access error."
+msgstr ""
+"Çalışanın ev adresinin kopyası; İK yetkisi olmayan bir kullanıcı, erişim"
+" hatası almadan ekibin başlangıç adresini okuyabilir."

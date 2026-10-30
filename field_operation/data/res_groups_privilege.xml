@@ -1,6 +1,27 @@
-<odoo noupdate="1">
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!--
+        The privilege this module contributes to the suite's category: one row
+        in the user form ("Service") whose dropdown lists the levels, the way
+        core's "Employees" / "Time Off" / "Fleet" rows work.
+
+        The file is no longer `noupdate="1"`: the privilege used to be called
+        "Field Operation", sat at sequence 23 and had no category, and an
+        update has to be able to rename and re-file it. Nothing else in the
+        suite points at this record by name.
+    -->
     <record id="field_operation_privilege" model="res.groups.privilege">
-        <field name="name">Field Operation</field>
-        <field name="sequence">23</field>
+        <field name="name">Service</field>
+        <field name="category_id" ref="module_category_saha_operation" />
+        <field name="sequence">10</field>
     </record>
+
+    <!--
+        A database that already holds this privilege keeps the record (the old
+        `noupdate="1"` flag is in ir_model_data and is never downgraded), so the
+        rename and the category are forced here as well.
+    -->
+    <function model="res.groups.privilege" name="_field_operation_refile_privilege" />
+
 </odoo>

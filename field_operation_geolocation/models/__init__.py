@@ -8,3 +8,4 @@ from . import field_operation_route_plan
 from . import res_partner_geo_cron
 from . import team_location_history
 from . import hr_employee_public
+from . import res_groups_privilege

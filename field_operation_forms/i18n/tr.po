@@ -428,11 +428,6 @@ msgid "Field Service Form"
 msgstr "Saha Servis Formu"
 
 #. module: field_operation_forms
-#: model:ir.module.category,name:field_operation_forms.field_operation_forms_module_category
-msgid "Field Service Forms"
-msgstr "Saha Servis Formları"
-
-#. module: field_operation_forms
 #: model:res.groups,name:field_operation_forms.forms_user
 #: model:res.groups.privilege,name:field_operation_forms.privilege_forms_user
 msgid "Field User"
@@ -943,3 +938,8 @@ msgstr ""
 #: code:addons/field_operation_forms/models/field_operation_forms.py:0
 msgid "reopen"
 msgstr "yeniden açma"
+
+#. module: field_operation_forms
+#: model:ir.model,name:field_operation_forms.model_res_groups_privilege
+msgid "Privileges"
+msgstr "Yetkiler"

@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Geolocation",
-    "version": "19.0.1.6.1",
+    "version": "19.0.1.7.0",
     "category": "Services/Field Service",
     "summary": "Adds geolocation functionality to the field operation module",
     "author": "Softteknik Bilişim",

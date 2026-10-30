@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 17:56+0000\n"
-"PO-Revision-Date: 2026-10-20 17:56+0000\n"
+"POT-Creation-Date: 2026-10-30 19:00+0000\n"
+"PO-Revision-Date: 2026-10-30 19:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -250,7 +250,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee_public__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__display_name
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_groups_privilege__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__display_name
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__display_name
@@ -301,11 +303,6 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model,name:field_operation_geolocation.model_field_operation
 msgid "Field Operation"
-msgstr ""
-
-#. module: field_operation_geolocation
-#: model:ir.module.category,name:field_operation_geolocation.module_category_field_operation_route
-msgid "Field Operation Route"
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -426,6 +423,7 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__home_location_id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__home_location_id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee_public__home_location_id
 msgid "Home Address"
 msgstr ""
 
@@ -459,7 +457,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_route_plan_line__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_hr_employee_public__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_maps_website__id
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_res_groups_privilege__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_partner__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_res_users__id
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__id
@@ -570,7 +570,6 @@ msgstr ""
 
 #. module: field_operation_geolocation
 #: model:res.groups,name:field_operation_geolocation.group_manager_field_operation_route
-#: model:res.groups.privilege,name:field_operation_geolocation.privilege_manager_field_operation_route
 msgid "Manager"
 msgstr ""
 
@@ -636,6 +635,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.geolocation_view_users_form_simple
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_list
 msgid "Maps"
+msgstr ""
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,help:field_operation_geolocation.field_hr_employee_public__home_location_id
+msgid ""
+"Mirror of the employee's home address, so a user without HR rights can read "
+"the team's start address without an access error."
 msgstr ""
 
 #. module: field_operation_geolocation
@@ -842,6 +848,11 @@ msgid ""
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_res_groups_privilege
+msgid "Privileges"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields,help:field_operation_geolocation.field_maps_website__api_key
 msgid ""
 "Provider API Key; masked in the form (the 'password' attribute of the view "
@@ -865,6 +876,11 @@ msgid "Provider does not support multi-markers."
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:ir.model,name:field_operation_geolocation.model_hr_employee_public
+msgid "Public Employee"
+msgstr ""
+
+#. module: field_operation_geolocation
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_route_plan_form
 msgid "Reload Stops"
 msgstr ""
@@ -880,6 +896,7 @@ msgid "Return (km)"
 msgstr ""
 
 #. module: field_operation_geolocation
+#: model:res.groups.privilege,name:field_operation_geolocation.privilege_route
 #: model_terms:ir.ui.view,arch_db:field_operation_geolocation.view_field_operation_geolocation_team_form
 msgid "Route"
 msgstr ""
@@ -1157,7 +1174,6 @@ msgstr ""
 #. module: field_operation_geolocation
 #: model:ir.model,name:field_operation_geolocation.model_res_users
 #: model:res.groups,name:field_operation_geolocation.group_user_field_operation_route
-#: model:res.groups.privilege,name:field_operation_geolocation.privilege_user_field_operation_route
 msgid "User"
 msgstr ""
 
