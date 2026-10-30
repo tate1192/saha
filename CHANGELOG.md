@@ -25,6 +25,25 @@ Bu tur ürün davranışını değiştirmez: yeni alan, yeni nitelik, yeni ekran
 - Testler: `-u field_operation_gantt --test-enable --test-tags field_operation_gantt`
   → **12 test, 0 failed**.
 
+## [field_operation: 19.0.2.5.1] — 2026-10-29
+
+### Ekip listesi: işaretli ekip artık üstte
+
+- `field.operation.team` listesinde `priority` kolonu görünüyordu ama liste sıralaması
+  önceliğe bakmıyordu: view'da `default_order` yoktu, modelde de `_order` belirtilmemiş
+  (Odoo varsayılanı `id`). Canlı kopyada 36 ekip `0`, 2 ekip `1` ve hepsi `sequence = 10`
+  olduğu için işaretli ekipler listede oluşturuldukları yerde duruyordu.
+- `field_operation_team_view.xml` listesine `default_order="priority desc, sequence, id"`
+  eklendi: önce öncelik, sonra elle sıra (`sequence` handle'ı), sonra id — Odoo'nun ürün
+  listelerindeki "işaretli olan üstte" davranışının aynısı.
+- Not: `list_renderer.js:472-476` gereği handle ancak sıralamanın ilk alanı `sequence`
+  iken sürüklenebilir. Öncelik ilk sırada olduğu için sürükleme yine kapalı; `id`
+  sıralamasında da kapalı olduğundan davranış kaybı yok. Sürüklemeyle sıralama
+  istenirse `default_order="sequence, priority desc, id"` yazılmalı — o varyantta öncelik
+  yalnız aynı `sequence` değeri içinde çalışır.
+- Testler: `tests/test_team_priority_order.py`, 2 test — arch'taki sıralamayı ve o
+  sıralamayla okunan kayıtların işaretli ekibi gerçekten öne aldığını doğruluyor.
+
 ## [field_operation_gantt: 19.0.1.1.1] — 2026-10-29
 
 ### Gantt açılış penceresi: ay yerine hafta

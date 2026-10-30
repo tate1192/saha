@@ -183,7 +183,8 @@
         <field name="name">field.operation.team.list.view</field>
         <field name="model">field.operation.team</field>
         <field name="arch" type="xml">
-            <list string="Service Teams" multi_edit="1">
+            <list string="Service Teams" multi_edit="1"
+                  default_order="priority desc, sequence, id">
                 <field name="sequence" widget="handle"/>
                 <field name="priority" widget="priority" nolabel="1" optional="show"/>
                 <field name="name"/>

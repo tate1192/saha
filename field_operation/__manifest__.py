@@ -1,6 +1,6 @@
 {
     "name": "Field Operation",
-    "version": "19.0.2.5.0",
+    "version": "19.0.2.5.1",
     "category": "Services/Field Service",
     "summary": "Core of field service operation",
     "author": "Softteknik Bilişim",
