@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!--
+        The single category the suite's privileges (access rights) live under.
+
+        Core does the same thing for its own areas: the "Human Resources"
+        category holds "Employees" (hr), "Time Off" (hr_holidays) and "Fleet"
+        (fleet), one privilege per area with the levels of that area in its
+        dropdown. The suite used to create one category per module instead
+        ("Field Service Forms", "Field Operation Route"), so the user form
+        showed a separate box per module and the main privilege of
+        `field_operation` had no category at all.
+
+        This record is the box; `field_operation` adds "Service", and the
+        sibling modules add "Forms" and "Route" to it.
+    -->
+    <record id="module_category_saha_operation" model="ir.module.category">
+        <field name="name">Field Operations</field>
+        <field name="sequence">23</field>
+    </record>
+
+</odoo>

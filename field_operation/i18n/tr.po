@@ -2109,3 +2109,18 @@ msgstr "üye"
 #: code:addons/field_operation/models/field_operation_team.py:0
 msgid "team_id"
 msgstr ""
+
+#. module: field_operation
+#: model:ir.module.category,name:field_operation.module_category_saha_operation
+msgid "Field Operations"
+msgstr "Saha Operasyonu"
+
+#. module: field_operation
+#: model:ir.model,name:field_operation.model_res_groups_privilege
+msgid "Privileges"
+msgstr "Yetkiler"
+
+#. module: field_operation
+#: model:ir.model,name:field_operation.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr "İş Ortağı Birleştirme Sihirbazı"

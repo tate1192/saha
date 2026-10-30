@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 21:06+0000\n"
-"PO-Revision-Date: 2026-10-12 21:06+0000\n"
+"POT-Creation-Date: 2026-10-30 19:00+0000\n"
+"PO-Revision-Date: 2026-10-30 19:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -237,7 +237,6 @@ msgstr ""
 
 #. module: field_operation_forms
 #: model:res.groups,name:field_operation_forms.forms_all
-#: model:res.groups.privilege,name:field_operation_forms.privilege_forms_all
 msgid "All Data"
 msgstr ""
 
@@ -362,6 +361,7 @@ msgstr ""
 #. module: field_operation_forms
 #: model:ir.model.fields,field_description:field_operation_forms.field_field_operation__display_name
 #: model:ir.model.fields,field_description:field_operation_forms.field_field_operation_forms__display_name
+#: model:ir.model.fields,field_description:field_operation_forms.field_res_groups_privilege__display_name
 #: model:ir.model.fields,field_description:field_operation_forms.field_res_partner__display_name
 msgid "Display Name"
 msgstr ""
@@ -400,7 +400,6 @@ msgstr ""
 
 #. module: field_operation_forms
 #: model:res.groups,name:field_operation_forms.forms_manager
-#: model:res.groups.privilege,name:field_operation_forms.privilege_forms_manager
 msgid "Field Manager"
 msgstr ""
 
@@ -426,13 +425,7 @@ msgid "Field Service Form"
 msgstr ""
 
 #. module: field_operation_forms
-#: model:ir.module.category,name:field_operation_forms.field_operation_forms_module_category
-msgid "Field Service Forms"
-msgstr ""
-
-#. module: field_operation_forms
 #: model:res.groups,name:field_operation_forms.forms_user
-#: model:res.groups.privilege,name:field_operation_forms.privilege_forms_user
 msgid "Field User"
 msgstr ""
 
@@ -467,6 +460,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/field_operation_forms/models/field_operation.py:0
 #: model:ir.model.fields,field_description:field_operation_forms.field_field_operation__form_ids
+#: model:res.groups.privilege,name:field_operation_forms.privilege_forms
 #: model_terms:ir.ui.view,arch_db:field_operation_forms.field_operation_forms_inh_view
 msgid "Forms"
 msgstr ""
@@ -489,6 +483,7 @@ msgstr ""
 #. module: field_operation_forms
 #: model:ir.model.fields,field_description:field_operation_forms.field_field_operation__id
 #: model:ir.model.fields,field_description:field_operation_forms.field_field_operation_forms__id
+#: model:ir.model.fields,field_description:field_operation_forms.field_res_groups_privilege__id
 #: model:ir.model.fields,field_description:field_operation_forms.field_res_partner__id
 msgid "ID"
 msgstr ""
@@ -668,8 +663,8 @@ msgid "Portal Access URL"
 msgstr ""
 
 #. module: field_operation_forms
-#: model:ir.model.fields,field_description:field_operation_forms.field_field_operation_forms__rating_ids
-msgid "Ratings"
+#: model:ir.model,name:field_operation_forms.model_res_groups_privilege
+msgid "Privileges"
 msgstr ""
 
 #. module: field_operation_forms

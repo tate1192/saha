@@ -1,6 +1,6 @@
 {
     "name": "Field Operation",
-    "version": "19.0.2.5.1",
+    "version": "19.0.2.6.0",
     "category": "Services/Field Service",
     "summary": "Core of field service operation",
     "author": "Softteknik Bilişim",
@@ -17,6 +17,7 @@
         "portal",
     ],
     "data": [
+        "data/ir_module_category.xml",
         "data/res_groups_privilege.xml",
         "data/ir_sequence_data.xml",
         "data/paper_formats.xml",

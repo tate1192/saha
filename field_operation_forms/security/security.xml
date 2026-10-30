@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="field_operation_forms_module_category" model="ir.module.category">
-        <field name="name">Field Service Forms</field>
-        <field name="sequence">23</field>
-    </record>
-
-    <record id="privilege_forms_user" model="res.groups.privilege">
-        <field name="name">Field User</field>
-        <field name="category_id" ref="field_operation_forms_module_category"/>
+    <!--
+        One privilege for the module, in the category the suite shares: the
+        three levels below it (Field User / All Data / Field Manager) are its
+        dropdown, the way core's "Employees" or "Time Off" rows work. Each
+        level used to be a privilege of its own in a category of its own, so
+        the user form showed three boxes-worth of rows instead of one.
+    -->
+    <record id="privilege_forms" model="res.groups.privilege">
+        <field name="name">Forms</field>
+        <field name="category_id" ref="field_operation.module_category_saha_operation"/>
+        <field name="sequence">20</field>
     </record>
 
     <record id="forms_user" model="res.groups">
         <field name="name">Field User</field>
-        <field name="privilege_id" ref="privilege_forms_user"/>
+        <field name="privilege_id" ref="privilege_forms"/>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-    </record>
-
-    <record id="privilege_forms_all" model="res.groups.privilege">
-        <field name="name">All Data</field>
-        <field name="category_id" ref="field_operation_forms_module_category"/>
     </record>
 
     <record id="forms_all" model="res.groups">
         <field name="name">All Data</field>
-        <field name="privilege_id" ref="privilege_forms_all"/>
+        <field name="privilege_id" ref="privilege_forms"/>
         <field name="implied_ids" eval="[(4, ref('forms_user'))]"/>
-    </record>
-
-    <record id="privilege_forms_manager" model="res.groups.privilege">
-        <field name="name">Field Manager</field>
-        <field name="category_id" ref="field_operation_forms_module_category"/>
     </record>
 
     <record id="forms_manager" model="res.groups">
         <field name="name">Field Manager</field>
-        <field name="privilege_id" ref="privilege_forms_manager"/>
+        <field name="privilege_id" ref="privilege_forms"/>
         <field name="implied_ids" eval="[(4, ref('forms_all'))]"/>
         <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
+
+    <!--
+        A data record cannot delete what it no longer declares: the three
+        per-level privileges and the module's own category are removed here,
+        on install and on update alike.
+    -->
+    <function model="res.groups.privilege" name="_field_operation_forms_drop_legacy_privileges"/>
 
     <!-- Rules -->
     <!-- The field user sees a form when he leads the team OR is one of its assigned

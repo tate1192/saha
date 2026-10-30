@@ -5,6 +5,45 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.6.0 · field_operation_forms: 19.0.1.2.0 · field_operation_geolocation: 19.0.1.7.0] — 2026-10-30
+
+### Yetkiler tek kategoride: "Saha Operasyonu" (Servis / Formlar / Rota)
+
+Kullanıcı formunda yetkiler modül başına ayrı kutulara dağılmıştı. Ölçüm (`uzman_v19_test`,
+`res_groups_privilege`): 7 saha yetkisi 4 yerde — "Field Service Forms" (Field User, All Data,
+Field Manager), "Field Operation Route" (User, Manager), "Technical" (Field Operation Technical /
+Sale) ve `field_operation`'un ana yetkisi **kategorisiz**.
+
+Core'un deseni referans alındı: bir kategori = bir ürün alanı, içindeki satır = modül, dropdown =
+o modülün seviyeleri (İnsan Kaynakları → Çalışanlar / İzin / Filo). Suite'te seviyeler privilege
+yapılmıştı, bu yüzden form üç-dört ayrı satır gösteriyordu.
+
+- Yeni kategori `field_operation.module_category_saha_operation` ("Field Operations" / tr: **Saha
+  Operasyonu**, sequence 23) — `data/ir_module_category.xml`.
+- `field_operation.field_operation_privilege`: ad "Service" (tr: **Servis**), kategoriye bağlandı,
+  sequence 10. Dosya artık `noupdate="1"` değil.
+- `field_operation_forms`: üç privilege → **tek** `privilege_forms` ("Forms" / tr: **Formlar**,
+  sequence 20); Field User / All Data / Field Manager o privilege'ın grupları.
+- `field_operation_geolocation`: iki privilege → **tek** `privilege_route` ("Route" / tr: **Rota**,
+  sequence 30); User / Manager grupları.
+- Eski kayıtlar siliniyor (`_field_operation_forms_drop_legacy_privileges`,
+  `_field_operation_geolocation_drop_legacy_privileges`): veri dosyası artık tanımlamadığı kaydı
+  silemediği için temizlik install ve `-u` sırasında yapılıyor; grupları hâlâ kullanan bir
+  privilege'a dokunmuyor. Boşalan iki kategori de aynı çağrıda kaldırılıyor.
+- **Tuzak:** `noupdate` bayrağı `ir_model_data`'da tutulur ve Odoo onu asla geri almaz — dosyadan
+  niteliği silmek mevcut DB'de yeniden adlandırmayı çalıştırmıyor (ölçüldü: `-u` sonrası yetki
+  "Field Operation" adıyla ve kategorisiz kaldı, 2 test kırmızı). Bu yüzden
+  `_field_operation_refile_privilege` fonksiyonu değerleri zorluyor; yalnızca farklıysa yazıyor.
+- Gruplar ve yetkiler korunuyor: kullanıcıların mevcut grup atamaları değişmedi, ACL/rule kayıtları
+  aynı xml id'leri kullanmaya devam ediyor (yalnızca `privilege_id` hedefi değişti).
+- i18n: üç modülün `.pot` dosyası yeniden üretildi; `tr.po`'ya yeni terimler eklendi ("Saha
+  Operasyonu", "Yetkiler", "Herkese Açık Çalışan", bir alan yardım metni), kaldırılan iki kategori
+  terimi silindi. "Service / Forms / Route" çevirileri (Servis / Formlar / Rota) zaten vardı.
+- Testler: `field_operation` +4 (`tests/test_saha_privileges.py`), `field_operation_forms` +3,
+  `field_operation_geolocation` +3. Ölçüm: yükseltme sonrası **99 test, 0 failed**; taze kurulumda
+  da aynı sayı.
+- `Technical` kategorisi yerinde: görünmez teknik yetkiler orada kalıyor.
+
 ## [field_operation_gantt: 19.0.1.1.2] — 2026-10-29
 
 ### İnceleme (2026-10-29) sonrası: tanıtım ikonu, durum eşlemesi nöbetçi testi, doküman sayıları
