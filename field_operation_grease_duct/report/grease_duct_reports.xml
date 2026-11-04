@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_grease_duct_certificate" model="ir.actions.report">
+        <field name="name">Grease Duct Certificate</field>
+        <field name="model">field.operation.forms</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">field_operation_grease_duct.grease_duct_certificate</field>
+        <field name="report_file">field_operation_grease_duct.grease_duct_certificate</field>
+        <field name="print_report_name">'Grease Duct Certificate - %s' % object.name</field>
+        <field name="binding_model_id" ref="field_operation_forms.model_field_operation_forms"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

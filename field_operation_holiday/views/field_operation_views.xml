@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_field_operation_filter_holiday" model="ir.ui.view">
+        <field name="name">field.operation.select.holiday</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_tasks']" position="before">
+                <filter string="Leaves" name="leave_markers"
+                        domain="[('is_leave_marker', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_field_operation_form_holiday" model="ir.ui.view">
+        <field name="name">field.operation.form.holiday</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_form"/>
+        <field name="arch" type="xml">
+            <!-- A leave marker has no customer and no team: its person is the leave. -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="required">not is_leave_marker</attribute>
+            </xpath>
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="required">status in ('planned',) and not is_leave_marker</attribute>
+            </xpath>
+            <xpath expr="//field[@name='service_type_id']" position="after">
+                <field name="is_leave_marker" invisible="1"/>
+                <field name="leave_id" readonly="1"
+                       groups="field_operation.service_group_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

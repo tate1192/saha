@@ -25,6 +25,8 @@ Lisans: AGPL-3 · Yazar: Softteknik Bilişim · Kod ve docstring İngilizce, dok
 | `field_operation_gantt` | `field.operation` için Gantt (zaman çizelgesi) görünümü — görünüm tipi **dış bağımlılık** `soft_gantt`'tan gelir; duruma göre renk/ilerleme, ay penceresi, ekibe göre satırlar, sürükle-bırak yeniden planlama; `view_mode`'a mod **ekler** (sibling'ların modlarını düşürmez) |
 | `field_operation_stock` | Sarf tüketimi: servis formunda sarf satırları (SL serisi, `editable` liste), tüketim tipi (servise dahil / garanti), onayda tek outgoing transfer ile gerçek stok çıkışı, iş bazlı parasal maliyet toplamları |
 | `field_operation_whatsapp` | Müşteriye WhatsApp mesajı **açan** sihirbaz (gerçek API yok, deep-link: mobil `api.whatsapp.com` / masaüstü `web.whatsapp.com`), `{yer tutucu}` şablonları (bilinmeyen tutucu kayıtta reddedilir), kullanıcı saat diliminden bağımsız; servis raporu linki **access_token'lı** ek olarak; mesaj günlüğü **şirket kuralıyla** ayrılmış, silme yöneticide |
+| `field_operation_holiday` | İzin ↔ saha köprüsü: onaylı iznin **her günü** için "İzinli" servis tipinde bir iş (personel + izin bağlantısı ile); izin iptal/silinince işler kalkar, tarih değişip yeniden onaylanınca yeniden üretilir; mevcut izin-çakışma kontrolü korunur |
+| `field_operation_grease_duct` | Yağlı kanal temizliği: davlumbaz/dikey-yatay kanal/filtre ölçüm satırları (adet + metre), erişim durumu ve notu, sonraki temizlik tarihi, `GRD-<yıl>-` sertifika numarası ve **değerleri basan** sertifika PDF'i (müşteri, teknisyenler, ölçüm tablosu, imzalar) |
 
 ## Sürüm düzeni
 

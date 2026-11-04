@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="grease_duct_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="field_operation_forms.external_forms">
+                    <t t-call="field_operation_grease_duct.grease_duct_layout"
+                       t-lang="doc.customer_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="grease_duct_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+                <div t-att-class="'col-8' if report_type == 'pdf' else 'col-md-8 col-12'">
+                    <h2>Grease Duct Cleaning Certificate</h2>
+                </div>
+                <div t-att-class="'col-4' if report_type == 'pdf' else 'col-md-4 col-12'">
+                    <span>Certificate No:</span>
+                    <span t-field="doc.grease_duct_no"/>
+                    <br/>
+                    <span>Date:</span>
+                    <span t-field="doc.start_date"
+                          t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy - HH:mm'}"/>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+                <div t-att-class="'col-6' if report_type == 'pdf' else 'col-md-6 col-12'">
+                    <div class="mb-3" t-if="doc.customer_id">
+                        <div>
+                            <strong>Customer:</strong>
+                        </div>
+                        <div t-out="doc.customer_id.name"/>
+                    </div>
+                </div>
+                <div t-attf-class="{{ 'col-6' if report_type == 'pdf' else 'col-md-6 col-12' }} mb-3"
+                     t-if="doc.customer_id">
+                    <div>
+                        <strong>Address:</strong>
+                    </div>
+                    <div t-out="doc.customer_id" t-options='{
+                        "widget": "contact",
+                        "fields": ["address", "phone", "email"]}'/>
+                </div>
+            </div>
+
+            <div class="row" t-if="doc.person_ids">
+                <div class="col-12 mb-3">
+                    <strong>Technicians:</strong>
+                    <t t-foreach="doc.person_ids" t-as="person">
+                        <span t-field="person.name"/>
+                        <t t-if="not person_last">, </t>
+                    </t>
+                </div>
+            </div>
+
+            <div t-if="doc.grease_duct_ids">
+                <div t-att-class="'table-responsive-sm' if report_type != 'pdf' else ''">
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th class="text-start">Type</th>
+                                <th class="text-end">Qty</th>
+                                <th class="text-end">Length (MT)</th>
+                                <th class="text-start">Note</th>
+                            </tr>
+                        </thead>
+                        <tbody class="sale_tbody">
+                            <t t-foreach="doc.grease_duct_ids" t-as="line">
+                                <tr t-att-style="'background-color: #F1F1F1;' if line_index % 2 == 0 else ''">
+                                    <td>
+                                        <span t-field="line.duct_type"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="line.quantity"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-if="line.length" t-field="line.length"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.note"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-end">
+                                    <strong>Total Duct Length</strong>
+                                </td>
+                                <td class="text-end">
+                                    <strong>
+                                        <span t-field="doc.grease_total_length"/>
+                                    </strong>
+                                </td>
+                                <td/>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <br/>
+
+            <div t-if="doc.grease_access_status" class="row">
+                <div class="col-12">
+                    <strong>Duct Access:</strong>
+                    <span t-field="doc.grease_access_status"/>
+                </div>
+            </div>
+            <div t-if="doc.grease_access_note" class="col-12 mt-2">
+                <strong>Access Note:</strong>
+                <br/>
+                <span t-field="doc.grease_access_note" style="white-space: pre-line;"/>
+            </div>
+
+            <div t-if="doc.solution" class="col-12 mt-3">
+                <strong>Work Done:</strong>
+                <br/>
+                <span t-field="doc.solution"/>
+            </div>
+
+            <div t-if="doc.grease_next_cleaning_date" class="col-12 mt-3">
+                <strong>Next Cleaning:</strong>
+                <span t-field="doc.grease_next_cleaning_date"
+                      t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="row">
+                <div class="col-6">
+                    <div t-attf-class="{{ 'col-12 col-lg-6' if report_type != 'html' else 'col-sm-7 col-md-5' }} ms-auto"
+                         style="page-break-inside: avoid;">
+                        <h5>Signature</h5>
+                        <img t-if="doc.staff_signature" t-att-src="image_data_uri(doc.staff_signature)"
+                             style="max-height: 6rem; max-width: 100%; color:black;"/>
+                        <br/>
+                        <span t-field="doc.staff_signed_by">Softteknik</span>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div t-attf-class="{{ 'col-12 col-lg-6' if report_type != 'html' else 'col-sm-7 col-md-5' }} ms-auto"
+                         style="page-break-inside: avoid;">
+                        <h5>Signature</h5>
+                        <img t-if="doc.customer_signature" t-att-src="image_data_uri(doc.customer_signature)"
+                             style="max-height: 6rem; max-width: 100%; color:black;"/>
+                        <br/>
+                        <span t-field="doc.customer_signed_by">Customer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

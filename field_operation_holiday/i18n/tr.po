@@ -1,0 +1,88 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* field_operation_holiday
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 20:41+0000\n"
+"PO-Revision-Date: 2026-11-04 20:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: field_operation_holiday
+#. odoo-python
+#: code:addons/field_operation_holiday/models/hr_leave.py:0
+msgid "<p>%(employee)s is on approved leave from %(start)s to %(end)s.</p>"
+msgstr "<p>%(employee)s %(start)s - %(end)s arasında onaylı izinli.</p>"
+
+#. module: field_operation_holiday
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation__display_name
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation_type__display_name
+#: model:ir.model.fields,field_description:field_operation_holiday.field_hr_leave__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: field_operation_holiday
+#: model:ir.model,name:field_operation_holiday.model_field_operation
+msgid "Field Operation"
+msgstr ""
+
+#. module: field_operation_holiday
+#: model:ir.model,name:field_operation_holiday.model_field_operation_type
+msgid "Field Operation Type"
+msgstr ""
+
+#. module: field_operation_holiday
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation__id
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation_type__id
+#: model:ir.model.fields,field_description:field_operation_holiday.field_hr_leave__id
+msgid "ID"
+msgstr ""
+
+#. module: field_operation_holiday
+#: model:ir.model.fields.selection,name:field_operation_holiday.selection__field_operation_type__type__leave
+msgid "Leave"
+msgstr "İzin"
+
+#. module: field_operation_holiday
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation__is_leave_marker
+msgid "Leave Marker"
+msgstr "İzin Kaydı"
+
+#. module: field_operation_holiday
+#: model:ir.model.fields,field_description:field_operation_holiday.field_hr_leave__operation_ids
+msgid "Leave Operations"
+msgstr "İzin Görevleri"
+
+#. module: field_operation_holiday
+#: model_terms:ir.ui.view,arch_db:field_operation_holiday.view_field_operation_filter_holiday
+msgid "Leaves"
+msgstr "İzinler"
+
+#. module: field_operation_holiday
+#. odoo-python
+#: code:addons/field_operation_holiday/models/hr_leave.py:0
+msgid "On leave: %(employee)s (%(leave_type)s)"
+msgstr "İzinli: %(employee)s (%(leave_type)s)"
+
+#. module: field_operation_holiday
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation_type__type
+msgid "Service Type"
+msgstr ""
+
+#. module: field_operation_holiday
+#: model:ir.model.fields,help:field_operation_holiday.field_field_operation__is_leave_marker
+msgid "Set on the operations generated for an approved employee leave."
+msgstr "Onaylı personel izni için üretilen görevlerde işaretlidir."
+
+#. module: field_operation_holiday
+#: model:ir.model,name:field_operation_holiday.model_hr_leave
+#: model:ir.model.fields,field_description:field_operation_holiday.field_field_operation__leave_id
+msgid "Time Off"
+msgstr "İzin"

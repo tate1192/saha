@@ -5,6 +5,76 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_grease_duct: 19.0.1.0.0 · field_operation_holiday: 19.0.1.0.0] — 2026-11-04
+
+### İki yeni modül: yağlı kanal sertifikası + izin → saha işi köprüsü
+
+**`field_operation_grease_duct`** — yağlı kanal (davlumbaz/kanal) temizliğinde çıktı sertifikanın
+kendisi: formda girilen ölçümler serbest metin değil, kendi alanlarında tutuluyor ve sertifika
+PDF'inde değer olarak basılıyor.
+
+- `field.operation.grease.duct.line` — tip (davlumbaz / dikey kanal / yatay kanal / filtre / diğer),
+  adet, metre, not
+- `field.operation.forms` üzerine: `grease_duct_ids`, `grease_duct_no` (`field.grease` sequence,
+  `GRD-<yıl>-` + 4 hane; yalnız servis tipi `grease_duct` olan formlara atanır), `grease_access_status`
+  (tam/kısmi/erişim yok), `grease_access_note`, `grease_next_cleaning_date`, `grease_total_length`
+  (satır toplamı, compute)
+- `field.operation.type.type` seçimine `grease_duct`; alanlar yalnız bu tipte görünür (disinfect/pest
+  kalıbı: `selection_add` + `service_type` ile görünürlük)
+- Sertifika: `field.operation.forms` üzerinden yazdırılır — müşteri/adres, teknisyenler
+  (`person_ids`), ölçüm tablosu + toplam metre, erişim durumu/notu, `solution`, sonraki temizlik,
+  personel ve müşteri imzaları
+- ACL `forms_user`/`forms_manager` (satır silme yöneticide), kayıt kuralları ekip + şirket bazlı
+- **Ortam notu:** PDF üst bandı (firma adı/logo) bu kurulumda hiçbir raporda basılmıyor — fatura
+  PDF'i de aynı; şablon `field_operation_forms.external_forms`'u olduğu gibi kullanıyor, düzeltme
+  paperformat/logo tarafında ayrı bir iş
+- Sertifika şablonu `tr.po` ile Türkçe basılıyor (müşterinin dili neyse o; test edildi)
+
+**`field_operation_holiday`** — `hr.leave` `validate` durumuna geçtiğinde iznin **her günü** için
+`field.operation` üretir; böylece planlamada personelin o gün izinli olduğu görünür.
+
+- Görev içeriği: `subject` "İzinli: PERSONEL (İZİN TÜRÜ)", `description` izin aralığı,
+  `person_ids`, `leave_id`, `status=planned`, servis tipi **İzinli** (`type=leave`, veri kaydı
+  `operation_type_leave`)
+- Gün bazlı kesim iznin gerçek saatleriyle: 08:00-17:00 izin → her gün 08:00-17:00 iş
+- `write` (state / tarih / personel) değişiminde yeniden senkron; iptal veya onaydan geri alma
+  işleri siler; izin silinince `leave_id` `ondelete="cascade"` ile işler de gider
+- İşler `sudo()` ile üretiliyor: izni onaylayan İK'nın `field.operation` yazma yetkisi olmasa da
+  akış çalışsın (saha personeli ACL'i yalnız okuma: `access_field_operation_field_worker`)
+- `_check_team_integrity` devralındı ve **yalnız kendi ürettiği izin işleri** denetim dışı
+  bırakıldı; izinli personele gerçek servis açılmaya çalışılırsa mevcut `ValidationError` hâlâ
+  fırlıyor (test_05 bunu sabitliyor)
+- Görünüm: arama görünümüne **Leaves** filtresi + `is_leave_marker`; formda `leave_id` (ofis
+  grubuna görünür); izin işlerinde `partner_id` ve `team_id` zorunluluğu kaldırıldı
+- **Tuzak:** `field.operation.type.name` çevrilebilir değil (`translate` yok), bu yüzden servis tipi
+  adı doğrudan "İzinli" yazıldı
+
+Testler: 6 + 6 (`post_install` etiketli), `uzman_v19_test` klonunda kurulum + test + UI kontrolü;
+sertifika PDF'i ve izin işlerinin liste/form görünümü gözle doğrulandı.
+
+Modüller `apps/saha_legacy`'den repo köküne taşındı; aynı isim iki addons yolunda kalmasın diye
+eski kopyalar silindi (canlı `addons_path` sırasında `apps/saha` önce geliyor).
+
+**İnceleme düzeltmeleri (#35)**
+
+- **İzin günleri artık yerel gece yarısından bölünüyor** (`leave.tz`). Önce `datetime.combine` UTC
+  gün sınırı üretiyordu: İstanbul'da 10.11 08:00 → 12.11 17:00 izni "10.11 08:00-24:00 / 11.11
+  00:00-24:00 / 12.11 00:00-17:00" yerine UTC bloklarına (yerelde 11:00 → ertesi gün 02:59)
+  düşüyordu. `test_01` artık personel takvimi Europe/Istanbul ile **yerel** saat assert ediyor
+  (hiçbir görev yerel gece yarısını geçmez, ilk/son görev iznin kendi yerel uçlarını taşır).
+- **Taze veritabanında testler yeşil:** `test_06` sertifikayı `tr_TR` ile basıyordu ama dil taze
+  kurulumda aktif değil; test artık `res.lang._activate_and_install_lang("tr_TR")` ile çevirileri
+  de yüklüyor (aktivasyon tek başına `.po`'yu yüklemiyor). İzin testi kendi `day` birimli izin
+  türünü ve Europe/Istanbul takvimini kuruyor — veritabanında bulunan ilk izin türü (taze kurulumda
+  "Unpaid leave", `request_unit=half_day`) 3 günlük isteği sessizce 2 güne düşürüyordu.
+- **PDF testi ortama bağımlı kırmızı değil:** `ir.actions.report` render'ı `wkhtmltopdf` yoksa
+  `skipTest`; HTML assert'leri ayrı testte kalıyor.
+- **Ölçüm satırı kuralı create/unlink'i de kapsıyor** (`perm_create`/`perm_unlink=True`), `forms_user`
+  artık satır silebiliyor. Kapalı bayrak "o işlemde kural yok" demek olduğu için kullanıcı
+  okuyabildiği **her** forma satır ekleyebiliyor, ama yanlış girdiği satırı silemiyordu.
+- İzin senkronu oluşturma **ve silme** yolunda `sudo`: onaylayan İK'nın `field.operation`
+  yetkisi olmasa da çalışır (`test_07`, sudo geri alınınca kırmızı olduğu doğrulandı).
+
 ## [field_operation: 19.0.2.6.0 · field_operation_forms: 19.0.1.2.0 · field_operation_geolocation: 19.0.1.7.0] — 2026-10-30
 
 ### Yetkiler tek kategoride: "Saha Operasyonu" (Servis / Formlar / Rota)

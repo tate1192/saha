@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="field_operation_forms_grease_duct_view" model="ir.ui.view">
+        <field name="name">field.operation.forms.grease.duct</field>
+        <field name="model">field.operation.forms</field>
+        <field name="inherit_id" ref="field_operation_forms.field_operation_forms_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Grease Duct" name="grease_duct" invisible="service_type != 'grease_duct'">
+                    <group>
+                        <group>
+                            <field name="grease_duct_no"/>
+                            <field name="grease_next_cleaning_date"/>
+                        </group>
+                        <group>
+                            <field name="grease_access_status"/>
+                            <field name="grease_total_length"/>
+                        </group>
+                    </group>
+                    <field name="grease_access_note"
+                           placeholder="Duct sections that could not be reached (catwalk, scaffold, ...)"/>
+                    <field name="grease_duct_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="duct_type"/>
+                            <field name="quantity"/>
+                            <field name="length" sum="Total Length"/>
+                            <field name="note"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
