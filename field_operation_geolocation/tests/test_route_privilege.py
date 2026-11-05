@@ -28,6 +28,6 @@ class TestRoutePrivilege(TransactionCase):
         for xmlid in LEGACY_PRIVILEGES:
             self.assertFalse(
                 self.env.ref(xmlid, raise_if_not_found=False),
-                "%s must be replaced by privilege_route" % xmlid,
+                f"{xmlid} must be replaced by privilege_route",
             )
         self.assertFalse(self.env.ref(LEGACY_CATEGORY, raise_if_not_found=False))

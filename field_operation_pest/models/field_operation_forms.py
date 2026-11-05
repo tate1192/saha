@@ -61,13 +61,8 @@ class FieldOperationForms(models.Model):
         "field.operation.pesticide", "forms_id", string="Pesticide Product"
     )
     pest_type_ids = fields.Many2many("field.operation.pest.type", string="Pest Type")
-    service_type_id = fields.Many2one("field.operation.type", string="Service Type")
-    service_type = fields.Selection(
-        string="Service Type Code",
-        related="service_type_id.type",
-        store=True,
-        readonly=False,
-    )
+    # service_type_id / service_type are declared once in field_operation_forms;
+    # redeclaring them here silently overrode the base definition (readonly=False).
     # Picking & Locations
     stock_picking_id = fields.Many2one("stock.picking")
     picking_type_id = fields.Many2one(
@@ -75,13 +70,9 @@ class FieldOperationForms(models.Model):
         string="Operation Type",
         copy=True,
         readonly=False,
-        # compute="_compute_picking_type_id",
         store=True,
         default=_default_picking_transfer,
-        # default=_default_picking_type_id,
-        # domain="[('code', '=', 'repair_operation'), ('company_id', '=', company_id)]",
         required=True,
-        # precompute=True,
         check_company=True,
         index=True,
     )

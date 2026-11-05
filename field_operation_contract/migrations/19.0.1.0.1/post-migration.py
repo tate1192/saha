@@ -7,16 +7,20 @@ lines with a real (small) remaining_count. Lines hit by the bad mixin
 default were exactly 1_000_000_000.
 """
 
+from odoo.tools import SQL
+
 
 def migrate(cr, version):
     cr.execute(
-        """
-        UPDATE field_operation_contract_line
-        SET remaining_count = GREATEST(
-            0,
-            COALESCE(total_service, 0)::int
-            - COALESCE(generated_occurrences, 0)::int
+        SQL(
+            """
+            UPDATE field_operation_contract_line
+            SET remaining_count = GREATEST(
+                0,
+                COALESCE(total_service, 0)::int
+                - COALESCE(generated_occurrences, 0)::int
+            )
+            WHERE remaining_count > 1000000
+            """
         )
-        WHERE remaining_count > 1000000
-        """
     )

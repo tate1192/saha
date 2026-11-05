@@ -8,6 +8,7 @@ server-side rights behind the buttons, and the portal page and signature routes.
 import base64
 import json
 from datetime import timedelta
+from unittest.mock import patch
 
 from odoo import Command, fields
 from odoo.exceptions import AccessError, UserError
@@ -292,18 +293,32 @@ class TestFieldOperationForms(TransactionCase):
         form.invalidate_recordset(["contact_mobile"])
         self.assertEqual(form.contact_mobile, "444555666")
 
-    def test_13_the_service_form_pdf_is_wired_to_the_model(self):
-        """The report exists, renders a PDF and travels with the e-mail template."""
+    @patch(
+        "odoo.addons.base.models.ir_actions_report.IrActionsReport._run_wkhtmltopdf",
+        return_value=b"%PDF-1.4\n% mocked by the test\n",
+    )
+    def test_13_the_service_form_pdf_is_wired_to_the_model(self, run_wkhtmltopdf):
+        """The report reaches the PDF pipeline and travels with the e-mail template.
+
+        The wkhtmltopdf binary is mocked: a real run fetches the report assets over
+        HTTP from inside the open test transaction and hangs the whole suite on a
+        headless machine (the HTML content is covered by the rendering tests).
+        """
         form = self._form(subject="Printable")
         report = self.env.ref("field_operation_forms.action_service_form_pdf")
         self.assertEqual(report.model, "field.operation.forms")
+        self.assertEqual(report.report_type, "qweb-pdf")
 
-        pdf, _report_type = (
+        pdf, report_type = (
             self.env["ir.actions.report"]
             .with_context(force_report_rendering=True)
             ._render_qweb_pdf(report, [form.id])
         )
-        self.assertTrue(pdf.startswith(b"%PDF"), "the report did not render a PDF")
+        self.assertEqual(report_type, "pdf")
+        self.assertTrue(
+            pdf.startswith(b"%PDF"), "the report did not reach the PDF pipeline"
+        )
+        run_wkhtmltopdf.assert_called_once()
 
         template = self.env.ref(
             "field_operation_forms.field_operation_forms_email_template"

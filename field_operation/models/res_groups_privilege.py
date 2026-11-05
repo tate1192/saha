@@ -31,7 +31,10 @@ class ResGroupsPrivilege(models.Model):
         if not privilege:
             return
         category = self.env.ref("field_operation.module_category_saha_operation")
-        if privilege.category_id != category or privilege.sequence != PRIVILEGE_SEQUENCE:
+        if (
+            privilege.category_id != category
+            or privilege.sequence != PRIVILEGE_SEQUENCE
+        ):
             privilege.write(
                 {"category_id": category.id, "sequence": PRIVILEGE_SEQUENCE}
             )

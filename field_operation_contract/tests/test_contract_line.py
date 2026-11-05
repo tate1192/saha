@@ -6,6 +6,7 @@
 from datetime import date
 
 from odoo.tests.common import TransactionCase
+from odoo.tools import SQL
 
 
 class TestContractLine(TransactionCase):
@@ -146,8 +147,11 @@ class TestContractLine(TransactionCase):
         # Değerin store edildiğini kontrol et (DB'de var)
         line.flush_recordset()
         self.env.cr.execute(
-            "SELECT price_subtotal FROM field_operation_contract_line WHERE id = %s",
-            (line.id,),
+            SQL(
+                "SELECT price_subtotal FROM field_operation_contract_line "
+                "WHERE id = %s",
+                line.id,
+            )
         )
         result = self.env.cr.fetchone()
         self.assertEqual(result[0], 300.0)

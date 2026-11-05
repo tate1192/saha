@@ -4,9 +4,10 @@ Covers the certificate numbering, the measurement totals and the certificate
 rendering the values typed on the operation form.
 """
 
+from unittest.mock import patch
+
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
-from odoo.tools.misc import find_in_path
 
 
 @tagged("field_operation_grease_duct", "post_install", "-at_install")
@@ -95,21 +96,33 @@ class TestFieldOperationGreaseDuct(TransactionCase):
         ):
             self.assertIn(expected, html)
 
-    def test_07_certificate_renders_a_pdf(self):
-        """The certificate reaches wkhtmltopdf; skipped where it is not installed."""
-        if not find_in_path("wkhtmltopdf"):
-            self.skipTest("wkhtmltopdf is not installed on this machine")
+    @patch(
+        "odoo.addons.base.models.ir_actions_report.IrActionsReport._run_wkhtmltopdf",
+        return_value=b"%PDF-1.4\n% mocked by the test\n",
+    )
+    def test_07_certificate_renders_a_pdf(self, run_wkhtmltopdf):
+        """The certificate reaches the PDF pipeline (the binary itself is mocked).
+
+        A real wkhtmltopdf run fetches the report assets over HTTP from inside the
+        open test transaction and can hang the whole suite on a headless machine;
+        test_06 already checks the rendered HTML.
+        """
         form = self._form(self.grease_type)
         self._lines(form)
         report = self.env.ref(
             "field_operation_grease_duct.action_grease_duct_certificate"
         )
-        pdf, _report_type = (
+        self.assertEqual(report.report_type, "qweb-pdf")
+        pdf, report_type = (
             self.env["ir.actions.report"]
             .with_context(force_report_rendering=True)
             ._render_qweb_pdf(report, form.ids)
         )
-        self.assertTrue(pdf.startswith(b"%PDF"), "the certificate did not render a PDF")
+        self.assertEqual(report_type, "pdf")
+        self.assertTrue(
+            pdf.startswith(b"%PDF"), "the certificate did not reach the PDF pipeline"
+        )
+        run_wkhtmltopdf.assert_called_once()
 
     def test_06_certificate_follows_the_customer_language(self):
         """A Turkish customer gets the Turkish labels shipped in i18n/tr.po."""

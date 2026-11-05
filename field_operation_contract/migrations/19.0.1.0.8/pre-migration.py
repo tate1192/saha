@@ -1,5 +1,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from odoo.tools import SQL
+
 
 def migrate(cr, version):
     """Drop contract_template_id column and contract template table.
@@ -9,7 +11,9 @@ def migrate(cr, version):
     preserved so previously-copied template content is not lost.
     """
     cr.execute(
-        "ALTER TABLE field_operation_contract "
-        "DROP COLUMN IF EXISTS contract_template_id"
+        SQL(
+            "ALTER TABLE field_operation_contract "
+            "DROP COLUMN IF EXISTS contract_template_id"
+        )
     )
-    cr.execute("DROP TABLE IF EXISTS field_operation_contract_template CASCADE")
+    cr.execute(SQL("DROP TABLE IF EXISTS field_operation_contract_template CASCADE"))

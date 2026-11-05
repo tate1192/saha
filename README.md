@@ -12,6 +12,7 @@ Lisans: AGPL-3 · Yazar: Softteknik Bilişim · Kod ve docstring İngilizce, dok
 | `field_operation_sale` | Servis ↔ satış köprüsü: işten satış siparişi üretimi (wizard), sipariş satırlarından servis üretimi, fatura servis referansı |
 | `field_operation_invoice` | Servis ↔ fatura köprüsü: tekli ve konsolide (çoklu) fatura sihirbazı, iş ↔ fatura çift yönlü bağ, faturalama/ödeme rozetleri |
 | `field_operation_forms` | Servis ↔ form köprüsü: işten otomatik form üretimi, ekip/atanan personel görünürlüğü, müşteri + personel e-imzası (portal), durum akışı |
+| `field_operation_forms_ext` | Servis formuna harita/konum kısayolları: `service_latitude`/`service_longitude`, adresten haritada açma ve `geo_localize` ile adres konumlandırma (yeni model yok) |
 | `field_operation_pest` | Haşere formu detayları (hijyen/infestasyon/uygulama), pesticide satırları (BIO- serisi), stok sevkiyat entegrasyonu, pest tipi yönetimi |
 | `field_operation_disinfect` | Dezenfeksiyon formu: pH/klor ölçümleri (öncesi/sonrası), dezenfeksiyon satırları (DIS- serisi), ürün/tank yönetimi, form e-postası |
 | `field_operation_contract` | Sözleşme yönetimi: satır/servis planı, tekrarlayan üretim (cron + manuel), siparişten sözleşmeye dönüşüm, portal (görüntüleme + imza + PDF), müşteri imzası |
@@ -21,6 +22,8 @@ Lisans: AGPL-3 · Yazar: Softteknik Bilişim · Kod ve docstring İngilizce, dok
 | `field_operation_attendance` | Aylık puantaj raporu: ay/yıl seçimi, personel bazlı gün ve saat dağılımı (dönem sınırında kırpılır), hafta sonu ayrımı, PDF + Excel (xlsxwriter) / CSV çıktısı |
 | `field_operation_geolocation` | Takım konum takibi: harita sağlayıcı ayarları (`maps.website`, anahtar maskeli), takım GPS alanları, konum geçmişi (kayıt kuralıyla korunur), tarayıcı takibi (OWL 2) + günlük adres→koordinat cron'u (kapalı kurulur) |
 | `field_operation_map` | `field.operation` için harita görünümü (Leaflet; görünüm tipi **dış bağımlılık** `soft_web_map`'ten gelir) + adres gösterim alanı; kaldırmada aksiyonu temizleyen dar kapsamlı hook |
+| `field_operation_machine` | Makine/varlık yönetimi: makine kartı, garanti-sigorta bitiş takibi, periyodik bakım planı (4 cron), yedek parça kullanımı ve stok düşümü, `MACHINE:` içerikli QR kod üretimi |
+| `field_operation_report` | Salt-okunur raporlama katmanı: `report_date`/`person_count`/`duration_per_person` rapor alanları, Saha Hizmet Analizi pivot/graph, veri kalitesi listesi, takım ve iş dökümü PDF'leri |
 | `field_operation_worker` | Saha personeli arayüzü: worker'a özgü liste/kanban/form görünümleri + "My Jobs" filtresi + worker grubuna görünür menü (görünürlük base `rule_service_worker` kayıt kuralıyla) |
 | `field_operation_gantt` | `field.operation` için Gantt (zaman çizelgesi) görünümü — görünüm tipi **dış bağımlılık** `soft_gantt`'tan gelir; duruma göre renk/ilerleme, ay penceresi, ekibe göre satırlar, sürükle-bırak yeniden planlama; `view_mode`'a mod **ekler** (sibling'ların modlarını düşürmez) |
 | `field_operation_stock` | Sarf tüketimi: servis formunda sarf satırları (SL serisi, `editable` liste), tüketim tipi (servise dahil / garanti), onayda tek outgoing transfer ile gerçek stok çıkışı, iş bazlı parasal maliyet toplamları |

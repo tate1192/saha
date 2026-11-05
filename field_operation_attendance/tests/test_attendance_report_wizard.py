@@ -12,7 +12,17 @@ from odoo.addons.field_operation_attendance.wizard import (
 _logger = logging.getLogger(__name__)
 
 
-@tagged("field_operation_attendance", "attendance_report")
+# post_install: setUp() creates a company. Odoo 19 setups the model registry
+# module by module while loading, and ``sale_stock`` (which adds the required
+# res.company.security_lead field) is loaded long after this module. Running the
+# tests at_install makes every company creation fail with a NOT NULL violation on
+# a database where sale/stock are installed, so wait until the registry is full.
+@tagged(
+    "field_operation_attendance",
+    "attendance_report",
+    "post_install",
+    "-at_install",
+)
 class TestAttendanceReportWizard(TransactionCase):
     """Test cases for Attendance Report Wizard"""
 

@@ -5,6 +5,45 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.7.0 · field_operation_attendance: 19.0.1.1.0 · field_operation_pest: 19.0.1.1.2 · field_operation_contract: 19.0.1.1.0 · field_operation_contract_repeat: 19.0.1.0.0 · field_operation_forms: 19.0.1.2.0 · field_operation_geolocation: 19.0.1.7.0] — 2026-11-05
+
+### Yapısal inceleme turu: suite testleri, ölü kod, ikon ve lint kapısı
+
+Sürüm etiketleri **bilinçli olarak değiştirilmedi** (önceki inceleme turlarında olduğu gibi);
+yayına alma açık bir `-u` ile yapılır.
+
+- **Suite testleri yeşil (P1):** `field_operation_attendance` test sınıfı `setUp`'ta
+  `res.company` yaratıyordu ama `at_install` etiketliydi. Odoo 19 registry'yi modül modül
+  kurduğu için, `sale_stock`'un zorunlu `res.company.security_lead` alanı henüz registry'de
+  yokken INSERT üretiliyor ve tüm 33 test NOT NULL ihlaliyle düşüyordu (tam suite: 33 error).
+  Sınıf `post_install`'a alındı; `machine`/`stock`/`whatsapp` testleriyle aynı desen.
+  Etiketin nedeni test dosyasında yorumla belgelendi.
+- **Ölü kod (P2):** `field_operation_pest/views/field_product_view.xml` manifest'te yoktu ve
+  var olmayan `field.product` modeline view tanımlıyordu; silindi. `picking_type_id` üzerindeki
+  yorumlu `compute`/`default`/`domain`/`precompute` satırları kaldırıldı.
+- **Çift alan tanımı (P2):** `field_operation_pest`, `field_operation_forms`'un zaten tanımladığı
+  `service_type_id`/`service_type` alanlarını (biri `readonly=True`, pest'te `readonly=False`)
+  yeniden tanımlıyordu; pest kopyaları kaldırıldı, alan tek yerde kaldı.
+- **Eksik ikon (P3):** `field_operation_contract_repeat/static/description/` altına
+  `field_operation_contract`'ın `icon.png` + `icon.svg` dosyaları eklendi.
+- **Ruff/format kapısı (P1):** pre-commit'in pinlediği ruff 0.13.0 + repo config artık temiz:
+  E501 (bir satır), 3 × UP031 (% biçimlendirme → f-string) düzeltildi, 2 dosya formatlandı.
+- **SQL kuralı (P3):** migration'lardaki 4 ve testteki 1 ham `cr.execute` çağrısı
+  `odoo.tools.SQL` ile sarıldı (AGENTS.md: ham SQL yerine `odoo.tools.SQL`).
+- **Doküman (P3):** README modül tablosuna eksik `field_operation_forms_ext`,
+  `field_operation_machine` ve `field_operation_report` satırları eklendi; PDF başlığındaki
+  son `t-esc` `t-out`'a çevrildi (README kural #3).
+- **Kırılgan PDF testleri (P1):** `field_operation_forms` test_13 ve
+  `field_operation_grease_duct` test_07 gerçek wkhtmltopdf çalıştırıyordu; binary, açık test
+  işlemi içinde rapor asset'lerini HTTP üzerinden çekmeye çalışınca suite **asılı kalıyordu**
+  (headless ortamda tekrar üretildi). İki test artık `_run_wkhtmltopdf`'i mock'luyor ve
+  report tanımı + HTML render'ı ayrı testlerde doğrulanıyor; çalışma süresi test başına
+  saniyelerden milisaniyeye indi.
+
+**Ölçüm:** 23 modül tek DB'de kuruldu (99 modül, demo yok, kurulum uyarısız). Tam suite:
+**374 test, 0 failed, 0 error** (6.5 dk → ~1 dk; öncesi: 33 error + asılı PDF testi).
+`ruff check` + `ruff format --check` (pinned 0.13.0) takip edilen dosyalarda temiz.
+
 ## [field_operation: 19.0.2.7.0 · field_operation_holiday: 19.0.1.1.0] — 2026-11-05
 
 ### `hr_holidays` çekirdekten çıktı: izin kontrolü artık `field_operation_holiday`'de

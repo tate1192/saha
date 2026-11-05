@@ -49,5 +49,5 @@ class TestSahaPrivilegeCategory(TransactionCase):
         ):
             self.assertFalse(
                 self.env.ref(xmlid, raise_if_not_found=False),
-                "%s must not survive: it would be an empty box in the user form" % xmlid,
+                f"{xmlid} must not survive: it would be an empty box in the user form",
             )
