@@ -29,7 +29,8 @@
                     <group string="Message">
                         <field name="message" widget="textarea" nolabel="1" required="1"
                                placeholder="Type your message here…" style="height: 200px;"/>
-                        <field name="include_report" string="Attach Service Report PDF Link"/>
+                        <field name="include_report" string="Attach Service Report PDF Link"
+                               invisible="res_model != 'field.operation'"/>
                     </group>
                 </sheet>
                 <footer>

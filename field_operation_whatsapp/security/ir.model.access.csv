@@ -1,5 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_field_whatsapp_message_user,field.whatsapp.message.user,model_field_whatsapp_message,field_operation.service_group_user,1,1,1,1
-access_field_whatsapp_template_user,field.whatsapp.template.user,model_field_whatsapp_template,field_operation.service_group_user,1,1,1,1
+access_field_whatsapp_template_user,field.whatsapp.template.user,model_field_whatsapp_template,field_operation.service_group_user,1,0,0,0
+access_field_whatsapp_template_manager,field.whatsapp.template.manager,model_field_whatsapp_template,field_operation.service_group_manager,1,1,1,1
 access_field_whatsapp_log_user,field.whatsapp.log.user,model_field_whatsapp_log,field_operation.service_group_user,1,1,1,0
 access_field_whatsapp_log_manager,field.whatsapp.log.manager,model_field_whatsapp_log,field_operation.service_group_manager,1,1,1,1

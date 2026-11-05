@@ -1,9 +1,8 @@
 # Field Operation WhatsApp
 
-> Saha operasyonundan ve servis formundan müşteriye WhatsApp mesajı açan sihirbaz + mesaj şablonları
-> + gönderim günlüğü.
+> Saha operasyonundan müşteriye WhatsApp mesajı açan sihirbaz + mesaj şablonları + gönderim günlüğü.
 > Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.0`
-> Modül: `apps/saha/field_operation_whatsapp` · 25 dosya · 3 model (`field.whatsapp.template`, `field.whatsapp.log`, `field.whatsapp.message`)
+> Modül: `apps/saha/field_operation_whatsapp` · 22 dosya · 3 model (`field.whatsapp.template`, `field.whatsapp.log`, `field.whatsapp.message`)
 
 Bu doküman modül kodundan üretilmiştir (manifest + modeller + wizard + view XML + data + ACL/rule + testler).
 Kodda kanıtı olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
@@ -16,9 +15,10 @@ oturumunda gönderir (`wizard/field_whatsapp_message.py:224-241`).
 
 - **Şablon yönetimi:** `field.whatsapp.template`; `{alan}` yer tutucuları, kategori, kullanım sayacı;
   6 hazır şablon (`data/field_whatsapp_template_data.xml`, `noupdate="1"`).
-- **Gönderim sihirbazı:** `field.operation` **ve** `field.operation.forms` formlarındaki **Whatsapp**
-  butonu → `field.whatsapp.message` (buton iki görünümde de aynı grupla kapılıdır; aksiyon sihirbazın
-  kendisinde tek kaynaktır: `field.whatsapp.message._open_action_for`).
+- **Gönderim sihirbazı:** `field.operation` formundaki **Whatsapp** butonu → `field.whatsapp.message`
+  (buton `field_operation.service_group_user` grubuyla kapılıdır; aksiyon sihirbazın kendisinde tek
+  kaynaktır: `field.whatsapp.message._open_action_for`). Servis formunda (`field.operation.forms`)
+  buton **yoktur**; modül o modele bağımlı değildir.
 - **Mesaj günlüğü:** her açılışta `field.whatsapp.log` kaydı düşer, şablonun `usage_count`'u artar.
 - **Opsiyonel servis raporu linki:** "Include Service Report PDF" → `field.operation` servis PDF'i
   üretilir, ek `access_token`'lı olarak kaydedilir ve mesaja **müşterinin açabileceği** link eklenir.
@@ -31,10 +31,12 @@ oturumunda gönderir (`wizard/field_whatsapp_message.py:224-241`).
 | Modül | Neden |
 |---|---|
 | `field_operation` | `field.operation` modeli ve form görünümü, `menu_field_operation_config` menüsü, `contact_mobile` / `address_id` / `partner_id` alanları, `service_group_user` / `service_group_manager` grupları, `field_operation.field_operation_action_pdf` raporu (xmlid) |
-| `field_operation_forms` | `field.operation.forms` modeli ve form görünümü; aynı **Whatsapp** butonu o modelde de sunulur (buton `groups` taşır, aksi halde sihirbazı açamayan kullanıcıya görünürdü) |
-
 Manifest'te `mail` / `report` bağımlılığı **yoktur**; modül `message_post`, `ir.attachment` ve
 `ir.actions.report` kullanır ve bunları `field_operation` üzerinden dolaylı alır.
+
+`field_operation_forms` bağımlılığı **kaldırıldı**: buton yalnız `field.operation` formunda. Böylece
+modül servis formu kurulu olmayan veritabanlarında da kurulabilir (`field_operation` o modüle bağımlı
+değildir; temiz DB'de kurulumla doğrulandı).
 
 ## 3. Ana Modeller
 
@@ -44,7 +46,6 @@ Manifest'te `mail` / `report` bağımlılığı **yoktur**; modül `message_post
 | `field.whatsapp.log` | `_name` | `template_id`, `res_model`, `res_id`, `res_name` (compute, store), `contact_mobile` (**temizlenmiş** numara), `message_sent`, `company_id` (zorunlu, şirket kuralının dayanağı), `create_date` ("Opened On") | `models/field_whatsapp_template.py:128-165` |
 | `field.whatsapp.message` | `_name` (TransientModel) | `res_model`, `res_id`, `res_name`, `partner_name`, `contact_name`, `contact_mobile`, `message`, `template_id`, `include_report`; `default_get()`, `action_use_template()`, `action_send_whatsapp()`, `_generate_report_link()` | `wizard/field_whatsapp_message.py:20-270` |
 | `field.operation` | `_inherit` | `action_message_send()` → sihirbazı `active_model/active_id` ile açar | `models/field_operation.py` |
-| `field.operation.forms` | `_inherit` | aynı `action_message_send()` (servis formu form butonu için) | `models/field_operation_forms.py` |
 
 Yer tutucu eşlemesi (`FIELD_MAPPING`, `models/field_whatsapp_template.py:30-43`):
 `partner_name→partner_id.name`, `contact_name→contact_id.name`, `operation_date→start_date`, `subject`,
@@ -58,7 +59,8 @@ Odoo dolduramadığı yer tutucuyu olduğu gibi müşteriye gönderiyordu.
 | Kayıt | Model | Grup | R/W/C/U |
 |---|---|---|---|
 | `access_field_whatsapp_message_user` | `field.whatsapp.message` | `field_operation.service_group_user` | 1/1/1/1 |
-| `access_field_whatsapp_template_user` | `field.whatsapp.template` | `field_operation.service_group_user` | 1/1/1/1 |
+| `access_field_whatsapp_template_user` | `field.whatsapp.template` | `field_operation.service_group_user` | 1/0/0/0 |
+| `access_field_whatsapp_template_manager` | `field.whatsapp.template` | `field_operation.service_group_manager` | 1/1/1/1 |
 | `access_field_whatsapp_log_user` | `field.whatsapp.log` | `field_operation.service_group_user` | 1/1/1/**0** |
 | `access_field_whatsapp_log_manager` | `field.whatsapp.log` | `field_operation.service_group_manager` | 1/1/1/1 |
 
@@ -68,10 +70,12 @@ Odoo dolduramadığı yer tutucuyu olduğu gibi müşteriye gönderiyordu.
   taşıdığı için `[('company_id', 'in', company_ids)]` kuralı vardır; kullanıcı yalnız kendi
   şirketlerinin mesajlarını okur. Kural global olduğu için başka grup kurallarıyla gevşetilemez
   (`security/ir_rule.xml:1-17`). Günlük **silme** yalnız yöneticide.
-- **Buton kapısı:** "Whatsapp" butonu **iki görünümde de** `groups="field_operation.service_group_user"`
-  ile yalnız sihirbazı açma yetkisi olanlara görünür (`views/field_operation_view.xml:12-16`,
-  `views/field_operation_forms_view.xml`). Servis formu butonu bu grupla eklenmemiş olsaydı,
-  formu görebilen ama sihirbaza yetkisi olmayan kullanıcı tıklayıp `AccessError` alırdı (ölçüldü).
+- **Buton kapısı:** "Whatsapp" butonu `groups="field_operation.service_group_user"` ile yalnız
+  sihirbazı açma yetkisi olanlara görünür (`views/field_operation_view.xml:12-16`). Grup olmadan
+  formu görebilen kullanıcı tıklayıp `AccessError` alırdı (ölçüldü).
+- **Şablonlar içeriktir:** saha kullanıcısı şablonları yalnız okur (1/0/0/0), düzenleme/silme
+  yöneticide (1/1/1/1). Sayaç artışı `sudo()` ile yapıldığı için okuma yetkisi akışı bozmaz
+  (`security/ir.model.access.csv:3-4`).
 - **Yetki yükseltme yok:** üretim/okuma çağıranın yetkisiyle yapılır; tek `sudo()` şablon sayacı
   artışındadır (`wizard/field_whatsapp_message.py:245-247`, gerekçesi yorumda).
 - **Kimlik bilgisi yok:** gerçek API olmadığı için token/secret saklanmaz.
@@ -80,10 +84,10 @@ Odoo dolduramadığı yer tutucuyu olduğu gibi müşteriye gönderiyordu.
 
 | Adım | Detay | Kanıt |
 |---|---|---|
-| 1 | `field.operation` **veya** `field.operation.forms` formu → **Whatsapp** → `action_message_send` (context: `default_res_model`, `default_res_id`, `active_model`, `active_id`) | `views/field_operation_view.xml:11-16`, `views/field_operation_forms_view.xml`, `models/field_operation.py`, `models/field_operation_forms.py` |
+| 1 | `field.operation` formu → **Whatsapp** → `action_message_send` (context: `default_res_model`, `default_res_id`, `active_model`, `active_id`) | `views/field_operation_view.xml:11-16`, `models/field_operation.py` |
 | 2 | Sihirbaz açılır; `default_get` telefonu sırayla alır: `contact_mobile` → `address_id.phone` → `partner_id.phone` | `wizard/field_whatsapp_message.py:111-141` |
 | 3 | Şablon seçimi mesajı doldurur (`_onchange_template_id`), alternatif **Use Template** butonu | `:88-108` |
-| 4 | **Send WhatsApp Message** (onay diyaloglu): telefon boş/mesaj boş kontrolü, telefon `\D` ile temizlenir | `:196-220`, `wizard/field_whatsapp_message.xml:36-40` |
+| 4 | **Send WhatsApp Message** (onay diyaloglu): telefon boş/mesaj boş kontrolü, numara **uluslararası forma** çevrilir — `0...` ile saklanan numaraya **kaydın kendi ülkesinin** kodu eklenir (`partner_id` → `customer_id` → `contact_id` → `address_id`, sonra şirket ülkesi; `0530 515 81 42` → `905305158142`), `00...`/`+90...` olduğu gibi bırakılır, **ülke bilinmiyorsa numara hiç değiştirilmez** | `:196-220`, `wizard/field_whatsapp_message.xml:36-40` |
 | 5 | `include_report` ise servis PDF'i üretilir, `access_token`'lı ek oluşturulur, link mesaja eklenir | `:150-193` |
 | 6 | `field.whatsapp.log` yazılır (temizlenmiş telefon, mesaj metni, şirket), şablon sayacı artar | `:224-247` |
 | 7 | Kaynak kayda chatter notu: **"WhatsApp opened for …"** | `:249-256` |
@@ -102,7 +106,6 @@ Odoo dolduramadığı yer tutucuyu olduğu gibi müşteriye gönderiyordu.
 | Günlük formu | `res_name`, `template_id`, `contact_mobile`, `create_date`, `res_model`, `res_id`, `company_id`, `message_sent` | `:160-190` |
 | Günlük arama | `res_name`, `contact_mobile`, `template_id`, "Field Operations" filtresi, Template/Company gruplama | `:140-158` |
 | Sihirbaz formu | To (`partner_name`), `contact_name`, `contact_mobile` (phone), `template_id` + Use Template, `message`, `include_report` | `wizard/field_whatsapp_message.xml:7-45` |
-| Servis formu (Whatsapp butonu) | `field.operation.forms` form `button_box`'ına **Whatsapp** (`oe_stat_button`, `fa-whatsapp`, `groups="field_operation.service_group_user"`); iç içe ikinci `button_box` açmaz | `views/field_operation_forms_view.xml` |
 
 Mesaj gövdesi: HTML alanları (`description`, `solution`) `html2plaintext` ile düz metne çevrilir
 (`**kalın**` WhatsApp sözdizimine uyar), kalan değerler `str()` ile yazılır
@@ -120,8 +123,12 @@ Mesaj gövdesi: HTML alanları (`description`, `solution`) `html2plaintext` ile 
 | `test_the_empty_record_gives_empty_values` | Boş kayıtta çökmez |
 | `test_the_form_uses_a_boolean_widget_this_version_has` | `boolean_toggle` var, `boolean_button` **yok** (v19'da ikincisi mevcut değil) |
 | `test_the_default_get_prefers_the_operation_contact` | Telefon önceliği + `res_name`/`partner_name` |
-| `test_the_phone_falls_back_to_the_service_address_then_the_partner` | Adres → partner telefonu |
+| `test_the_phone_falls_back_to_the_service_address` | `address_id` doluysa onun telefonu (`0212 111 22 33`) |
+| `test_the_phone_falls_back_to_the_partner` | Kontak ve adres yoksa müşterinin kendi telefonu |
 | `test_the_message_is_opened_in_the_mobile_and_desktop_urls` | `api.whatsapp.com` vs `web.whatsapp.com` + `905334445566` |
+| `test_a_local_number_gets_the_country_code` | `0530 515 81 42` → link ve günlükte `905305158142` (canlı verinin ~%47'si bu formatta) |
+| `test_a_number_with_its_own_code_is_left_alone` | `+90…`, `0090…`, `90…` olduğu gibi kalır (çift kod eklenmez) |
+| `test_the_country_comes_from_the_record` | Ülke kaydın kendisinden: Almanya müşterisi + `030…` → `phone=493012345678` (şirket TR olsa da) |
 | `test_the_log_keeps_the_cleaned_number_and_the_message` | Günlükte temiz numara, mesaj, şirket, şablon |
 | `test_the_chatter_note_says_the_window_was_opened` | Not "WhatsApp opened" der (gönderildi demez) |
 | `test_the_template_counter_is_incremented` | `usage_count` +1 |
@@ -129,14 +136,10 @@ Mesaj gövdesi: HTML alanları (`description`, `solution`) `html2plaintext` ile 
 | `test_the_report_link_points_to_the_service_report_with_a_token` | Rapor gerçekten üretilir, ek `public=False` + `access_token`, link tokunlu |
 | `test_the_report_link_is_refused_for_another_model` | `field.operation` dışı modelde rapor dalı reddedilir |
 | `test_the_log_is_scoped_to_the_company_of_the_record` | Şirket kuralı (superuser olmayan kullanıcıyla ölçülür) |
+| `test_the_templates_are_read_only_for_field_users` | Şablon ACL'i: kullanıcı 1/0/0/0, yönetici 1/1/1/1 (6 hazır şablon silinemez) |
+| `test_the_report_checkbox_is_hidden_outside_the_operation` | `include_report` yalnız `field.operation`'da görünür (başka modelde rapor üretilemiyor) |
 | `test_the_log_unlink_is_manager_only` | ACL: kullanıcı 1/1/1/0, yönetici 1/1/1/1 |
-| `test_the_operation_button_is_not_wrapped_in_a_second_button_box` | Buton iç içe ikinci `button_box` açmaz, `groups` taşır |
-| `test_the_stored_view_carries_the_group` | Servis formu butonu `groups="field_operation.service_group_user"` taşır (ham arch) |
-| `test_the_button_is_hidden_from_a_user_without_the_group` | Sihirbaza yetkisi olmayan `forms_user` butonu **hiç almaz** (eskiden görüyor, tıklayınca `AccessError` alıyordu) |
-| `test_the_button_is_visible_for_a_user_with_the_group` | `service_group_user` üyesi butonu alır |
-| `test_the_group_on_the_button_may_create_the_wizard` | Butondaki grubun gerçekten sihirbaz `create` ACL'i verdiği (ACL ∩ grup) |
-| `test_the_wizard_opens_on_the_form_record` | Aksiyon `field.operation.forms` kaydını context'e koyar |
-| `test_a_forms_user_without_the_group_is_refused` | Grup kapısının önlediği hatayı ölçer (`AccessError`) |
+| `test_the_operation_button_is_not_wrapped_in_a_second_button_box` | Buton iç içe ikinci `button_box` açmaz ve `groups="field_operation.service_group_user"` taşır (kapı görünümün ham arch'ından okunur) |
 
 ## 8. Geliştirici Notları
 
@@ -149,10 +152,10 @@ Mesaj gövdesi: HTML alanları (`description`, `solution`) `html2plaintext` ile 
 - **Rapor linki neden token'lı:** ek `public=True` yapılsaydı sıralı id ile numaralandırılıp
   başkalarınca açılabilirdi; `access_token` yalnız linki bilene okuma hakkı verir
   (`wizard/field_whatsapp_message.py:150-177`; core: `ir_binary._find_record`, `ir_attachment._can_return_content`).
-- Bu modül servis formu modelini (`field.operation.forms`) de kapsar: `field_operation_forms_ext`
-  eskiden kendi `action_message_send` kopyasını taşıyordu (ve butonunda grup yoktu); o modül
-  kaldırıldı, aksiyon sihirbazda (`field.whatsapp.message._open_action_for`) tek kaynak.
-  Wizard alan adları (`contact_mobile`, `message`, `template_id`) kırılmamalıdır: servis formu için
-  `default_get` telefonu `contact_mobile` → `address_id.phone` → `partner_id.phone` sırasıyla arar.
+- **Servis formu kapsam dışı:** buton yalnız `field.operation` formunda; `field_operation_forms`
+  bağımlılığı kaldırıldı, form modeli ne inherited ne de buton hedefi. `field_operation_forms_ext`
+  de bu görünüme ikinci bir kopya eklemez (kendi testi bunu doğrular).
+  Wizard alan adları (`contact_mobile`, `message`, `template_id`) kırılmamalıdır: `default_get`
+  telefonu `contact_mobile` → `address_id.phone` → `partner_id.phone` sırasıyla arar.
 - Gerçek API entegrasyonu yapılacaksa: token `ir.config_parameter`'da tutulmalı, webhook'a imza
   doğrulaması eklenmeli, `controllers/__init__.py` + kök `__init__.py` güncellenmelidir.

@@ -22,18 +22,14 @@ Features:
     "contributors": ["Softteknik Bilişim"],
     "images": ["static/description/icon.png"],
     "license": "AGPL-3",
-    "sequence": 120,
+    "sequence": 127,
     "depends": [
         "field_operation",
-        # The WhatsApp button is also exposed on the service form model
-        # (field.operation.forms), so that module is a real dependency.
-        "field_operation_forms",
     ],
     "data": [
         "security/ir.model.access.csv",
         "security/ir_rule.xml",
         "views/field_operation_view.xml",
-        "views/field_operation_forms_view.xml",
         "views/field_whatsapp_template_view.xml",
         "wizard/field_whatsapp_message.xml",
         "data/field_whatsapp_template_data.xml",

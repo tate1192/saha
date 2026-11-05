@@ -131,7 +131,7 @@ msgstr "Mevcut alan adlarının virgülle ayrılmış listesi"
 #: model:ir.model.fields,field_description:field_operation_whatsapp.field_field_whatsapp_log__company_id
 #: model_terms:ir.ui.view,arch_db:field_operation_whatsapp.view_field_whatsapp_log_search
 msgid "Company"
-msgstr ""
+msgstr "Şirket"
 
 #. module: field_operation_whatsapp
 #: model:ir.model.fields,help:field_operation_whatsapp.field_field_whatsapp_log__company_id
@@ -210,7 +210,7 @@ msgstr "Saha Operasyon Formları"
 #. module: field_operation_whatsapp
 #: model_terms:ir.ui.view,arch_db:field_operation_whatsapp.view_field_whatsapp_log_search
 msgid "Field Operations"
-msgstr ""
+msgstr "Saha Operasyonları"
 
 #. module: field_operation_whatsapp
 #: model:ir.model.fields.selection,name:field_operation_whatsapp.selection__field_whatsapp_template__template_category__greeting
@@ -327,7 +327,7 @@ msgstr "Alıcı"
 #. module: field_operation_whatsapp
 #: model_terms:ir.ui.view,arch_db:field_operation_whatsapp.view_field_whatsapp_log_search
 msgid "Record"
-msgstr ""
+msgstr "Kayıt"
 
 #. module: field_operation_whatsapp
 #: model:ir.model.fields,field_description:field_operation_whatsapp.field_field_whatsapp_log__res_name
@@ -356,13 +356,13 @@ msgstr "Hatırlatma"
 #. odoo-python
 #: code:addons/field_operation_whatsapp/wizard/field_whatsapp_message.py:0
 msgid "Report %s is not installed; the link cannot be generated."
-msgstr ""
+msgstr "Rapor %s kurulu değil; link oluşturulamıyor."
 
 #. module: field_operation_whatsapp
 #. odoo-python
 #: code:addons/field_operation_whatsapp/wizard/field_whatsapp_message.py:0
 msgid "Report generation failed: %(error)s"
-msgstr ""
+msgstr "Rapor oluşturulamadı: %(error)s"
 
 #. module: field_operation_whatsapp
 #: model_terms:ir.ui.view,arch_db:field_operation_whatsapp.view_field_whatsapp_template_search
@@ -506,7 +506,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/field_operation_whatsapp/wizard/field_whatsapp_message.py:0
 msgid "WhatsApp opened for %(phone)s"
-msgstr ""
+msgstr "%(phone)s için WhatsApp açıldı"
 
 #. module: field_operation_whatsapp
 #: model_terms:ir.ui.view,arch_db:field_operation_whatsapp.view_field_operation_forms_whatsapp_form

@@ -14,8 +14,8 @@ Features:
 * Form geolocation integration
 * Extended form capabilities
 
-The WhatsApp shortcut was removed on purpose: field_operation_whatsapp is not
-ready yet. Add the dependency and the button back once it is.
+The WhatsApp shortcut lives in field_operation_whatsapp and hangs off
+field.operation only; the service form carries no such button.
     """,
     "author": "Softteknik Bilişim",
     "website": "https://softteknik.com",

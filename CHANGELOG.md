@@ -5,6 +5,62 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_whatsapp: 19.0.1.1.0 · field_operation_forms_ext: 19.0.1.1.0] — 2026-11-05
+
+### WhatsApp: yerel numara düzeltmesi + kırmızı testler (inceleme turu)
+
+`field_operation_whatsapp` incelemesinin (bkz. `field_operation_whatsapp_inceleme_2026-11-04.md`)
+onaylanan maddeleri uygulandı. Sürüm etiketleri **bilinçli olarak değiştirilmedi**; yayına alma
+yine açık bir `-u` ile olur.
+
+- **Yerel formatlı telefon numarası (P1):** `_clean_phone_number` artık yalnız `\D` temizliği
+  yapmıyor. `0...` ile saklanan numaraya partner/şirket ülkesinin kodunu ekliyor
+  (`0530 515 81 42` → `905305158142`), `00...` ve `+90...` biçimlerini olduğu gibi bırakıyor.
+  Ölçüm: canlı veride dolu `contact_mobile` kayıtlarının **%47'si** (5.569/11.810) yerel formatta;
+  eskiden bu gönderimler `phone=0530...` linkiyle açılıyor ve WhatsApp "geçersiz numara" diyordu.
+- **Servis formunda rapor kutusu (P1):** `include_report` yalnız `field.operation` için görünür
+  (`res_model != 'field.operation'` → gizli). Önceden forms'ta işaretlenince mesaj hiç açılmadan
+  `UserError` düşüyordu (rapor üretimi `field.operation` dışını reddediyor).
+- **Kırmızı testler (P1):** `field_operation.contact_mobile` artık `related="contact_id.phone"`
+  ve `readonly=True` (commit `7c72cc4`) olduğu için fixture'lar o alana yazamıyordu; 3 test
+  düşüyordu. Fixture'lar numarayı `contact_id` üzerinden kuruyor, `_logs()` işlem parametresi alıyor.
+  Yerel/uluslararası numara ve şablon ACL'i için 4 yeni test eklendi (23 → 27).
+- **Şablon ACL'i (P2):** `service_group_user` şablonlarda 1/1/1/1 idi — kod yorumu "read-only"
+  diyordu, 6 hazır şablon silinebiliyordu. Artık kullanıcı 1/0/0/0, yönetici 1/1/1/1.
+- **i18n (P2):** `tr.po`'da boş kalan altı kullanıcı-görür metin dolduruldu (rapor hataları,
+  "WhatsApp opened for …" chatter notu, "Record"/"Company"/"Field Operations" filtre etiketleri).
+- **`field_operation_forms_ext` (P1, komşu):** testi whatsapp kuruluyken düşüyordu
+  (`action_message_send` görünümlerde YOK diye assert ediyordu, whatsapp tam o butonu ekliyor).
+  Test artık iki durumu da doğruluyor; manifest açıklaması ve README'deki bayat "whatsapp henüz
+  hazır değil" notu düzeltildi.
+- Manifest `sequence`: `120` (disinfect ile aynıydı) → `127`.
+
+**İnceleme dönüşü (base 19.0 + iki not):**
+
+- Dal `19.0`'a getirildi (`origin/19.0` merge). Tek çakışma `CHANGELOG.md`'ydi; iki bölüm de korundu
+  (whatsapp 2026-11-05 üstte, grease/holiday 2026-11-04 altta). PR base `main` → **`19.0`**.
+- **Ülke kodu kaydın kendi ülkesinden:** `partner_id` → `customer_id` → `contact_id` → `address_id`,
+  ancak o zaman şirket ülkesi. Servis formunda `partner_id` olmadığı için eskiden her forms kaydı
+  şirket ülkesine düşüyordu (Almanya müşterisi + `030 12345678` → `phone=903012345678`); artık
+  `phone=493012345678`. Ülke hiç bilinmiyorsa numara **hiç değiştirilmiyor** (`0530…` → `0530…`),
+  çünkü kod eklemek tahmin olurdu.
+- Fallback testi ikiye ayrıldı: `test_the_phone_falls_back_to_the_service_address` artık eşitlik
+  kontrolü yapıyor (`0212 111 22 33`), partner fallback'i ayrı kayıtla sabitlendi; ülke için
+  `test_the_country_comes_from_the_record` eklendi.
+- **`field_operation_forms` bağımlılığı kaldırıldı:** buton yalnız `field.operation` formunda.
+  Modülden `models/field_operation_forms.py`, `views/field_operation_forms_view.xml` ve
+  `tests/test_field_operation_forms_button.py` çıktı (6 test); `field.operation` o modüle bağımlı
+  olmadığı için whatsapp artık servis formu kurulmayan veritabanlarında da kuruluyor.
+  `field_operation_forms_ext` testi de geri alındı: servis formunda `action_message_send` **hiç**
+  yok, whatsapp kurulu olsa da (eskiden "kuruluysa 1 tane" kontrolü vardı).
+- **Test sayısı:** whatsapp 29 → 23 (6 servis-formu buton testi gitti, 5 yeni test kaldı).
+
+**Doğrulama:** temiz DB (`createdb wa5_clean`, demo yok) üzerinde iki koşu:
+`-i field_operation_whatsapp --test-tags /field_operation_whatsapp` → `0 failed, 0 error(s) of 23 tests`
+ve kurulum sonrası `ir_module_module`: `field_operation=installed`, **`field_operation_forms=uninstalled`**
+(bağımlılığın gerçekten gittiğinin kanıtı). Ardından `-i field_operation_forms_ext` →
+`0 failed, 0 error(s) of 5 tests` (whatsapp kuruluyken servis formunda buton yok). `pre-commit` temiz.
+
 ## [field_operation_grease_duct: 19.0.1.0.0 · field_operation_holiday: 19.0.1.0.0] — 2026-11-04
 
 ### İki yeni modül: yağlı kanal sertifikası + izin → saha işi köprüsü

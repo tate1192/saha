@@ -55,11 +55,9 @@ class TestServiceFormShortcuts(TransactionCase):
         self.assertEqual(list_arch.count("action_open_map"), 1)
         self.assertEqual(form_arch.count("action_open_map"), 1)
         self.assertEqual(form_arch.count("action_geolocate_address"), 1)
-        self.assertNotIn(
-            "action_message_send",
-            list_arch + form_arch,
-            "the WhatsApp shortcut was removed with the dependency",
-        )
+        # The WhatsApp button hangs off field.operation only: neither this module
+        # nor field_operation_whatsapp puts one on the service form.
+        self.assertNotIn("action_message_send", list_arch + form_arch)
 
     def test_the_map_url_carries_the_record_coordinates(self):
         result = self.form.action_open_map()

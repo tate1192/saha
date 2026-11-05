@@ -101,6 +101,6 @@ harita domaini yoktur.
 - Koordinat alanları `store=True` olduğu için adres değişmedikçe yeniden hesaplanmaz; adres değişiminde `@api.depends` üzerinden güncellenir.
 - Harita sağlayıcı varsayılanları `field_operation_geolocation` modülünün kurulum kancalarında (`hooks.py`, `models/res_users.py`) kullanıcılara atanır; bu modül varsayılan atamaz, yalnız okur.
 - Görseller: `static/description/icon.png` ve `icon.svg`; `portal.png` yoktur (form portalı `field_operation_forms` modülünden gelir).
-- **WhatsApp kısayolu kaldırıldı:** `field_operation_whatsapp` henüz hazır değil; bağımlılık ve
-  buton (`action_message_send`) bu turda çıkarıldı. Modül hazır olduğunda `depends`'e
-  `field_operation_whatsapp` eklenip buton geri konabilir.
+- **WhatsApp kısayolu bu modülde değil:** buton yalnız `field.operation` formunda
+  (`field_operation_whatsapp`); servis formuna buton eklenmiyor, bu modül de ikinci bir kopya
+  taşımıyor — test bunu doğrular.

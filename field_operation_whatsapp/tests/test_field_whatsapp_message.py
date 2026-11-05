@@ -16,16 +16,29 @@ class TestFieldWhatsappMessage(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # ``contact_mobile`` on the operation is a read-only mirror of
+        # ``contact_id.phone``: the number has to be set on the contact.
         cls.partner = cls.env["res.partner"].create(
-            {"name": "Message Customer", "phone": "0212 000 00 00"}
+            {
+                "name": "Message Customer",
+                "phone": "+90 (533) 444-55-66",
+                "country_id": cls.env.ref("base.tr").id,
+            }
+        )
+        cls.address_partner = cls.env["res.partner"].create(
+            {
+                "name": "Message Site",
+                "phone": "0212 111 22 33",
+                "country_id": cls.env.ref("base.tr").id,
+            }
         )
         cls.operation = cls.env["field.operation"].create(
             {
                 "name": "/",
                 "subject": "Message Probe",
                 "partner_id": cls.partner.id,
+                "contact_id": cls.partner.id,
                 "start_date": "2026-11-04 09:00:00",
-                "contact_mobile": "+90 (533) 444-55-66",
             }
         )
         cls.wizard = cls.env["field.whatsapp.message"]
@@ -37,9 +50,10 @@ class TestFieldWhatsappMessage(TransactionCase):
             active_model="field.operation", active_id=self.operation.id, **MOBILE_UA
         ).create(values)
 
-    def _logs(self):
+    def _logs(self, operation=None):
+        operation = operation or self.operation
         return self.env["field.whatsapp.log"].search(
-            [("res_id", "=", self.operation.id), ("res_model", "=", "field.operation")]
+            [("res_id", "=", operation.id), ("res_model", "=", "field.operation")]
         )
 
     # ------------------------------------------------------------------
@@ -51,21 +65,148 @@ class TestFieldWhatsappMessage(TransactionCase):
         self.assertEqual(wizard.res_name, self.operation.display_name)
         self.assertEqual(wizard.partner_name, "Message Customer")
 
-    def test_the_phone_falls_back_to_the_service_address_then_the_partner(self):
+    def test_the_phone_falls_back_to_the_service_address(self):
         operation = self.env["field.operation"].create(
             {
                 "name": "/",
                 "subject": "Fallback Probe",
                 "partner_id": self.partner.id,
+                "address_id": self.address_partner.id,
+                "contact_id": self.address_partner.id,
                 "start_date": "2026-11-04 09:00:00",
             }
         )
         wizard = self.wizard.with_context(
             active_model="field.operation", active_id=operation.id
         ).create({"res_model": "field.operation", "res_id": operation.id})
-        self.assertEqual(
-            wizard.contact_mobile, operation.address_id.phone or self.partner.phone
+        self.assertEqual(wizard.contact_mobile, "0212 111 22 33")
+
+    def test_the_phone_falls_back_to_the_partner(self):
+        """No contact and no service address: the customer's own phone is used."""
+        operation = self.env["field.operation"].create(
+            {
+                "name": "/",
+                "subject": "Partner Fallback Probe",
+                "partner_id": self.partner.id,
+                "start_date": "2026-11-04 09:00:00",
+            }
         )
+        operation.write({"contact_id": False, "address_id": False})
+        wizard = self.wizard.with_context(
+            active_model="field.operation", active_id=operation.id
+        ).create({"res_model": "field.operation", "res_id": operation.id})
+        self.assertEqual(wizard.contact_mobile, self.partner.phone)
+
+    def test_the_country_comes_from_the_record(self):
+        """The calling code follows the record's own country, not the company's.
+
+        Measured before the fix: a German customer's "030 12345678" went out with
+        the Turkish code because only ``partner_id`` was consulted and the
+        company country was the fallback.
+        """
+        german = self.env["res.partner"].create(
+            {
+                "name": "German Customer",
+                "phone": "030 12345678",
+                "country_id": self.env.ref("base.de").id,
+                "is_company": True,
+            }
+        )
+        operation = self.env["field.operation"].create(
+            {
+                "name": "/",
+                "subject": "German Phone Probe",
+                "partner_id": german.id,
+                "contact_id": german.id,
+                "start_date": "2026-11-04 09:00:00",
+            }
+        )
+        wizard = self.wizard.with_context(
+            active_model="field.operation", active_id=operation.id
+        ).create(
+            {
+                "res_model": "field.operation",
+                "res_id": operation.id,
+                "message": "Almanya",
+            }
+        )
+        self.assertIn(
+            "phone=493012345678",
+            urllib.parse.unquote(wizard.action_send_whatsapp()["url"]),
+        )
+
+    def test_a_local_number_gets_the_country_code(self):
+        """A number stored as "0530 ..." must reach WhatsApp as 90530....
+
+        Half of the operations in the live database carry the local format; the
+        old cleaning sent `phone=0530...` and WhatsApp answered "invalid number".
+        """
+        local = self.env["res.partner"].create(
+            {
+                "name": "Local Number Customer",
+                "phone": "0530 515 81 42",
+                "country_id": self.env.ref("base.tr").id,
+            }
+        )
+        operation = self.env["field.operation"].create(
+            {
+                "name": "/",
+                "subject": "Local Phone Probe",
+                "partner_id": local.id,
+                "contact_id": local.id,
+                "start_date": "2026-11-04 09:00:00",
+            }
+        )
+        wizard = self.wizard.with_context(
+            active_model="field.operation", active_id=operation.id
+        ).create(
+            {
+                "res_model": "field.operation",
+                "res_id": operation.id,
+                "message": "Yerel numara",
+            }
+        )
+        self.assertIn(
+            "phone=905305158142",
+            urllib.parse.unquote(wizard.action_send_whatsapp()["url"]),
+        )
+        self.assertEqual(self._logs(operation).contact_mobile, "905305158142")
+
+    def test_a_number_with_its_own_code_is_left_alone(self):
+        for phone, expected in (
+            ("+90 532 495 80 87", "905324958087"),
+            ("0090 532 495 80 87", "905324958087"),
+            ("905324958087", "905324958087"),
+        ):
+            partner = self.env["res.partner"].create(
+                {
+                    "name": f"Intl {expected}",
+                    "phone": phone,
+                    "country_id": self.env.ref("base.tr").id,
+                }
+            )
+            operation = self.env["field.operation"].create(
+                {
+                    "name": "/",
+                    "subject": "Intl Phone Probe",
+                    "partner_id": partner.id,
+                    "contact_id": partner.id,
+                    "start_date": "2026-11-04 09:00:00",
+                }
+            )
+            wizard = self.wizard.with_context(
+                active_model="field.operation", active_id=operation.id
+            ).create(
+                {
+                    "res_model": "field.operation",
+                    "res_id": operation.id,
+                    "message": "Intl",
+                }
+            )
+            self.assertIn(
+                f"phone={expected}",
+                urllib.parse.unquote(wizard.action_send_whatsapp()["url"]),
+            )
 
     # ------------------------------------------------------------------
     # Sending
@@ -103,7 +244,19 @@ class TestFieldWhatsappMessage(TransactionCase):
 
     def test_the_chatter_note_says_the_window_was_opened(self):
         """Odoo cannot know the message was delivered: it only opens WhatsApp."""
-        self._wizard(message="Chatter kontrolu").action_send_whatsapp()
+        wizard = self.wizard.with_context(
+            active_model="field.operation",
+            active_id=self.operation.id,
+            lang="en_US",
+            **MOBILE_UA,
+        ).create(
+            {
+                "res_model": "field.operation",
+                "res_id": self.operation.id,
+                "message": "Chatter kontrolu",
+            }
+        )
+        wizard.action_send_whatsapp()
         messages = self.env["mail.message"].search(
             [("model", "=", "field.operation"), ("res_id", "=", self.operation.id)]
         )
@@ -229,6 +382,37 @@ class TestFieldWhatsappMessage(TransactionCase):
         self.assertFalse(user.perm_unlink)
         self.assertTrue(user.perm_read and user.perm_write and user.perm_create)
         self.assertTrue(manager.perm_unlink)
+
+    def test_the_templates_are_read_only_for_field_users(self):
+        """Templates are content: field users read them, managers maintain them.
+
+        The wizard comment claimed read-only while the ACL granted 1/1/1/1, so a
+        field user could delete the six shipped templates.
+        """
+        access = self.env["ir.model.access"].search(
+            [("model_id.model", "=", "field.whatsapp.template")]
+        )
+        self.assertEqual(len(access), 2)
+        by_group = {acl.group_id: acl for acl in access}
+        user = by_group[self.env.ref("field_operation.service_group_user")]
+        manager = by_group[self.env.ref("field_operation.service_group_manager")]
+        self.assertEqual(
+            (user.perm_read, user.perm_write, user.perm_create, user.perm_unlink),
+            (True, False, False, False),
+        )
+        self.assertTrue(
+            manager.perm_read
+            and manager.perm_write
+            and manager.perm_create
+            and manager.perm_unlink
+        )
+
+    def test_the_report_checkbox_is_hidden_outside_the_operation(self):
+        """The forms wizard must not offer a report it cannot render."""
+        arch = self.env.ref(
+            "field_operation_whatsapp.view_field_whatsapp_message_form"
+        ).arch
+        self.assertIn("res_model != 'field.operation'", arch)
 
     def test_the_operation_button_is_not_wrapped_in_a_second_button_box(self):
         """`position='inside'` must add the button, not another button box."""

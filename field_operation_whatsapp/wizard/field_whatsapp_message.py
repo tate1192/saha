@@ -41,9 +41,8 @@ class FieldWhatsappMessage(models.TransientModel):
     def _open_action_for(self, res_model, res_id):
         """The act_window that opens this wizard pre-filled for a record.
 
-        ``field.operation`` and ``field.operation.forms`` both expose the
-        WhatsApp button; the "how to open me" knowledge lives with the wizard so
-        neither model carries its own copy.
+        The field operation form carries the WhatsApp button; the "how to open
+        me" knowledge lives with the wizard so the model only delegates.
         """
         return {
             "type": "ir.actions.act_window",
@@ -160,11 +159,53 @@ class FieldWhatsappMessage(models.TransientModel):
             # called outside of a request (RPC from a script, cron, tests)
             return ""
 
+    def _phone_country_code(self):
+        """Calling code (digits) of the country the message is for, if known.
+
+        Same order the wizard resolves the phone with: an operation carries a
+        partner, a service form a customer; the contact and the service address
+        add theirs. Only then the company's own country, which is a guess for a
+        foreign customer.
+        """
+        self.ensure_one()
+        source_record = self._get_source_record()
+        if source_record:
+            for field_name in (
+                "partner_id",
+                "customer_id",
+                "contact_id",
+                "address_id",
+            ):
+                if field_name in source_record:
+                    country = source_record[field_name].country_id
+                    if country:
+                        return str(country.phone_code or "")
+        company_country = self._get_company().country_id or self.env.company.country_id
+        return str(company_country.phone_code or "")
+
     def _clean_phone_number(self, phone):
-        """Keep the digits only: WhatsApp wants an international number."""
-        if not phone:
+        """Return the number in the international form WhatsApp expects.
+
+        The ``phone`` parameter of the deep link wants the country code and no
+        '+'. A Turkish number stored as "0530 515 81 42" - the format of roughly
+        half the operations in the live database - used to be sent as
+        "05305158142", and WhatsApp answers with an invalid-number screen.
+        """
+        digits = re.sub(r"\D", "", phone or "")
+        if not digits:
             return ""
-        return re.sub(r"\D", "", phone)
+        if digits.startswith("00"):
+            # 0090... carries its own country code
+            return digits[2:]
+        if digits.startswith("0"):
+            country_code = self._phone_country_code()
+            local = digits.lstrip("0")
+            if not country_code or not local:
+                # Unknown country: prefixing a code would be a guess, keep the
+                # number exactly as it was stored.
+                return digits
+            return f"{country_code}{local}"
+        return digits
 
     def _generate_report_link(self):
         """Render the service report and return a link the customer can open.
