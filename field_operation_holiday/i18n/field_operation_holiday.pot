@@ -17,6 +17,14 @@ msgstr ""
 
 #. module: field_operation_holiday
 #. odoo-python
+#: code:addons/field_operation_holiday/models/field_operation.py:0
+msgid ""
+"%(employee)s is on leave/sick leave (%(leave_type)s) and cannot be assigned "
+"on these dates."
+msgstr ""
+
+#. module: field_operation_holiday
+#. odoo-python
 #: code:addons/field_operation_holiday/models/hr_leave.py:0
 msgid "<p>%(employee)s is on approved leave from %(start)s to %(end)s.</p>"
 msgstr ""

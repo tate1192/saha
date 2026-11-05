@@ -5,6 +5,46 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.7.0 · field_operation_holiday: 19.0.1.1.0] — 2026-11-05
+
+### `hr_holidays` çekirdekten çıktı: izin kontrolü artık `field_operation_holiday`'de
+
+`field_operation` çekirdeği izin kontrolünü kendi içinde tutuyordu; bu yüzden modülü kurmak
+`hr_holidays`'i de getiriyordu. İzin ↔ saha köprüsünün kendi modülü (`field_operation_holiday`)
+zaten vardı, bağ artık oraya taşındı.
+
+- **Çekirdek `hr_holidays` bağımlılığı kaldırıldı:** `field_operation/__manifest__.py` yalnız
+  `base, base_geolocalize, hr, portal` üzerine kuruluyor. `_check_team_integrity` çakışma
+  kontrolüne devam ediyor, izin tarafı `_check_leave_conflicts` **kancasına** alındı: çekirdekte
+  gövdesi boş, `hr.leave` adı geçmiyor.
+- **Kanca `field_operation_holiday`'de dolduruluyor** (`models/field_operation.py`): onaylı
+  izinler tek sorguda (`hr.leave.search`) okunur, kayıt tarihleriyle kesiştirilir, çakışmada aynı
+  `ValidationError` mesajı fırlar. Toplu davranış korunuyor: batch kaç kayıt olursa olsun **tek**
+  izin sorgusu.
+- **İzin görevleri (marker) denetim dışı kalıyor:** `field_operation_holiday`'nin
+  `_check_team_integrity` override'ı `service_type_id.type == 'leave'` kayıtlarını atlamaya devam
+  ediyor. Bu şart: marker'ın personeli tanımı gereği izinli, ayrıca izin senkronu kendi ürettiği
+  işle çakışıp patlardı (gerçek servis + izin çakışması hâlâ reddediliyor, `test_05`).
+- **Testler taşındı + boşluk kapatıldı:** `test_02_leave_conflict_raises_validation_error`
+  çekirdekten `field_operation_holiday`'e geçti (`test_08`, aynı iddialar: tek sorgu, mesajda
+  personel + izin türü). Çekirdekte kalan çakışma yarısı hiç test edilmiyordu; yeni
+  `test_12_double_booking_a_person_is_refused` çift rezervasyonu (`hr_holidays` kurulu değilken)
+  sabitliyor. Çekirdek testleri `02`–`12` olarak yeniden numaralandı (12 test).
+- **i18n:** çakışma mesajının `msgid`'i `field_operation/i18n/{tr.po,field_operation.pot}`'dan
+  çıkarılıp holiday dosyalarına taşındı; Türkçe çeviri ("… izinli/raporlu … atanamaz.") korundu.
+- **Doküman:** kök README, `field_operation/README.md` (bağımlılık tablosu + çakışma maddesi,
+  sürüm etiketi `19.0.2.4.0` → `19.0.2.7.0`) ve `field_operation_holiday/README.md` (izin kontrolü
+  bölümü, 7 → 8 test) güncellendi.
+
+**Uyarı:** çekirdek `hr_holidays` olmadan kurulabildiği için, `field_operation_holiday` **kurulu
+değilse** izin çakışma kontrolü yoktur (bilinçli takas). Saha suite'i bu modülle birlikte kurulmalı.
+
+**Doğrulama:** temiz DB (`t_fo_final`, demo yok): `-i field_operation` → `field_operation=installed`,
+**`hr_holidays=uninstalled`**, `field_operation_holiday=uninstalled`; ardından
+`-u field_operation --test-tags /field_operation` → `0 failed, 0 error(s) of 24 tests`
+(12'si çekirdek dosyasından). `-i field_operation_holiday` + `--test-tags /field_operation_holiday`
+→ `0 failed, 0 error(s) of 8 tests` (yeni `test_08` dahil). `pre-commit` temiz.
+
 ## [field_operation_whatsapp: 19.0.1.1.0 · field_operation_forms_ext: 19.0.1.1.0] — 2026-11-05
 
 ### WhatsApp: yerel numara düzeltmesi + kırmızı testler (inceleme turu)

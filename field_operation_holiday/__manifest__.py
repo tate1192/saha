@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Time Off",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Services/Field Service",
     "summary": "Create a field operation for every day an employee is on leave",
     "description": """

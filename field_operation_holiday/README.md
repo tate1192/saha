@@ -2,7 +2,7 @@
 
 > Onaylı personel izinlerini saha planına yansıtır: izinli olunan **her gün için**
 > saha operasyonunda "X izinli" görevi oluşturur, izin iptal/silinince görevi kaldırır.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.0.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.0`
 > Modül: `apps/saha/field_operation_holiday` · yeni model içermez
 
 ## 1. Genel Bakış
@@ -23,7 +23,7 @@ başka modüllerin izin kurallarını değiştirmez.
 
 | Modül | Neden |
 |---|---|
-| `field_operation` | `field.operation` görevi, `field.operation.type` modeli, mevcut izin/çakışma kontrolü |
+| `field_operation` | `field.operation` görevi, `field.operation.type` modeli, `_check_leave_conflicts` kancası |
 | `hr_holidays` | `hr.leave` kaydı ve izin türü |
 
 ## 3. Nasıl Çalışır
@@ -42,14 +42,17 @@ başka modüllerin izin kurallarını değiştirmez.
 > üzerinde yazma yetkisi olmasa da akış çalışır. `field_operation` modülünde saha personeli
 > yalnız okuma yetkisine sahiptir (`access_field_operation_field_worker`).
 
-## 4. Mevcut İzin Kontrolü ile İlişkisi
+## 4. İzin Çakışma Kontrolü
 
-`field_operation` modülü, planlanan (planned/progress) bir göreve izinli personel
-atanmasını `_check_team_integrity` ile reddeder (`field_operation/models/field_operation.py:185-240`).
-Bu modül aynı kontrolü devralır ve **yalnız kendi ürettiği izin görevlerini** denetim dışı
-bırakır; gerçek servislerde kontrol aynen çalışmaya devam eder
-(`models/field_operation.py`, `_check_team_integrity`). Testlerde bu davranış ayrıca
-doğrulanır (`test_05`).
+İzin kontrolü **bu modülde** yaşar: `field_operation` çekirdeği artık `hr_holidays`'e bağımlı
+değildir, `_check_team_integrity` içinden `_check_leave_conflicts` kancasını çağırır (çekirdekteki
+tanım boş). Kanca burada onaylı (`state='validate'`) izinleri tek sorguda okur, kayıt tarihleriyle
+kesiştirir ve çakışmada `ValidationError` fırlatır (`models/field_operation.py`).
+
+Kontrol, bu modülün ürettiği izin görevlerini denetim dışı bırakır: `_check_team_integrity`
+override'ı `service_type_id.type == 'leave'` kayıtlarını atlar, çünkü görev zaten personelin
+izinli olduğunu anlatır ve kendini reddedemez. Gerçek servislerde kontrol aynen çalışır
+(`test_05`, `test_08`).
 
 ## 5. Alanlar
 
@@ -71,7 +74,7 @@ Veri: `field_operation_holiday.operation_type_leave` — "Employee Leave" / "Per
 
 ## 7. Testler
 
-`tests/test_field_operation_holiday.py`, `post_install` etiketli, 7 test:
+`tests/test_field_operation_holiday.py`, `post_install` etiketli, 8 test:
 
 1. Onaylı 3 günlük izin → 3 görev, doğru günler, `planned`, personel ve izin bağlantısı; kesim yerel saatle
    doğrulanır (personel takvimi Europe/Istanbul; hiçbir görev yerel gece yarısını geçmez)
@@ -81,6 +84,7 @@ Veri: `field_operation_holiday.operation_type_leave` — "Employee Leave" / "Per
 5. İzinli personel için gerçek servis açılmaya çalışılınca mevcut `ValidationError` hâlâ fırlar
 6. Görevler izin servis tipini taşır
 7. Servis tipi/yetkisi olmayan Time Off memuru senkronu çalıştırabilir (sudo yolu)
+8. İzin kontrolü toplu yapılır: batch başına tek `hr.leave.search`, çakışmada `ValidationError`
 
 ```
 odoo-bin -c <conf> -d <db> -u field_operation_holiday --test-tags /field_operation_holiday --stop-after-init

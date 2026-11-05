@@ -6,6 +6,7 @@ deleted - without disabling the leave check of ``field.operation`` itself.
 """
 
 from datetime import date
+from unittest.mock import MagicMock, patch
 
 import pytz
 
@@ -225,3 +226,49 @@ class TestFieldOperationHoliday(TransactionCase):
         leave.with_user(officer)._sync_leave_operations()
 
         self.assertEqual(len(leave.operation_ids), 3)
+
+    def test_08_leave_conflict_lookups_are_batched(self):
+        """The leave half of the check lives here now: one lookup per batch.
+
+        Moved out of ``field_operation`` together with the check itself: the core
+        module no longer depends on ``hr_holidays``. ``hr.leave.search`` is
+        stubbed on purpose - hr_holidays refuses to create a bare leave inside a
+        test transaction (its own date constraints) - and the contract pinned
+        down here is ours: a *single* lookup whose result is intersected with the
+        record dates, whatever the number of services written at once.
+        """
+        employee = self.env["hr.employee"].create({"name": "Leave Test Employee"})
+        leave = MagicMock()
+        leave.employee_id.name = "Leave Test Employee"
+        leave.holiday_status_id.display_name = "Paid Time Off"
+        leave.request_date_from = date(2026, 3, 10)
+        leave.request_date_to = date(2026, 3, 10)
+        # emulate the recordset API the batched code goes through
+        leave.filtered.return_value = leave
+        leave.__getitem__.return_value = leave
+
+        vals = {
+            "person_ids": [(6, 0, employee.ids)],
+            "start_date": "2026-03-10 08:00:00",
+            "end_date": "2026-03-10 10:00:00",
+            "status": "planned",
+        }
+        with patch.object(
+            type(self.env["hr.leave"]), "search", return_value=leave
+        ) as leave_search:
+            with self.assertRaises(ValidationError) as error:
+                self.operations.create(
+                    [
+                        dict(vals, subject="Conflict Service 1"),
+                        dict(vals, subject="Conflict Service 2"),
+                    ]
+                )
+
+        self.assertEqual(
+            leave_search.call_count,
+            1,
+            "the leaves must be looked up once for the whole batch",
+        )
+        message = str(error.exception)
+        self.assertIn("Leave Test Employee", message)
+        self.assertIn("Paid Time Off", message)

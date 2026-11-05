@@ -1,6 +1,6 @@
 {
     "name": "Field Operation",
-    "version": "19.0.2.6.0",
+    "version": "19.0.2.7.0",
     "category": "Services/Field Service",
     "summary": "Core of field service operation",
     "author": "Softteknik Bilişim",
@@ -13,7 +13,6 @@
         "base",
         "base_geolocalize",
         "hr",
-        "hr_holidays",
         "portal",
     ],
     "data": [

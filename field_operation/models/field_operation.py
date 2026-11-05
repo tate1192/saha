@@ -184,11 +184,13 @@ class FieldOperation(models.Model):
 
     @api.constrains("person_ids", "start_date", "end_date", "status")
     def _check_team_integrity(self):
-        """Refuse a service planned while a member is on leave or busy elsewhere.
+        """Refuse a service planned while a member is busy elsewhere.
 
-        The two lookups are batched: one query for the validated leaves and one
-        for the competing services of every involved employee, whatever the
-        number of records being written.
+        The competing services are looked up once for the whole batch, whatever
+        the number of records being written. The leave side is a hook
+        (:meth:`_check_leave_conflicts`): the core knows nothing about
+        ``hr.leave``, so it installs without ``hr_holidays`` - the time off
+        lookup comes from ``field_operation_holiday``.
         """
         checked = self.filtered(
             lambda rec: rec.person_ids
@@ -199,37 +201,9 @@ class FieldOperation(models.Model):
         if not checked:
             return
 
-        employees = checked.mapped("person_ids")
-        leaves = self.env["hr.leave"].search(
-            [
-                ("employee_id", "in", employees.ids),
-                ("state", "=", "validate"),
-            ]
-        )
-        for rec in checked:
-            date_from, date_to = rec.start_date.date(), rec.end_date.date()
-            leave = leaves.filtered(
-                lambda leave,
-                df=date_from,
-                dt=date_to,
-                emps=rec.person_ids: leave.employee_id in emps
-                and leave.request_date_from
-                and leave.request_date_to
-                and leave.request_date_from <= dt
-                and leave.request_date_to >= df
-            )[:1]
-            if leave:
-                raise ValidationError(
-                    _(
-                        "%(employee)s is on leave/sick leave (%(leave_type)s) "
-                        "and cannot be assigned on these dates."
-                    )
-                    % {
-                        "employee": leave.employee_id.name,
-                        "leave_type": leave.holiday_status_id.display_name,
-                    }
-                )
+        checked._check_leave_conflicts()
 
+        employees = checked.mapped("person_ids")
         competitors = self.search(
             [
                 ("id", "not in", checked.ids),
@@ -260,6 +234,16 @@ class FieldOperation(models.Model):
                         overlap.end_date.strftime("%H:%M"),
                     )
                 )
+
+    def _check_leave_conflicts(self):
+        """Refuse a service planned during an approved employee leave.
+
+        Hook, no-op in the core: ``hr.leave`` is not a dependency of this module
+        anymore, ``field_operation_holiday`` implements the lookup. Called with
+        the records ``_check_team_integrity`` already filtered, on purpose - an
+        override can therefore rely on ``person_ids``, ``start_date`` and
+        ``end_date`` being set.
+        """
 
     @api.constrains("start_date", "end_date")
     def _check_dates(self):

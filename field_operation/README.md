@@ -2,7 +2,7 @@
 
 > Saha servis operasyonunun çekirdeği — iş kaydı, ekip/bölge planlama, durum takibi,
 > portal erişimi ve PDF servis teslim formu.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.2.4.0` (tek kaynak: `__manifest__.py`)
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.2.7.0` (tek kaynak: `__manifest__.py`)
 > Modül: `field_operation` · 49 dosya · 9 Python sınıfı (6 yeni model + 3 inherit) + portal controller
 
 Doküman modül kodundan üretilmiştir; kanıtsız iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
@@ -16,8 +16,10 @@ Suite'in taban modülü: saha servis işini (`field.operation`) kaydeder, planla
   `action_planned` / `action_progress` / `action_done` / `action_cancel` / `action_draft` butonları.
 - **Planlama/atama:** ekip seçilince `_get_team_members` onchange'i ekip üyelerini, ekip liderini
   ve ekip şefini kayda kopyalar.
-- **Çakışma/izin kontrolü:** `_check_team_integrity` atanan personelin onaylı iznini (`hr.leave`,
-  `state='validate'`) ve aynı zaman aralığındaki başka planned/progress işini engeller.
+- **Çakışma kontrolü:** `_check_team_integrity` atanan personelin aynı zaman aralığındaki başka
+  planned/progress işini engeller. İzin tarafı bir kancadır (`_check_leave_conflicts`, çekirdekte
+  boş); `hr.leave` kontrolünü `field_operation_holiday` uygular, bu yüzden çekirdek `hr_holidays`
+  kurulmadan da kurulur.
 - **Ana veri:** ekip, bölge, servis tipi, etiket (Configuration menüsü).
 - **Portal:** müşteri `/my/list_operations` üzerinden kendi işlerini görür, detayda imza atar,
   PDF indirir; biten işte `service_customer_delivery_mail` ile rapor e-postası gider.
@@ -37,7 +39,6 @@ açık (`views/field_operation_view.xml`); portal'da ise müşteriye **bilinçli
 | `base` | `ir.sequence`, `res.partner/users/company`, `ir.rule` |
 | `base_geolocalize` | `partner_latitude/longitude` ve `date_localization` |
 | `hr` | `hr.employee` — `person_ids`, `team_head`, ekip üyeleri |
-| `hr_holidays` | `hr.leave` — izin çakışması kontrolü |
 | `portal` | `portal.mixin`, `CustomerPortal`, portal şablonları |
 
 ## 3. Ana Modeller

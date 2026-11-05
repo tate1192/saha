@@ -4,8 +4,6 @@ Each test targets a concrete bug that was found during the v19 review:
 * team kanban crashed because ``_read_group`` does not return an implicit
   ``__count`` aggregate anymore (v18/v19) and ``draft`` was missing from the
   status counters;
-* the leave/absence conflict check raised a ``TypeError`` instead of a
-  ``ValidationError`` (message/arguments mismatch);
 * the stored partner service counter was never invalidated when an operation
   was added to a child contact;
 * the portal PDF download used a non existing report xml:id;
@@ -22,7 +20,6 @@ Each test targets a concrete bug that was found during the v19 review:
 
 import json
 from datetime import date, timedelta
-from unittest.mock import MagicMock, patch
 
 from dateutil.relativedelta import relativedelta
 from lxml import etree
@@ -53,52 +50,7 @@ class TestFieldOperation(TransactionCase):
         self.assertEqual(data["today"]["total"], 1)
         self.assertTrue(data["has_entries"])
 
-    def test_02_leave_conflict_raises_validation_error(self):
-        """A leave conflict raises ValidationError, with one batched leave lookup.
-
-        ``hr.leave.search`` is stubbed on purpose: hr_holidays refuses to create a
-        bare leave inside a test transaction (its own date constraints), and the
-        contract pinned down here is ours — a *single* lookup whose result is
-        intersected with the record dates, whatever the number of services
-        written at once (the previous implementation queried once per record).
-        """
-        employee = self.env["hr.employee"].create({"name": "Leave Test Employee"})
-        leave = MagicMock()
-        leave.employee_id.name = "Leave Test Employee"
-        leave.holiday_status_id.display_name = "Paid Time Off"
-        leave.request_date_from = date(2026, 3, 10)
-        leave.request_date_to = date(2026, 3, 10)
-        # emulate the recordset API the batched code goes through
-        leave.filtered.return_value = leave
-        leave.__getitem__.return_value = leave
-
-        vals = {
-            "person_ids": [(6, 0, employee.ids)],
-            "start_date": "2026-03-10 08:00:00",
-            "end_date": "2026-03-10 10:00:00",
-            "status": "planned",
-        }
-        with patch.object(
-            type(self.env["hr.leave"]), "search", return_value=leave
-        ) as leave_search:
-            with self.assertRaises(ValidationError) as error:
-                self.env["field.operation"].create(
-                    [
-                        dict(vals, subject="Conflict Service 1"),
-                        dict(vals, subject="Conflict Service 2"),
-                    ]
-                )
-
-        self.assertEqual(
-            leave_search.call_count,
-            1,
-            "the leaves must be looked up once for the whole batch",
-        )
-        message = str(error.exception)
-        self.assertIn("Leave Test Employee", message)
-        self.assertIn("Paid Time Off", message)
-
-    def test_03_partner_count_follows_child_contacts(self):
+    def test_02_partner_count_follows_child_contacts(self):
         """The parent company's stored counter must follow child contacts."""
         company = self.env["res.partner"].create(
             {
@@ -126,7 +78,7 @@ class TestFieldOperation(TransactionCase):
         operation.unlink()
         self.assertEqual(company.field_operation_count, 0)
 
-    def test_04_partner_action_domain_matches_counter(self):
+    def test_03_partner_action_domain_matches_counter(self):
         """The smart button list and the counter must use the same domain."""
         company = self.env["res.partner"].create(
             {
@@ -137,7 +89,7 @@ class TestFieldOperation(TransactionCase):
         action = company.action_view_field_operation()
         self.assertEqual(action["domain"], [("partner_id", "child_of", company.id)])
 
-    def test_05_portal_pdf_report_exists(self):
+    def test_04_portal_pdf_report_exists(self):
         """The report xml:id used by the portal download route must exist."""
         report = self.env.ref("field_operation.field_operation_action_pdf")
         self.assertEqual(report.model, "field.operation")
@@ -148,7 +100,7 @@ class TestFieldOperation(TransactionCase):
             )
         )
 
-    def test_06_week_filters_cover_the_current_week(self):
+    def test_05_week_filters_cover_the_current_week(self):
         """'This Week'/'Last Week' filters must use the real Monday of the week."""
         arch = etree.fromstring(
             self.env.ref("field_operation.view_field_operation_filter").arch
@@ -190,7 +142,7 @@ class TestFieldOperation(TransactionCase):
                 last_week[1][2], expected_start, f"last_week end for {today}"
             )
 
-    def test_07_date_localization_is_not_computed(self):
+    def test_06_date_localization_is_not_computed(self):
         """``date_localization`` must only be set by the geolocation flows."""
         company = self.env["res.partner"].create(
             {
@@ -213,7 +165,7 @@ class TestFieldOperation(TransactionCase):
 
         self.assertEqual(operation.date_localization, fixed_date)
 
-    def test_08_team_service_count(self):
+    def test_07_team_service_count(self):
         """The service counter of a team must follow its operations."""
         team = self.env["field.operation.team"].create({"name": "Counter Team"})
         self.assertEqual(team.service_count, 0)
@@ -225,7 +177,7 @@ class TestFieldOperation(TransactionCase):
         )
         self.assertEqual(team.service_count, 1)
 
-    def test_09_team_kanban_data_is_batched(self):
+    def test_08_team_kanban_data_is_batched(self):
         """Batch kanban data must serve several teams with correct counters."""
         team_a = self.env["field.operation.team"].create({"name": "Batch A"})
         team_b = self.env["field.operation.team"].create({"name": "Batch B"})
@@ -275,7 +227,7 @@ class TestFieldOperation(TransactionCase):
             json.loads(team_a.kanban_graph)[0]["values"], series[0]["values"]
         )
 
-    def test_10_recurring_wizard_stores_utc(self):
+    def test_09_recurring_wizard_stores_utc(self):
         """Generated start dates must be stored in UTC for the user timezone."""
         partner = self.env["res.partner"].create({"name": "Repeat Customer"})
         wizard = (
@@ -310,7 +262,7 @@ class TestFieldOperation(TransactionCase):
             fields.Datetime.to_string(created[1].start_date), "2026-03-10 21:00:00"
         )
 
-    def test_11_partner_statistics_expose_service_counter(self):
+    def test_10_partner_statistics_expose_service_counter(self):
         """The "Stats" cell of a contact must expose the service counter badge."""
         company = self.env["res.partner"].create(
             {"name": "Stats Company", "is_company": True}
@@ -342,7 +294,7 @@ class TestFieldOperation(TransactionCase):
         # Counter is recursive (child contacts included), badge must match it
         self.assertEqual(stats[0]["value"], company.field_operation_count)
 
-    def test_12_contact_mobile_reads_through_without_writing_back(self):
+    def test_11_contact_mobile_reads_through_without_writing_back(self):
         """The contact phone stays the master record: the job copy only follows it.
 
         ``contact_mobile`` was a writable related field: editing the phone on a
@@ -375,3 +327,34 @@ class TestFieldOperation(TransactionCase):
         contact.phone = "444555666"
         operation.invalidate_recordset(["contact_mobile"])
         self.assertEqual(operation.contact_mobile, "444555666")
+
+    def test_12_double_booking_a_person_is_refused(self):
+        """The overlap half of ``_check_team_integrity`` stays in the core.
+
+        The leave half moved to ``field_operation_holiday`` (with its own test),
+        so this pins that a real double booking is still refused here, without
+        any time off module installed.
+        """
+        employee = self.env["hr.employee"].create({"name": "Overlap Test Employee"})
+        vals = {
+            "subject": "First Job",
+            "person_ids": [(6, 0, employee.ids)],
+            "start_date": "2026-03-10 08:00:00",
+            "end_date": "2026-03-10 10:00:00",
+            "status": "planned",
+        }
+        self.env["field.operation"].create(vals)
+
+        with self.assertRaises(ValidationError) as error:
+            self.env["field.operation"].create(
+                dict(
+                    vals,
+                    subject="Second Job",
+                    start_date="2026-03-10 09:00:00",
+                    end_date="2026-03-10 11:00:00",
+                )
+            )
+
+        message = str(error.exception)
+        self.assertIn("Overlap Test Employee", message)
+        self.assertIn("already assigned to job", message)

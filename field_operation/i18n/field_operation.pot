@@ -30,14 +30,6 @@ msgstr ""
 #. odoo-python
 #: code:addons/field_operation/models/field_operation.py:0
 msgid ""
-"%(employee)s is on leave/sick leave (%(leave_type)s) and cannot be assigned "
-"on these dates."
-msgstr ""
-
-#. module: field_operation
-#. odoo-python
-#: code:addons/field_operation/models/field_operation.py:0
-msgid ""
 "%s is already assigned to job %s (%s - %s). There cannot be another job "
 "during the same time period."
 msgstr ""
