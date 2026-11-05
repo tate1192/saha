@@ -51,7 +51,9 @@ Kapsam dışı: yenileme/otomasyon (cron yok), sözleşmeye bağlı faturalama, 
 
 ## 4. Roller ve Güvenlik
 
-`field_operation` modülünün grupları kullanılır; yeni grup tanımlanmaz. ACL
+`field_operation` modülünün grupları kullanılır; yeni grup tanımlanmaz. `total_amount`
+alanı `groups="field_operation.service_group_user"` taşır: saha personeli sözleşme
+tutarını okuyamaz (doğrudan RPC okuması `AccessError` alır). ACL
 (`security/ir.model.access.csv`, 12 satır):
 
 | Model | Field Worker | Office User | Head Office | Admin |

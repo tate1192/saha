@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Agreement",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "category": "Services/Field Service",
     "summary": "Agreement management for field service operations",
     "author": "Softteknik Bilişim",

@@ -62,8 +62,13 @@ class FieldOperation(models.Model):
     close_date = fields.Datetime(string="Close Date")
     color = fields.Integer(default=0)
     sequence = fields.Integer(default=10)
+    # Money is an office concern: field workers must not read the price. The
+    # portal group is kept because the customer portal renders this field.
     service_price = fields.Monetary(
-        string="Prices", tracking=True, currency_field="currency_id"
+        string="Prices",
+        tracking=True,
+        currency_field="currency_id",
+        groups="field_operation.service_group_user,base.group_portal",
     )
     total_work = fields.Float(
         compute="_compute_total_work", string="Total Work", store=True, readonly=True

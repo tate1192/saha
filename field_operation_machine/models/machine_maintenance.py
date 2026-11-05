@@ -93,18 +93,24 @@ class MachineMaintenance(models.Model):
         store=True,
     )
     duration_hours = fields.Float(string="Duration (Hours)")
-    labor_cost = fields.Monetary(string="Labor Cost", currency_field="currency_id")
+    labor_cost = fields.Monetary(
+        string="Labor Cost",
+        currency_field="currency_id",
+        groups="field_operation.service_group_user",
+    )
     parts_cost = fields.Monetary(
         string="Parts Cost",
         compute="_compute_parts_cost",
         store=True,
         currency_field="currency_id",
+        groups="field_operation.service_group_user",
     )
     total_cost = fields.Monetary(
         string="Total Cost",
         compute="_compute_total_cost",
         store=True,
         currency_field="currency_id",
+        groups="field_operation.service_group_user",
     )
     currency_id = fields.Many2one(
         "res.currency",
