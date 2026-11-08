@@ -50,6 +50,10 @@ Kapsam dışı: satış/fatura/muhasebe entegrasyonu yok, portal arayüzü yok, 
 
 ## 4. Roller ve Güvenlik
 
+Bakım maliyetleri (`labor_cost`, `parts_cost`, `total_cost`) ve yedek parça fiyatları
+(`unit_price`, `subtotal`) `groups="field_operation.service_group_user"` taşır; saha
+personeli bu alanları okuyamaz.
+
 `security/ir.model.access.csv` (18 satır) — her model için worker / user / manager satırları:
 
 | Grup | machine.master | document | maintenance | schedule | spare.part | wizard(+line) |

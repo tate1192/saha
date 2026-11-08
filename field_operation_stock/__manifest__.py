@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Stock",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Services/Field Service",
     "summary": "Stock consumption tracking for field operations",
     "description": """

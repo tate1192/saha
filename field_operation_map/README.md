@@ -47,7 +47,7 @@ Yeni model tanımlanmaz; `models/` dizininde tek genişletme vardır.
 
 - **ACL yok:** Bu modülde `security/` dizini bulunmaz. Modülün kendi modeli olmadığı için ACL dosyası gerekmez.
 - `field.operation` erişimi `field_operation` modülünün ACL ve `ir.rule` kayıtlarından gelir
-  (worker: atanmış işler + planned/progress; user: kendi dokümanları).
+  (worker: atanmış işler, draft hariç tüm statüler; user: kendi dokümanları).
 - Harita görünümü için ayrı grup kısıtı yoktur; görünürlük aksiyonu görebilen herkesle aynıdır.
 
 ## 5. Ana Akış

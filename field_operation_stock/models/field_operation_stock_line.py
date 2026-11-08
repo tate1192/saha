@@ -56,11 +56,13 @@ class FieldOperationStockLine(models.Model):
     unit_price = fields.Float(
         string="Unit Price",
         tracking=True,
+        groups="field_operation.service_group_user",
     )
     subtotal = fields.Float(
         string="Subtotal",
         compute="_compute_subtotal",
         store=True,
+        groups="field_operation.service_group_user",
     )
     currency_id = fields.Many2one(
         "res.currency",

@@ -65,7 +65,7 @@ Ayrıcalık: **Field Operation** (`res.groups.privilege`, sequence 23).
 
 | Grup | Ad | `implied_ids` | Kapsam |
 |---|---|---|---|
-| `service_group_worker` | Field Worker | `base.group_user` | Atandığı planned/progress işler |
+| `service_group_worker` | Field Worker | `base.group_user` | Atandığı işler (draft hariç tüm statüler; yazma yalnız planned/progress) |
 | `service_group_user` | Office User | Field Worker | Kendi/ofis kayıtları |
 | `service_group_all` | Head Office | Office User | Tüm kayıtlar |
 | `service_group_manager` | Admin | Head Office | Yapılandırma + `user_root`/`user_admin` |
@@ -78,11 +78,14 @@ ACL (`security/ir.model.access.csv`, 15 satır): iş kaydı için Field Worker `
 yok), Office User / Head Office / Admin `1,1,1,1`, `base.group_portal` `1,0,0,0`; etiket, bölge,
 ekip, tip ve sihirbazda Field Worker okuma / Office User ve üstü tam yetki (sihirbaz yalnız Office User).
 
-Record rule (`security/ir_rule.xml`, 5 kural): Field Worker → `person_ids.user_id = user` **ve**
-`status in ('planned','progress')`; Office User → `user_id = user` veya boş; Head Office → `(1,'=',1)`;
-Portal → `partner_id`/`message_partner_ids` üzerinden `commercial_partner_id`; global multi-company
-kuralı `company_id in company_ids`. `service_price`, `region_id`, `create_date` alanları view'lerde
-`groups="field_operation.service_group_all"` ile kısıtlıdır.
+Record rule (`security/ir_rule.xml`, 6 kural): Field Worker **okuma** → `person_ids.user_id = user`
+ve `status in ('planned','progress','done','cancel')` (draft görünmez); Field Worker **yazma** →
+`person_ids.user_id = user` ve `status in ('planned','progress')`; Office User → `user_id = user`
+veya boş; Head Office → `(1,'=',1)`; Portal → `partner_id`/`message_partner_ids` üzerinden
+`commercial_partner_id`; global multi-company kuralı `company_id in company_ids`. `service_price`
+alanı model düzeyinde `groups="field_operation.service_group_user,base.group_portal"` ile
+kısıtlıdır (saha personeli okuyamaz, müşteri portalı okuyabilir); `region_id` ve `create_date`
+view'lerde `groups="field_operation.service_group_all"` ile kısıtlıdır.
 
 ## 5. Ana Akış
 

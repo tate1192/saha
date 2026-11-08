@@ -1,14 +1,35 @@
 <odoo>
+    <!-- A field worker reads every job they are assigned to, closed ones
+         included: the mobile history and the desktop list both need them. Draft
+         jobs stay hidden until the planning is final. -->
     <record id="rule_service_worker" model="ir.rule">
-        <field name="name">Field: Assigned Jobs</field>
+        <field name="name">Field: Assigned Jobs (read)</field>
         <field name="model_id" ref="field_operation.model_field_operation"/>
-        <field name="domain_force">
-                [
-                ('person_ids.user_id','=',user.id),
-                ('status','in',['planned','progress'])
-                ]
-            </field>
+        <field name="domain_force">[
+            ('person_ids.user_id','=',user.id),
+            ('status','in',['planned','progress','done','cancel'])
+        ]</field>
         <field name="groups" eval="[(4, ref('service_group_worker'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Writing is limited to the open part of the flow: once a job is done or
+         cancelled it is history and only the office may still edit it. -->
+    <record id="rule_service_worker_write" model="ir.rule">
+        <field name="name">Field: Assigned Jobs (write)</field>
+        <field name="model_id" ref="field_operation.model_field_operation"/>
+        <field name="domain_force">[
+            ('person_ids.user_id','=',user.id),
+            ('status','in',['planned','progress'])
+        ]</field>
+        <field name="groups" eval="[(4, ref('service_group_worker'))]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
     </record>
 
     <record id="service_user_rule" model="ir.rule">

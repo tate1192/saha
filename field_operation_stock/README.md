@@ -60,6 +60,7 @@ Kapsam dışı: iade (reverse move) ve tedarik (incoming) otomasyonu, maliyetin 
 - `security/ir_rule.xml` **tek bir global çok şirket kuralı** tanımlar: `field.operation.stock.line` kayıtları `company_ids` listesindeki şirketlerle sınırlanır (`security/ir_rule.xml:12-17`); kural `global=True` olduğu için hiçbir grubun kuralıyla gevşetilemez (machine modülündeki desenin aynısı).
 - Modül yeni `res.groups` tanımlamaz; mevcut `field_operation.service_group_*` gruplarını kullanır.
 - Akıllı buton, sekme ve "Sarfı Onayla" butonunda grup kısıtı yok (`views/field_operation_view.xml:12-48`); saha çalışanı (worker) satırı **görür** ama ACL gereği yazamaz, buton tıklanırsa `AccessError` beklenir.
+- **Para alanları saha personeline kapalıdır:** `field.operation` üzerindeki `total_stock_cost`, `total_warranty_cost`, `total_stock_all` ile sarf satırındaki `unit_price`/`subtotal` alanları `groups="field_operation.service_group_user"` taşır. Worker bu alanları `fields_get`'te görmez, doğrudan okuma `AccessError` alır.
 - Maliyet alanları `groups="field_operation.service_group_all"` ile sınırlıdır (`views/field_operation_view.xml:30-35`).
 
 ## 5. Ana Akış

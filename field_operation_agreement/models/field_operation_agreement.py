@@ -61,7 +61,10 @@ class FieldOperationAgreement(models.Model):
 
     # --- Financial ---
     total_amount = fields.Monetary(
-        string="Total Amount", tracking=True, currency_field="currency_id"
+        string="Total Amount",
+        tracking=True,
+        currency_field="currency_id",
+        groups="field_operation.service_group_user",
     )
     currency_id = fields.Many2one(
         "res.currency",

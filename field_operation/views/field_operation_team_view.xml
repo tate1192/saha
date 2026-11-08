@@ -45,7 +45,7 @@
                         <group>
                             <field name="team_members_ids"
                                    widget="many2many_tags_avatar"
-                                   options="{'color_field': 'color'}"
+                                   options="{'color_field': 'color', 'no_quick_create': True}"
                                    placeholder="Add team members..."/>
                             <field name="region_id" options="{'no_create': True, 'no_open': False}"/>
                             <field name="active" widget="boolean_toggle" invisible="1"/>
@@ -193,7 +193,7 @@
                 <field name="team_members_ids"
                        widget="many2many_tags_avatar"
                        optional="show"
-                       options="{'color_field': 'color'}"/>
+                       options="{'color_field': 'color', 'no_quick_create': True}"/>
                 <field name="company_id"
                        groups="base.group_multi_company"
                        optional="hide"/>

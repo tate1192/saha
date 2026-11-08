@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Worker",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "category": "Services/Field Service",
     "summary": "Limited visibility for field operations personnel.",
     "author": "Softteknik Bilişim",
