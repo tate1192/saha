@@ -5,6 +5,26 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.8.1] — 2026-11-08
+
+### Ekip üyeleri alanı: serbest metinden hızlı personel oluşturma kapandı
+
+- `field.operation.team` formunda ve listesinde `team_members_ids`
+  (`many2many_tags_avatar`), autocomplete'e yazılan isimden **`Create "<isim>"`**
+  ile yeni `hr.employee` açabiliyordu: hızlı oluşturma `hr.employee.name_create`
+  çağırıyor ve İK ana verisine yalnız adı dolu bir personel kaydı düşüyordu. Saha
+  ekibi ekranı personel giriş noktası değil; personelin İK'da açılmış olması gerekir.
+- Alanın option'ları `{'color_field': 'color', 'no_quick_create': True}` oldu (form +
+  list). `no_quick_create`, `many2many_tags` option'larından yalnız metinden hızlı
+  oluşturmayı kapatır; **"Create and edit..."** açık kalır, yani kullanıcı personeli
+  tam `hr.employee` formundan (zorunlu alanlarla) açmaya devam eder.
+- `no_create: True` bilinçli olarak kullanılmadı: o seçenek "Create and edit..."
+  yolunu da kapatıyor; bu ekranın personel açmak için tek yol olduğu kurulumlarda
+  işi kilitlerdi.
+- Testler: `field_operation/tests/test_team_members_quick_create.py` (2) — yayımlanan
+  form ve list arch'ında `team_members_ids` için `no_quick_create=True` var ve
+  `no_create` yok; `color_field` korunuyor.
+
 ## [field_operation: 19.0.2.8.0 · field_operation_worker: 19.0.1.2.0 · field_operation_stock: 19.0.1.1.0 · field_operation_agreement: 19.0.1.2.0 · field_operation_machine: 19.0.1.2.0] — 2026-11-05
 
 ### Saha personeli güvenliği: okuma/yazma kuralı ayrıldı, para alanları ofise kısıtlandı
