@@ -3,7 +3,7 @@
 > `field.operation` kayıtları için **Gantt (zaman çizelgesi) görünümü** — `soft_gantt`
 > view tipi üzerinde. Sürükle-bırak ile yeniden planlama, duruma göre renk/ilerleme,
 > arama-filtre, kayıt açma.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.1.2`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.2.0`
 > Modül: `apps/saha/field_operation_gantt` · yeni iş modeli yok (view + 2 hesaplanmış alan)
 
 ## 1. Neden yeniden yazıldı
@@ -38,6 +38,10 @@ hesaplanmış alan** içerir.
 | `default_order` | — | `start_date asc, id asc` (pencere içinde kronolojik) |
 | `default_range` | — | `week` — açılış penceresi: **planlanan hafta** (planlama ileriye yazılır; ay penceresi bugüne kadar 4 hafta bitmiş iş gösteriyordu) |
 | `group_by` | — | `team_id` — **satır = ekip**, o ekibin servisleri satır boyunca tarih ekseninde çubuklar; satır etiketi grubun görünen adıdır |
+| `group_total` | `total_work` | Ekip satırında o ekibin planlanmış iş yükü toplamı: `"Ekip A (12) · Total Work: 17.5"`; kayıt sayısı zaten etikette |
+| `cell_create` | — | `1`: boş hücreye çift tık → servis formu **hücrenin tarihleriyle** (gün ölçeğinde 1 saat, hafta ölçeğinde 1 gün); ekip satırındaki `+` → form **ekip default'lu** |
+| `decoration-danger` | `status` | `cancel` → barın içinde kırmızı halka |
+| `decoration-warning` | `status` | `draft` → barın içinde amber halka (renk durumu zaten taşıyor; halka ikinci okuma: takvime konmuş ama onaylanmamış) |
 | `limit` | — | 1000 kayıt; artık yalnız **güvenlik ağı** (hangisinin görüneceğini pencere belirler) |
 | `<field>` | `subject`, `team_id`, `partner_id`, `status` | çubuk ipucunda |
 
@@ -75,6 +79,12 @@ hesaplanmış alan** içerir.
   kalanı. Geçmiş sürümdeki `limit="1000"` + `default_order desc` çözümü en yeni 1000
   kaydı çekiyordu: 13.258 kayıtlık tabloda bu bir yama, doğru cevap değildi. `limit`
   şimdi yalnızca yoğun bir pencere için güvenlik ağıdır.
+- **Planlama jestleri:** `cell_create="1"` ile boş hücreye çift tıklamak servis formunu
+  **hücrenin tarihleriyle**, ekip satırındaki `+` ise **ekip default'lu** açar — planlama
+  ekranından çıkmadan plan yazmayı sağlar; form, default'lar ve yetki aksiyonun kendisindedir
+  (view yalnızca grubu ve tarihleri önerir). `group_total="total_work"` ekip satırında o
+  ekibin planlanmış iş yükünü toplar. `decoration-danger`/`decoration-warning` ise
+  `cancel` ve `draft` durumlarını rengin üstünde halkayla işaretler.
 - **Satır = ekip:** `group_by="team_id"` ile sol sütun **ekip** adını taşır ve o ekibin
   servisleri satır boyunca **tarih ekseninde** çubuk olarak dizilir (dikeyde ekip, yatayda
   tarihler). Aynı gün çakışan iki servis üst üste binmesin diye satır **şeritlere** (lane)
@@ -96,7 +106,7 @@ hesaplanmış alan** içerir.
 
 ## 4. Testler
 
-`tests/test_gantt_view.py` (post_install, **12 test**): görünümün model tarafından çözülmesi,
+`tests/test_gantt_view.py` (post_install, **13 test**): görünümün model tarafından çözülmesi,
 arch'ın beklenen alanları adlandırması, **çevrilebilir `label` niteliğinde alan adı bulunmaması**,
 aksiyonun `gantt_soft` modunu sunması, **modun diğer modları
 düşürmeden eklendiği** (kardeş modül dizesini ezse bile geri geldiği), fonksiyonun **idempotent**
@@ -104,8 +114,8 @@ olması, **açılış görünümünün `list` kalması**, 5 durum için ilerleme
 **eşlemenin her durumu kapsadığı** (yeni bir durum eklendiğinde kırmızı olan nöbetçi test),
 uninstall hook'unun modu düşürmesi.
 
-View tipinin kendisi `soft_gantt` modülünde kapsanır: `tests/test_gantt_view.py`'de **31 python testi**
-ve `static/tests/*.js` (8 dosya) içinde **169 hoot testi** — pencere matematiği
+View tipinin kendisi `soft_gantt` modülünde kapsanır: `tests/test_gantt_view.py`'de **40 python testi**
+ve `static/tests/*.js` (8 dosya) içinde **214 hoot testi** — pencere matematiği
 (`windowRange`/`shiftWindow`, takvim ayı/çeyrek/yıl sınırları, pencerelerin boşluksuz bitişmesi), arch
 ayrıştırma, sanallaştırılmış çizim, detay kartı, alan metni; ayrıca arch doğrulama, ACL ve tarih
 matematiği uçları.
