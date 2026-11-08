@@ -178,3 +178,19 @@ class TestFieldOperationAgreement(TransactionCase):
         self.assertNotEqual(first.reference, "/")
         self.assertNotEqual(second.reference, "/")
         self.assertNotEqual(first.reference, second.reference)
+
+    def test_09_worker_cannot_read_the_amount(self):
+        """The total amount is office data; the worker sees no money."""
+        worker_group = self.env.ref(WORKER_GROUP)
+        worker = self.env["res.users"].create(
+            {
+                "name": "Agreement Amount Worker",
+                "login": "agreement_amount_worker",
+                "group_ids": [(6, 0, [worker_group.id])],
+            }
+        )
+        agreement = self._create_agreement(total_amount=750.0)
+        self.assertEqual(agreement.total_amount, 750.0)
+        self.assertNotIn("total_amount", self.Agreement.with_user(worker).fields_get())
+        with self.assertRaises(AccessError):
+            agreement.with_user(worker).read(["total_amount"])

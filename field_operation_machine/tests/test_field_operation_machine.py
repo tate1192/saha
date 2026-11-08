@@ -305,3 +305,34 @@ class TestFieldOperationMachine(TransactionCase):
     def test_maintenance_line_model_is_removed(self):
         """machine.maintenance.line was dropped from the registry."""
         self.assertNotIn("machine.maintenance.line", self.env.registry)
+
+    # ------------------------------------------------------------------
+    # T8 - the money fields are office-only
+    # ------------------------------------------------------------------
+    def test_worker_cannot_read_the_costs(self):
+        """A worker sees maintenance and spare parts without the cost fields."""
+        worker_group = self.env.ref("field_operation.service_group_worker")
+        worker = self.env["res.users"].create(
+            {
+                "name": "Machine Cost Worker",
+                "login": "machine_cost_worker",
+                "group_ids": [(6, 0, [worker_group.id])],
+            }
+        )
+        machine = self._create_machine()
+        maintenance = self.env["machine.maintenance"].create(
+            {"machine_id": machine.id, "labor_cost": 50.0}
+        )
+        product = self._make_product(quantity=2.0)
+        spare = self._create_spare_part(machine, product, quantity=1.0, unit_price=10.0)
+
+        self.assertNotIn(
+            "total_cost", self.env["machine.maintenance"].with_user(worker).fields_get()
+        )
+        self.assertNotIn(
+            "unit_price", self.env["machine.spare.part"].with_user(worker).fields_get()
+        )
+        with self.assertRaises(AccessError):
+            maintenance.with_user(worker).read(["labor_cost"])
+        with self.assertRaises(AccessError):
+            spare.with_user(worker).read(["unit_price"])

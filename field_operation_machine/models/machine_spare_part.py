@@ -34,12 +34,17 @@ class MachineSparePart(models.Model):
         string="Product Code", related="product_id.default_code", store=True
     )
     quantity = fields.Float(string="Quantity", default=1.0, required=True)
-    unit_price = fields.Monetary(string="Unit Price", currency_field="currency_id")
+    unit_price = fields.Monetary(
+        string="Unit Price",
+        currency_field="currency_id",
+        groups="field_operation.service_group_user",
+    )
     subtotal = fields.Monetary(
         string="Subtotal",
         compute="_compute_subtotal",
         store=True,
         currency_field="currency_id",
+        groups="field_operation.service_group_user",
     )
     currency_id = fields.Many2one(
         "res.currency",

@@ -18,23 +18,27 @@ class FieldOperation(models.Model):
         string="Stock Lines",
         compute="_compute_stock_line_count",
     )
+    # Costs are office data; the worker role reads the operation without them.
     total_stock_cost = fields.Monetary(
         string="Service Stock Cost",
         compute="_compute_stock_costs",
         currency_field="currency_id",
         store=True,
+        groups="field_operation.service_group_user",
     )
     total_warranty_cost = fields.Monetary(
         string="Warranty Stock Cost",
         compute="_compute_stock_costs",
         currency_field="currency_id",
         store=True,
+        groups="field_operation.service_group_user",
     )
     total_stock_all = fields.Monetary(
         string="Total Stock Cost",
         compute="_compute_stock_costs",
         currency_field="currency_id",
         store=True,
+        groups="field_operation.service_group_user",
     )
 
     @api.depends("stock_line_ids")

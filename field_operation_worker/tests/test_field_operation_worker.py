@@ -15,12 +15,14 @@ either broken or unverified:
 * the action, its ``ir.actions.act_window.view`` links, the menu groups and the
   ``my_jobs`` filter were never asserted.
 * the ``my_jobs`` default filter is a search filter, not a security boundary:
-  the actual visibility comes from the base record rule ``rule_service_worker``
-  (``person_ids.user_id = user.id`` and ``status in (planned, progress)``).
+  the actual visibility comes from the base record rules. Reading covers the
+  worker's own jobs in every non-draft status (``rule_service_worker``), while
+  writing stops at the open part of the flow (``rule_service_worker_write``).
 """
 
 from lxml import etree
 
+from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -151,10 +153,11 @@ class TestFieldOperationWorker(TransactionCase):
         )
 
     def test_05_worker_only_sees_assigned_jobs(self):
-        """A worker sees assigned jobs in progress, not the ones assigned away.
+        """A worker reads their own jobs in every non-draft status.
 
         Visibility is enforced by the base record rule ``rule_service_worker``
-        (``person_ids.user_id = user.id`` and ``status in (planned, progress)``).
+        (``person_ids.user_id = user.id`` and the job is not a draft). Closed
+        jobs stay readable (mobile history); drafts and foreign jobs stay hidden.
         """
         worker_group = self.env.ref("field_operation.service_group_worker")
         worker_user = self.env["res.users"].create(
@@ -180,10 +183,18 @@ class TestFieldOperationWorker(TransactionCase):
         unassigned = self.env["field.operation"].create(
             {"subject": "Not assigned to worker", "status": "progress"}
         )
-        # Assigned but no longer in (planned, progress): the rule hides it too.
+        # Assigned but not planned yet: still a draft, hidden from the worker.
+        draft = self.env["field.operation"].create(
+            {
+                "subject": "Assigned but still a draft",
+                "status": "draft",
+                "person_ids": [(6, 0, employee.ids)],
+            }
+        )
+        # Assigned and closed: readable for the history, but not writable.
         finished = self.env["field.operation"].create(
             {
-                "subject": "Assigned but finished",
+                "subject": "Assigned and finished",
                 "status": "done",
                 "person_ids": [(6, 0, employee.ids)],
             }
@@ -192,8 +203,9 @@ class TestFieldOperationWorker(TransactionCase):
         visible = self.env["field.operation"].with_user(worker_user).search([])
 
         self.assertIn(assigned, visible)
+        self.assertIn(finished, visible)
         self.assertNotIn(unassigned, visible)
-        self.assertNotIn(finished, visible)
+        self.assertNotIn(draft, visible)
         # An explicit id search must not leak the hidden record either.
         self.assertFalse(
             self.env["field.operation"]
@@ -215,3 +227,36 @@ class TestFieldOperationWorker(TransactionCase):
         }
         self.assertIn("my_jobs", domains)
         self.assertEqual(domains["my_jobs"], "[('person_ids.user_id','=',uid)]")
+
+    def test_07_worker_writes_only_open_jobs(self):
+        """Writing is limited to the open flow, even for the worker's own jobs."""
+        worker_group = self.env.ref("field_operation.service_group_worker")
+        worker_user = self.env["res.users"].create(
+            {
+                "name": "Worker Write Scope",
+                "login": "worker_write_scope@example.com",
+                "group_ids": [(6, 0, [worker_group.id])],
+            }
+        )
+        employee = self.env["hr.employee"].create(
+            {"name": "Worker Write Employee", "user_id": worker_user.id}
+        )
+        planned = self.env["field.operation"].create(
+            {
+                "subject": "Open job",
+                "status": "planned",
+                "person_ids": [(6, 0, employee.ids)],
+            }
+        )
+        done = self.env["field.operation"].create(
+            {
+                "subject": "Closed job",
+                "status": "done",
+                "person_ids": [(6, 0, employee.ids)],
+            }
+        )
+
+        planned.with_user(worker_user).write({"subject": "Worker note"})
+        self.assertEqual(planned.subject, "Worker note")
+        with self.assertRaises(AccessError):
+            done.with_user(worker_user).write({"subject": "Too late"})

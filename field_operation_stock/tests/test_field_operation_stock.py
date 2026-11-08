@@ -3,7 +3,7 @@
 
 import re
 
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -312,3 +312,38 @@ class TestFieldOperationStock(TransactionCase):
 
         self.assertIn(line_a, visible)
         self.assertNotIn(line_b, visible)
+
+    # ------------------------------------------------------------------
+    # T8 - the money fields are office-only
+    # ------------------------------------------------------------------
+    def test_worker_cannot_read_the_costs(self):
+        """A worker reads the operation and the line without the money fields."""
+        worker_group = self.env.ref("field_operation.service_group_worker")
+        worker = self.env["res.users"].create(
+            {
+                "name": "Stock Read-only Worker",
+                "login": "stock_readonly_worker",
+                "group_ids": [(6, 0, [worker_group.id])],
+            }
+        )
+        employee = self.env["hr.employee"].create(
+            {"name": "Stock Worker Employee", "user_id": worker.id}
+        )
+        operation = self._make_operation()
+        operation.write({"person_ids": [(6, 0, employee.ids)], "status": "planned"})
+        product = self._make_product(quantity=4.0)
+        line = self._make_line(operation, product, quantity=1.0, unit_price=12.5)
+        self.assertEqual(line.subtotal, 12.5)
+
+        self.assertNotIn(
+            "total_stock_cost",
+            self.env["field.operation"].with_user(worker).fields_get(),
+        )
+        self.assertNotIn(
+            "unit_price",
+            self.env["field.operation.stock.line"].with_user(worker).fields_get(),
+        )
+        with self.assertRaises(AccessError):
+            operation.with_user(worker).read(["total_stock_cost"])
+        with self.assertRaises(AccessError):
+            line.with_user(worker).read(["unit_price"])

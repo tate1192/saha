@@ -61,7 +61,11 @@ kendi işlerine odaklı liste, kanban ve form ekranları.
 
 Kapsam dışı: bu modül yeni model/alan tanımlamaz, ACL üretmez, cron kurmaz.
 
-<!-- DOLDURULACAK: Saha çalışanından hangi alanların gizlenmesi iş gereği? (maliyet, müşteri notu vb.) -->
+Saha çalışanından gizlenen alanlar model düzeyinde tanımlıdır (view değil):
+`field.operation.service_price`, stok maliyet toplamları, sözleşme tutarı ve
+makine maliyetleri `groups=` ile ofis grubuna kısıtlanmıştır; personel bu alanları
+RPC'den bile okuyamaz (`AccessError`). Para dışındaki iş bilgileri (adres, telefon,
+açıklama, form, imza) görünür kalır.
 
 ## 2. Bağımlılıklar
 
@@ -87,11 +91,13 @@ Modül kendi modelini tanımlamaz (models/ dizini yok). Tüm görünümler `fiel
 - **Form butonu:** `action_send_report_mail` → `groups="base.group_user"`
   (Service ve Done butonlarında grup kısıtı yok; görünürlük `invisible` koşuluyla yönetiliyor)
 - **Kayıt kuralı:** modülde tanımlı değil; **ama** görünürlük güvenlik sınırı base
-  modülden gelir: `field_operation.rule_service_worker` kuralı
-  (`field_operation.service_group_worker` grubuna uygulanır) domain'i
-  `[('person_ids.user_id','=',user.id),('status','in',['planned','progress'])]`.
-  Yani "My Jobs" bir varsayılan **filtre**dir; asıl kayıt kısıtını base modülün
-  kuralı sağlar (worker kullanıcı atanmadığı işleri görmez).
+  modülden gelir: `field_operation.rule_service_worker` (okuma) domain'i
+  `[('person_ids.user_id','=',user.id),('status','in',['planned','progress','done','cancel'])]`
+  — personel atandığı işleri her statüde okur (mobil/desktop geçmiş), draft işleri ve
+  başkasının işini görmez. `field_operation.rule_service_worker_write` (yazma) ise
+  `status in ('planned','progress')` ile sınırlıdır: kapanmış iş salt-okunurdur, yalnız
+  ofis düzenleyebilir. "My Jobs" bir varsayılan **filtre**dir; asıl kayıt kısıtını bu
+  iki kural sağlar.
 
 ## 5. Ana Akış
 

@@ -5,6 +5,35 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation: 19.0.2.8.0 · field_operation_worker: 19.0.1.2.0 · field_operation_stock: 19.0.1.1.0 · field_operation_agreement: 19.0.1.2.0 · field_operation_machine: 19.0.1.2.0] — 2026-11-05
+
+### Saha personeli güvenliği: okuma/yazma kuralı ayrıldı, para alanları ofise kısıtlandı
+
+Mobil PWA'nın `sudo()` yükseltmeleri kaldırılabilmesi için worker profilinin
+sınırları netleştirildi.
+
+- **Kayıt kuralı ikiye ayrıldı:** `rule_service_worker` artık yalnız **okuma**
+  (kendi işleri, draft hariç tüm statüler: planned/progress/done/cancel); yeni
+  `rule_service_worker_write` **yazma**yı açık akışla sınırlıyor
+  (planned/progress). Önceden kapanan iş worker için tamamen görünmezdi ve mobil
+  API bunu `sudo()` ile eziyordu; artık mobil geçmiş kuralın kendisinden geliyor,
+  kapanmış işe yazma isteği sunucuda `AccessError` alıyor.
+- **Para/maliyet alanları `groups=` ile ofis grubuna kısıtlandı:**
+  `field.operation.service_price` (müşteri portalı için `base.group_portal` da
+  dahil), stok maliyet toplamları + sarf satırı `unit_price`/`subtotal`,
+  sözleşme `total_amount`, makine bakım `labor_cost`/`parts_cost`/`total_cost`
+  ve yedek parça `unit_price`/`subtotal`. Worker bu alanları `fields_get`'te
+  görmez, doğrudan RPC okuması `AccessError` alır.
+- **Testler:** `field_operation`'da yeni `test_worker_security.py` (okuma/yazma
+  kapsamı + fiyat alanı), worker modülünde kapalı iş yazma reddi,
+  stock/agreement/machine modüllerinde maliyet alanı erişim testleri.
+- **Doküman:** field_operation, worker, stock, agreement, machine ve map
+  README'lerindeki kural/güvenlik notları güncellendi.
+
+**Koordinasyon:** mobil PWA (`apps/saha_mobil/field_operation_mobile`) ayrı
+depoda; oradaki `sudo()` fallback'leri kaldırıldı ve "önce imza, sonra Tamamla"
+akışı bu kurallara göre güncellendi (1.2.0).
+
 ## [field_operation: 19.0.2.7.0 · field_operation_attendance: 19.0.1.1.0 · field_operation_pest: 19.0.1.1.2 · field_operation_contract: 19.0.1.1.0 · field_operation_contract_repeat: 19.0.1.0.0 · field_operation_forms: 19.0.1.2.0 · field_operation_geolocation: 19.0.1.7.0] — 2026-11-05
 
 ### Yapısal inceleme turu: suite testleri, ölü kod, ikon ve lint kapısı
