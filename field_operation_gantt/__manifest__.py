@@ -3,7 +3,7 @@
 
 {
     "name": "Field Operation Gantt",
-    "version": "19.0.1.1.2",
+    "version": "19.0.1.2.0",
     "category": "Services/Field Service",
     "summary": "Gantt view of the field operations (soft_gantt view type)",
     "description": """
@@ -18,6 +18,11 @@ view type, in the Field Operations action.
   a completion percentage and a bar colour, both derived from ``status``
 * a user without write access on field operations sees the chart without being
   able to move the bars: the rights travel in the arch, from the server
+* the planning gestures of ``soft_gantt`` are enabled on the view: a team row
+  sums its planned work (``group_total``), a double click on an empty cell or
+  the "+" of a team row creates an operation with the dates or the team
+  defaulted (``cell_create``), and the cancelled/draft states are flagged with
+  decoration rings on top of the status colour (``decoration-*``)
 """,
     "author": "Softteknik Bilişim",
     "website": "https://softteknik.com",
