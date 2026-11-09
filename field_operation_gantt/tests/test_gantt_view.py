@@ -51,6 +51,25 @@ class TestFieldOperationGantt(TransactionCase):
         ):
             self.assertIn(expected, arch)
 
+    def test_the_view_enables_the_planning_gestures(self):
+        """The planning gestures of ``soft_gantt`` are wired on this screen.
+
+        ``group_total`` sums a team row's planned work, ``cell_create`` opens
+        the operation form with the clicked cell's dates or the row's team, and
+        the two decorations flag the facts the status colour cannot carry on its
+        own: a cancelled slot must stay visible on the plan, a draft one is
+        placed but not confirmed yet.
+        """
+        view = self.env.ref("field_operation_gantt.view_field_operation_gantt_soft")
+        arch = self.env["field.operation"].get_view(view.id, "gantt_soft")["arch"]
+        for expected in (
+            'group_total="total_work"',
+            'cell_create="1"',
+            "decoration-danger=\"status == 'cancel'\"",
+            "decoration-warning=\"status == 'draft'\"",
+        ):
+            self.assertIn(expected, arch)
+
     def test_the_view_has_no_translatable_field_name(self):
         """A field name must not sit in the translatable ``label`` attribute.
 

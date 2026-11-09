@@ -32,6 +32,25 @@
 
         Trade-off: what is *shown* is one week; an operation outside it is one
         arrow away, not on screen.
+
+        The planning gestures come from the view type and are enabled here:
+
+        * ``group_total="total_work"``: an expanded or folded team row sums the
+          planned work of its operations, so the office reads a team's workload
+          for the week without opening the group ("Ekip A (12) · Total Work:
+          17.5"). ``total_work`` is a stored computed Float, so summing it costs
+          nothing at read time.
+        * ``cell_create="1"``: a double click on an empty cell opens the
+          operation form with that cell's dates defaulted (an hour at the day
+          scale, a day at the week scale), and the "+" of a team row opens it
+          with the team defaulted. The form, its defaults and its rights are the
+          action's own; the view only proposes the group and the dates.
+        * ``decoration-danger`` / ``decoration-warning``: two facts the bar
+          colour does not carry. A cancelled operation keeps its status colour
+          but gets a red ring (a cancelled slot must stay visible on the plan),
+          and a draft operation keeps its grey but gets an amber ring: it is
+          placed on the calendar but not yet confirmed. The expressions are read
+          on the record and the fields they name are requested with the window.
     -->
     <record id="view_field_operation_gantt_soft" model="ir.ui.view">
         <field name="name">field.operation.gantt.soft</field>
@@ -46,9 +65,13 @@
                 default_order="start_date asc, id asc"
                 default_range="week"
                 group_by="team_id"
+                group_total="total_work"
                 mode="week"
                 scales="day,week,month"
                 limit="1000"
+                cell_create="1"
+                decoration-danger="status == 'cancel'"
+                decoration-warning="status == 'draft'"
             >
                 <field name="subject"/>
                 <field name="team_id"/>
