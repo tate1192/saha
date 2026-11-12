@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Field Operation Route Board</title>
+    <style>
+        body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #374151;
+               margin: 0; padding: 24px 32px; line-height: 1.55; }
+        h1 { color: #111827; font-size: 26px; margin: 0 0 4px; }
+        h2 { color: #111827; font-size: 17px; margin: 22px 0 8px; }
+        p, li { font-size: 14px; }
+        ul { padding-left: 20px; }
+        .muted { color: #6b7280; font-size: 13px; }
+        .pill { display: inline-block; background: #eff6ff; color: #1d4ed8; border-radius: 999px;
+                padding: 2px 10px; font-size: 12px; font-weight: 600; margin-right: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Günün Rotaları — Dispatcher Route Board</h1>
+    <p class="muted">Odoo 19 · Softteknik Bilişim · AGPL-3</p>
+
+    <p>
+        One screen with the whole day's routes: every team's route on a single map in its
+        own colour, numbered stops, the start/end point of the loop, live positions and a
+        filter panel on the right. Built on top of <strong>Field Operation Geolocation</strong>
+        and <strong>Soft Web Map</strong> (Leaflet), installed automatically when both are present.
+    </p>
+
+    <h2>What it does</h2>
+    <ul>
+        <li>Menu <em>Field Operation &gt; Daily Routes</em> and a <em>Routes</em> button on the team form.</li>
+        <li>Coloured closed-loop polylines, numbered stop pins, home/depot start marker, live team markers.</li>
+        <li>Right panel: per-team stops/missing coordinates/km/last seen, search, filters
+            (Online only, Route not saved, Missing coordinates), solo mode, fit-to-team.</li>
+        <li>Stop popup with customer, time, district, address, phone and <em>Open Job</em> /
+            <em>Directions</em> actions.</li>
+        <li>Date navigation (previous / today / tomorrow / picker), live polling every 45 s,
+            day KPIs and totals.</li>
+    </ul>
+
+    <h2>Access</h2>
+    <p>
+        The board is a dispatcher screen: menu and JSON endpoints require the
+        <span class="pill">Head Office</span> group of Field Operation. Field workers cannot
+        open it or read the other teams' routes.
+    </p>
+
+    <h2>Limitations of this version</h2>
+    <ul>
+        <li>Read-only: reorder and save through the existing daily plan wizard (pencil on a team).</li>
+        <li>Route geometry is a straight line (haversine); real road geometry / ETA comes later.</li>
+        <li>Unassigned jobs are only counted, not drawn.</li>
+        <li>Browser/OWL/Leaflet behaviour must be checked in staging; the module install and the
+            Python test suite are green.</li>
+    </ul>
+</body>
+</html>
