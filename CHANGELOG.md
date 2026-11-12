@@ -5,6 +5,38 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_geolocation_board: 19.0.1.0.0] — 2026-11-12
+
+### Dispeçer için "Günün Rotaları" panosu (yeni opsiyonel modül)
+
+- `field_operation_geolocation` üzerine opsiyonel köprü modül; `auto_install=False`,
+  Apps > Update Apps List sonrası elle kurulur. `soft_web_map` bağımlılığı vardır:
+  Leaflet `soft_web_map.assets_leaflet` lazy bundle'ından gelir, karo ayarları
+  `soft_web_map.tile_url` / `soft_web_map.copyright` parametrelerinden okunur.
+  Kurulumda `soft` ağacı da `--addons-path`'te olmalıdır.
+- Pano: takım başına renkli kapalı rota döngüsü, numaralı duraklar, ev/depo/şirket
+  başlangıç noktası ve 45 sn'de yenilenen canlı takım konumu; sağ panelde takım
+  listesi, arama, Sadece canlı / Rota kaydedilmemiş / Konumsuz filtreleri, solo mod.
+- Veri `field.operation.team._day_board_data` / `_live_positions` üzerinden gelir
+  (`/field_operation_geolocation_board/day_board` ve `/live` jsonrpc uçları); yalnız
+  `field_operation.service_group_all` (Head Office) grubuna açıktır ve kullanıcının
+  şirketleriyle sınırlıdır. `field.operation.team` üzerinde kayıt kuralı olmadığı
+  için şirket kapsamı ayrıca `company_id in companies` ile uygulanır.
+- Rota sırası plan sihirbazıyla aynı kaynaktan gelir: geolocation >= 19.0.1.8.0'da
+  `field.operation._day_operations_for_team`; 19.0.1.7.0'da aynı
+  sequenced/unsequenced sıralamasını yapan `_board_legacy_day_operations`.
+- Pano salt-okunur; takım kartındaki kalem mevcut günlük plan sihirbazını açar.
+- Testler: `field_operation_geolocation_board/tests/test_day_board.py` (22 test; 1
+  skip, geolocation 19.0.1.7.0'da ortak helper yok) — sıra, geometri, renkler, canlı
+  konum, şirket kapsamı, yetki ve plan sihirbazıyla parite.
+
+**Doğrulama:** `-i field_operation_geolocation_board` (temiz, demo'suz db; çekirdek +
+saha + soft/soft_web_map addons-path) RC 0; ardından
+`-u field_operation_geolocation_board --test-tags=/field_operation_geolocation_board`
+→ 0 failed, 0 error(s) of 22 tests (1 skipped). Aynı sonuç `kervan_v19` kopyasında da
+alındı; `web.assets_backend`/`web.assets_web_dark` bundle'ları derleniyor,
+`_day_board_data` çıktısı strict JSON.
+
 ## [field_operation: 19.0.2.8.1] — 2026-11-08
 
 ### Ekip üyeleri alanı: serbest metinden hızlı personel oluşturma kapandı

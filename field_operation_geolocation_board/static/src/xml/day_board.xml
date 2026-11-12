@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates xml:space="preserve">
+
+    <!-- Leaflet mount point. The component owns the map instance. -->
+    <t t-name="field_operation_geolocation_board.DayBoardMap">
+        <div class="o_board_map" t-ref="map"/>
+    </t>
+
+    <!-- Dispatcher board: toolbar, map, team filter panel and status bar. -->
+    <t t-name="field_operation_geolocation_board.DayBoardAction">
+        <div class="o_board_root">
+
+            <div class="o_board_toolbar">
+                <div class="o_board_toolbar_left">
+                    <button class="btn btn-sm btn-outline-secondary o_board_nav" t-att-title="labels.previousDay" t-att-aria-label="labels.previousDay" t-on-click="() => this.shiftDay(-1)">
+                        <i class="fa fa-chevron-left"/>
+                    </button>
+                    <div class="o_board_date_label" t-esc="dateLabel"/>
+                    <button class="btn btn-sm btn-outline-secondary o_board_nav" t-att-title="labels.nextDay" t-att-aria-label="labels.nextDay" t-on-click="() => this.shiftDay(1)">
+                        <i class="fa fa-chevron-right"/>
+                    </button>
+                    <button class="o_board_chip" t-att-class="{'o_board_chip_active': state.date === todayIso}" t-on-click="goToday" t-esc="labels.today"/>
+                    <button class="o_board_chip" t-att-class="{'o_board_chip_active': state.date === tomorrowIso}" t-on-click="goTomorrow" t-esc="labels.tomorrow"/>
+                    <input type="date" class="o_board_date_input" t-att-value="state.date" t-on-change="onDateInput"/>
+                    <label class="o_board_live_toggle" t-att-class="{'o_board_live_disabled': state.date !== todayIso}">
+                        <input type="checkbox" t-att-checked="state.showLive" t-att-disabled="state.date !== todayIso" t-on-change="toggleLive"/>
+                        <span t-esc="labels.live"/>
+                    </label>
+                </div>
+                <div class="o_board_toolbar_right">
+                    <div class="o_board_kpis">
+                        <span t-foreach="kpis" t-as="kpi" t-key="kpi.key" class="o_board_kpi" t-att-class="{'o_board_kpi_warning': kpi.warning}">
+                            <b t-esc="kpi.value"/>
+                            <span t-esc="kpi.label"/>
+                        </span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" t-on-click="refresh" t-att-title="labels.refresh" t-att-aria-label="labels.refresh">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </div>
+            </div>
+
+            <div class="o_board_body">
+                <div class="o_board_map_wrap">
+                    <DayBoardMap
+                            t-if="state.loaded"
+                            teams="state.teams"
+                            selected="state.selected"
+                            soloId="state.soloId"
+                            showLive="showLiveRequested"
+                            tileUrl="state.map.tile_url"
+                            attribution="state.map.attribution"
+                            onOpenOperation.bind="openOperation"
+                            onReady.bind="onMapReady"/>
+
+                    <div t-if="!state.loaded and state.busy" class="o_board_loading">
+                        <i class="fa fa-circle-o-notch fa-spin"/>
+                        <span t-esc="labels.loading"/>
+                    </div>
+                    <div t-if="state.error" class="alert alert-danger o_board_error" t-esc="state.error"/>
+                    <div t-if="state.loaded and !state.teams.length" class="o_board_empty" t-esc="labels.empty"/>
+
+                    <div t-if="state.busy and state.loaded" class="o_board_busy">
+                        <i class="fa fa-circle-o-notch fa-spin"/>
+                    </div>
+
+                    <div t-if="state.loaded and legendTeams.length" class="o_board_legend">
+                        <div t-foreach="legendTeams" t-as="team" t-key="team.id" class="o_board_legend_row">
+                            <span class="o_board_legend_swatch" t-att-style="'background:' + team.color"/>
+                            <span class="o_board_legend_name" t-esc="team.name"/>
+                            <span class="o_board_legend_count" t-esc="team.stops_total + ' ' + labels.stops"/>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="o_board_sidebar">
+                    <div class="o_board_sidebar_header">
+                        <div>
+                            <b t-esc="labels.teams"/>
+                            <span class="o_board_count" t-esc="state.teams.length"/>
+                        </div>
+                        <div class="o_board_links">
+                            <button class="btn btn-link btn-sm p-0" t-on-click="selectAll" t-esc="labels.selectAll"/>
+                            <button class="btn btn-link btn-sm p-0" t-on-click="clearAll" t-esc="labels.clearAll"/>
+                        </div>
+                    </div>
+
+                    <div class="o_board_filters">
+                        <button class="o_board_filter" t-att-class="{'o_board_filter_active': state.onlyOnline}" t-on-click="() => this.toggleFilter('onlyOnline')">
+                            <span class="o_board_dot o_board_dot_online"/>
+                            <span t-esc="labels.onlyOnline"/>
+                        </button>
+                        <button class="o_board_filter" t-att-class="{'o_board_filter_active': state.unsavedOnly}" t-on-click="() => this.toggleFilter('unsavedOnly')">
+                            <i class="fa fa-pencil-square-o"/>
+                            <span t-esc="labels.unsavedOnly"/>
+                        </button>
+                        <button class="o_board_filter" t-att-class="{'o_board_filter_active': state.missingOnly}" t-on-click="() => this.toggleFilter('missingOnly')">
+                            <i class="fa fa-map-marker"/>
+                            <span t-esc="labels.missingOnly"/>
+                        </button>
+                    </div>
+
+                    <div class="o_board_search">
+                        <i class="fa fa-search"/>
+                        <input type="text" t-att-placeholder="labels.searchPlaceholder" t-att-value="state.search" t-on-input="onSearchInput"/>
+                    </div>
+
+                    <div class="o_board_team_list">
+                        <div t-foreach="filteredTeams" t-as="team" t-key="team.id"
+                             class="o_board_team"
+                             t-att-class="{'o_board_team_selected': isSelected(team.id), 'o_board_team_solo': state.soloId === team.id}"
+                             t-on-click="() => this.toggleSolo(team.id)">
+                            <span class="o_board_team_bar" t-att-style="'background:' + team.color"/>
+                            <input type="checkbox" class="o_board_team_check" t-att-checked="isSelected(team.id)" t-on-click.stop="() => this.toggleTeam(team.id)"/>
+                            <div class="o_board_team_main">
+                                <div class="o_board_team_name">
+                                    <span t-esc="team.name"/>
+                                    <span t-if="team.live and team.live.online" class="o_board_dot o_board_dot_online" t-att-title="labels.live"/>
+                                    <span t-elif="team.live" class="o_board_dot o_board_dot_offline"/>
+                                </div>
+                                <div t-if="team.region" class="o_board_team_region" t-esc="team.region"/>
+                                <div class="o_board_team_meta">
+                                    <span t-esc="teamSummary(team)"/>
+                                    <span t-if="team.stops_total and !team.route_saved" class="o_board_badge_warn" t-esc="labels.unsaved"/>
+                                </div>
+                            </div>
+                            <span t-if="team.stops_missing" class="o_board_badge_missing" t-esc="team.stops_missing + ' ' + labels.missingShort"/>
+                            <div class="o_board_team_actions">
+                                <button class="btn btn-sm o_board_icon" t-att-title="labels.showOnMap" t-att-aria-label="labels.showOnMap" t-on-click.stop="() => this.fitTeam(team.id)">
+                                    <i class="fa fa-eye"/>
+                                </button>
+                                <button class="btn btn-sm o_board_icon" t-att-title="labels.openPlan" t-att-aria-label="labels.openPlan" t-on-click.stop="() => this.openPlan(team.id)">
+                                    <i class="fa fa-pencil"/>
+                                </button>
+                            </div>
+                        </div>
+                        <div t-if="!filteredTeams.length" class="o_board_sidebar_empty" t-esc="labels.noTeams"/>
+                    </div>
+
+                    <div class="o_board_sidebar_footer">
+                        <div class="o_board_footer_line">
+                            <span t-esc="labels.selected"/>: <b t-esc="totals.teams"/> <span t-esc="labels.team"/> · <b t-esc="totals.stops"/> <span t-esc="labels.stops"/>
+                        </div>
+                        <div t-if="state.unassigned" class="o_board_footer_unassigned" t-esc="state.unassigned + ' ' + labels.unassigned"/>
+                        <div t-if="hasStartFallback" class="o_board_footer_unassigned" t-esc="labels.noStart"/>
+                        <button class="btn btn-sm btn-outline-secondary w-100" t-on-click="fitAll">
+                            <i class="fa fa-crosshairs"/>
+                            <span t-esc="labels.fitAll"/>
+                        </button>
+                    </div>
+                </aside>
+            </div>
+
+            <footer class="o_board_status">
+                <span>
+                    <span t-esc="labels.selected"/>: <b t-esc="totals.teams"/> <span t-esc="labels.team"/> · <b t-esc="totals.stops"/> <span t-esc="labels.stops"/> · <b t-esc="kmLabel"/>
+                    <span class="o_board_muted" t-esc="labels.airDistance"/>
+                </span>
+                <span class="o_board_status_right">
+                    <span t-if="lastRefreshLabel" t-esc="labels.updatedAt + ' ' + lastRefreshLabel"/>
+                    <span t-if="showLiveRequested" class="o_board_live_badge">
+                        <span class="o_board_dot o_board_dot_online"/>
+                        <span t-esc="labels.liveOn"/>
+                    </span>
+                </span>
+            </footer>
+        </div>
+    </t>
+</templates>

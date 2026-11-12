@@ -1,0 +1,636 @@
+// Dispatcher map board — layout, marker pins and popups.
+// Leaflet's own CSS comes from the soft_web_map.assets_leaflet bundle.
+
+.o_board_root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    // Fallback when the action container does not stretch a client action:
+    // without a height the map would collapse to zero pixels.
+    min-height: 540px;
+    min-width: 0;
+    background: #f4f6f8;
+    overflow: hidden;
+}
+
+// ------------------------------------------------------------------ toolbar
+.o_board_toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px 14px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.o_board_toolbar_left,
+.o_board_toolbar_right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.o_board_date_label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.o_board_nav {
+    padding: 2px 8px;
+}
+
+.o_board_chip {
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 12px;
+    line-height: 18px;
+    cursor: pointer;
+
+    &.o_board_chip_active {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+        font-weight: 600;
+    }
+}
+
+.o_board_date_input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 12px;
+    color: #374151;
+    background: #fff;
+}
+
+.o_board_live_toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #374151;
+    margin: 0 0 0 4px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &.o_board_live_disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+}
+
+.o_board_kpis {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.o_board_kpi {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: #6b7280;
+
+    b {
+        color: #111827;
+        font-weight: 700;
+    }
+
+    &.o_board_kpi_warning {
+        background: #fef3c7;
+        color: #92400e;
+
+        b {
+            color: #92400e;
+        }
+    }
+}
+
+// ------------------------------------------------------------------ body
+.o_board_body {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.o_board_map_wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+}
+
+.o_board_map {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.o_board_loading,
+.o_board_empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #6b7280;
+    font-size: 14px;
+    background: #f4f6f8;
+}
+
+.o_board_error {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 400;
+}
+
+.o_board_busy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 400;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+// ------------------------------------------------------------------ legend
+.o_board_legend {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    z-index: 400;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 8px 10px;
+    max-width: 280px;
+    max-height: 40%;
+    overflow: auto;
+}
+
+.o_board_legend_row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #374151;
+    padding: 1px 0;
+}
+
+.o_board_legend_swatch {
+    width: 16px;
+    height: 4px;
+    border-radius: 2px;
+    flex: 0 0 16px;
+}
+
+.o_board_legend_name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_board_legend_count {
+    margin-left: auto;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+// ------------------------------------------------------------------ sidebar
+.o_board_sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 348px;
+    width: 348px;
+    min-height: 0;
+    background: #fff;
+    border-left: 1px solid #e5e7eb;
+}
+
+.o_board_sidebar_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 14px 8px;
+    font-size: 15px;
+
+    .o_board_count {
+        background: #f3f4f6;
+        border-radius: 999px;
+        padding: 1px 8px;
+        font-size: 11px;
+        color: #374151;
+        margin-left: 4px;
+    }
+}
+
+.o_board_links {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+
+    .btn-link {
+        font-size: 11px;
+        text-decoration: none;
+    }
+}
+
+.o_board_filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 14px 8px;
+}
+
+.o_board_filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #374151;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &.o_board_filter_active {
+        border-color: #93c5fd;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+}
+
+.o_board_search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 14px 8px;
+    padding: 5px 10px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    color: #9ca3af;
+
+    input {
+        flex: 1;
+        border: 0;
+        background: transparent;
+        font-size: 12px;
+        color: #111827;
+        outline: none;
+    }
+}
+
+.o_board_team_list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 8px 8px;
+}
+
+.o_board_team {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 8px 8px 14px;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+        background: #f8fafc;
+    }
+
+    &.o_board_team_selected {
+        background: #eff6ff;
+        border-color: #dbeafe;
+    }
+
+    &.o_board_team_solo {
+        border-color: #93c5fd;
+        box-shadow: inset 0 0 0 1px #93c5fd;
+    }
+}
+
+.o_board_team_bar {
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
+    width: 4px;
+    border-radius: 2px;
+}
+
+.o_board_team_check {
+    margin-top: 3px;
+    flex: 0 0 auto;
+}
+
+.o_board_team_main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.o_board_team_name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 18px;
+}
+
+.o_board_team_region {
+    font-size: 10px;
+    color: #9ca3af;
+}
+
+.o_board_team_meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.o_board_team_actions {
+    display: flex;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+.o_board_icon {
+    padding: 2px 6px;
+    color: #6b7280;
+    border: 0;
+    background: transparent;
+
+    &:hover {
+        color: #111827;
+    }
+}
+
+.o_board_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex: 0 0 8px;
+}
+
+.o_board_dot_online {
+    background: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.o_board_dot_offline {
+    background: #ef4444;
+}
+
+.o_board_badge_missing {
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
+.o_board_badge_warn {
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 10px;
+}
+
+.o_board_sidebar_empty {
+    padding: 18px 12px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.o_board_sidebar_footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.o_board_footer_line {
+    font-size: 11px;
+    color: #374151;
+}
+
+.o_board_footer_unassigned {
+    font-size: 11px;
+    color: #92400e;
+    background: #fffbeb;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+// ------------------------------------------------------------------ status bar
+.o_board_status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 14px;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    font-size: 11px;
+    color: #374151;
+    flex-wrap: wrap;
+}
+
+.o_board_status_right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.o_board_muted {
+    color: #9ca3af;
+}
+
+.o_board_live_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #166534;
+    font-weight: 600;
+}
+
+// ------------------------------------------------------------------ markers
+.o_board_marker {
+    background: none;
+    border: 0;
+}
+
+.o_board_stop_pin {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--board-color, #2563eb);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.o_board_start_pin {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--board-color, #111827);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_board_live_pin {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--board-color, #2563eb);
+        border: 3px solid #fff;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: var(--board-color, #2563eb);
+        opacity: 0.25;
+        animation: o_board_pulse 2s ease-out infinite;
+    }
+}
+
+@keyframes o_board_pulse {
+    0% {
+        transform: scale(0.7);
+        opacity: 0.35;
+    }
+    70% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
+}
+
+// ------------------------------------------------------------------ popups
+.o_board_popup_wrap .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+}
+
+.o_board_popup_wrap .leaflet-popup-content {
+    margin: 10px 12px;
+    font-size: 12px;
+    color: #111827;
+}
+
+.o_board_popup_title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #111827;
+    margin-bottom: 3px;
+}
+
+.o_board_popup_subject {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 3px;
+}
+
+.o_board_popup_meta {
+    color: #374151;
+    margin-bottom: 2px;
+}
+
+.o_board_popup_address {
+    color: #6b7280;
+    font-size: 11px;
+    white-space: pre-line;
+}
+
+.o_board_popup_actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+// ------------------------------------------------------------------ narrow screens
+@media (max-width: 900px) {
+    .o_board_body {
+        flex-direction: column;
+    }
+
+    .o_board_sidebar {
+        flex: 0 0 46%;
+        width: 100%;
+        border-left: 0;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .o_board_kpis {
+        display: none;
+    }
+}
