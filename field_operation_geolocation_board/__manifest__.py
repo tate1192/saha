@@ -1,6 +1,6 @@
 {
     "name": "Field Operation Route Board",
-    "version": "19.0.1.0.4",
+    "version": "19.0.1.0.0",
     "category": "Services/Field Service",
     "summary": "Dispatcher map board with the whole day's routes, one colour per team",
     "author": "Softteknik Bilişim",

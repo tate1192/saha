@@ -3,7 +3,7 @@
 > **"Günün Rotaları"** — ofis/dispeçer için tek ekranlık harita panosu: günün tüm
 > ekiplerinin rotaları, her takım kendi renginde, sağ panelde filtreler, canlı
 > konumlar. Odoo 19 · AGPL-3 · Softteknik Bilişim
-> Modül: `apps/saha/field_operation_geolocation_board` · `19.0.1.0.4`
+> Modül: `apps/saha/field_operation_geolocation_board` · `19.0.1.0.0`
 
 Bu modül `field_operation_geolocation`'ın üzerine **opsiyonel** bir köprü modüldür.
 Pano istenmeyen veritabanlarına kendiliğinden kurulmasın diye `auto_install=False`
