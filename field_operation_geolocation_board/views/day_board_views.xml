@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--
+        Dispatcher map board: one screen with the whole day's routes.
+
+        It is a client action (OWL + Leaflet) instead of a view type because the
+        screen combines a map, a filter panel and live polling; a declarative
+        view cannot express those interactions.
+    -->
+    <record id="action_day_routes_board" model="ir.actions.client">
+        <field name="name">Daily Routes</field>
+        <field name="tag">field_operation_geolocation_board.day_board</field>
+    </record>
+
+    <menuitem
+            id="menu_day_routes_board"
+            name="Daily Routes"
+            parent="field_operation.menu_field_operation_root"
+            action="action_day_routes_board"
+            groups="field_operation.service_group_all"
+            sequence="4"/>
+
+    <!-- Shortcut from a team: open the board focused on that team. -->
+    <record id="view_field_operation_team_board_button" model="ir.ui.view">
+        <field name="name">field.operation.team.day.board.button</field>
+        <field name="model">field.operation.team</field>
+        <field name="inherit_id" ref="field_operation.field_operation_team_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                        name="action_open_day_board"
+                        type="object"
+                        string="Routes"
+                        icon="fa-map-o"
+                        class="oe_stat_button"
+                        groups="field_operation.service_group_all"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
