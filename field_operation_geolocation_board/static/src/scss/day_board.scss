@@ -438,6 +438,24 @@
     font-size: 10px;
 }
 
+.o_board_badge_gps_on,
+.o_board_badge_gps_off {
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.o_board_badge_gps_on {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.o_board_badge_gps_off {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
 .o_board_sidebar_empty {
     padding: 18px 12px;
     text-align: center;

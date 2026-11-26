@@ -145,6 +145,48 @@ class TestGpsTrackingEndpoints(HttpCase):
         self.team_a.invalidate_recordset()
         self.assertEqual(self.team_a.latitude, 41.5)
         self.assertEqual(self.team_a.longitude, 29.5)
+        self.assertTrue(self.team_a.gps_tracking_active)
+        self.assertTrue(self.team_a.is_online)
+
+    def test_periodic_ping_does_not_overwrite_worker_status(self):
+        self.authenticate(self.user_a.login, self.user_a.login)
+        params = {
+            "team_id": self.team_a.id,
+            "latitude": 41.5,
+            "longitude": 29.5,
+            "status": "break",
+        }
+        result, exc = self._call("/field_team/update_gps", params)
+        self.assertIsNone(exc)
+        self.assertFalse(result.get("error"))
+
+        params.pop("status")
+        result, exc = self._call("/field_team/update_gps", params)
+        self.assertIsNone(exc)
+        self.assertFalse(result.get("error"))
+        self.team_a.invalidate_recordset()
+        self.assertEqual(self.team_a.status, "break")
+
+    def test_stop_gps_on_another_team_is_rejected(self):
+        self.authenticate(self.user_a.login, self.user_a.login)
+        result, exc = self._call("/field_team/stop_gps", {"team_id": self.team_b.id})
+        self.assertTrue(self._rejected(result, exc))
+        self.team_b.invalidate_recordset()
+        self.assertEqual(self.team_b.latitude, 39.0)
+        self.assertEqual(self.team_b.longitude, 32.0)
+
+    def test_stop_gps_own_team_hides_the_current_location(self):
+        self.authenticate(self.user_a.login, self.user_a.login)
+        result, exc = self._call(
+            "/field_team/stop_gps", {"team_id": str(self.team_a.id)}
+        )
+        self.assertIsNone(exc)
+        self.assertFalse(result.get("error"))
+        self.team_a.invalidate_recordset()
+        self.assertFalse(self.team_a.gps_tracking_active)
+        self.assertFalse(self.team_a.is_online)
+        self.assertFalse(self.team_a.latitude)
+        self.assertFalse(self.team_a.longitude)
 
     def test_update_gps_invalid_status_is_handled(self):
         """A bogus ``status`` must not take the whole request down.
@@ -336,6 +378,36 @@ class TestGpsTrackingModels(TransactionCase):
         self.maps_website.with_user(manager).write({"name": "Edited By Manager"})
         self.assertEqual(self.maps_website.name, "Edited By Manager")
 
+    def test_field_worker_cannot_read_current_team_gps(self):
+        worker = (
+            self.env["res.users"]
+            .with_context(no_reset_password=True)
+            .create(
+                {
+                    "name": "GPS Field Worker",
+                    "login": "gps_field_worker",
+                    "password": "gps_field_worker",
+                    "group_ids": [
+                        (
+                            6,
+                            0,
+                            [self.env.ref("field_operation.service_group_worker").id],
+                        )
+                    ],
+                }
+            )
+        )
+        team = self.env["field.operation.team"].create(
+            {
+                "name": "Private GPS Team",
+                "latitude": 41.0,
+                "longitude": 29.0,
+                "gps_tracking_active": True,
+            }
+        )
+        with self.assertRaises(AccessError):
+            team.with_user(worker).read(["latitude"])
+
     def test_location_history_record_rule_scopes_to_own_team(self):
         office_user = self._make_user("gps_history_user", ROUTE_USER_GROUP)
         employee = self.env["hr.employee"].create(
@@ -500,10 +572,29 @@ class TestGpsTrackingModels(TransactionCase):
         self.assertFalse(team.last_update, "last_update must start empty")
 
     def test_online_flag_follows_the_last_ping_window(self):
-        team = self.env["field.operation.team"].create({"name": "Ping Team"})
-        team.last_update = fields.Datetime.now() - timedelta(minutes=10)
+        team = self.env["field.operation.team"].create(
+            {"name": "Ping Team", "gps_tracking_active": True}
+        )
+        team.last_update = fields.Datetime.now() - timedelta(minutes=11)
         self.assertFalse(
-            team.is_online, "a ping ten minutes old must not read as online"
+            team.is_online, "a ping outside the grace window must not read as online"
+        )
+        team.last_update = fields.Datetime.now() - timedelta(minutes=6)
+        self.assertTrue(
+            team.is_online, "the grace window must absorb five-minute polling jitter"
         )
         team.last_update = fields.Datetime.now() - timedelta(minutes=1)
         self.assertTrue(team.is_online, "a ping one minute old is online")
+
+    def test_online_flag_requires_active_tracking(self):
+        team = self.env["field.operation.team"].create(
+            {
+                "name": "Inactive Team",
+                "gps_tracking_active": False,
+                "last_update": fields.Datetime.now(),
+            }
+        )
+        self.assertFalse(
+            team.is_online,
+            "a recent location must stay hidden after manual tracking stops",
+        )

@@ -5,7 +5,7 @@
 > rota planlama ve rota/çoklu nokta harita bağlantıları. Servis formu
 > (`field.operation.forms`) kısayolları `field_operation_forms_ext` modülündedir;
 > bu modül artık `field_operation_forms`'a **bağımlı değildir**.
-> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.6.0`
+> Softteknik Bilişim · Odoo 19 · AGPL-3 · sürüm `19.0.1.9.0`
 > Modül: `apps/saha/field_operation_geolocation` · 40 dosya · 2 yeni model + 5 genişletme
 
 Bu doküman modül kodundan üretilmiştir (manifest + Python + XML + JS). Kodda kanıtı
@@ -51,7 +51,7 @@ olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
   olur ve kayıt defteri yüklenmez (ölçüldü); düz Python mixin'i de Odoo 19'da `__bases__`
   yeniden yazımı yüzünden çalışmaz (bkz. §10).
 - **Takım GPS takibi:** `field.operation.team` üzerinde `latitude`, `longitude`, `accuracy`,
-  `device_id`, `signal_strength`, `status`, `is_online` (300 sn kuralı) ile
+  `device_id`, `signal_strength`, `status`, `is_online` (600 sn tolerans) ile
   `action_start_gps_tracking` / `action_stop_gps_tracking`, `action_show_on_map`,
   `action_show_team_locations`, `action_show_route_history` (son 24 saat, en fazla 50 nokta).
 - **Konum geçmişi ve tarayıcı:** `team.location.history` kaydı aynı takım için 300 sn'den sık
@@ -70,18 +70,19 @@ olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
   *Kanıt: `odoo/addons/base_geolocalize/models/base_geocoder.py:83-96`.*
 
 > **Yasal dayanak notu (işletme doldurur — kurulumdan ÖNCE):** Bu modül saha çalışanının
-> konumunu toplar ve işler. Teknik gerçekler: (1) takip, kullanıcı backend'e her girişinde
-> **otomatik** başlar (systray bileşeni tarayıcı konum iznini ister; ayrıca elle başlat/durdur
-> ikonu vardır), (2) vardiya boyunca ~5 dakikada bir konum/batarya/sinyal gönderilir,
+> konumunu toplar ve işler. Teknik gerçekler: (1) takip **tamamen manueldir**; kullanıcı
+> systray ikonuna veya **Start GPS Tracking** butonuna tıklamadan tarayıcı konum izni
+> istenmez ve konum paylaşılmaz, (2) çalışan takibi başlattığında ~5 dakikada bir
+> konum/sinyal gönderilir; sekme arkaplana geçince veya **Stop GPS** denilince durur,
 > (3) ev adresi `hr.employee.home_location_id` üzerinde tutulur ve `hr.employee` okuma
 > yetkisi olan kullanıcılarca (takım formundaki related alan üzerinden de) görülür;
 > (4) `team.location.history` kayıtları **60 gün** saklanır; günlük **GPS History Cleanup**
 > cron'u daha eski kayıtları siler (`field_operation_geolocation.location_history_retention_days`
-> sistem parametresiyle 1 ay/2 ay gibi bir değere çekilebilir), (5) görünürlük kullanıcının
-> kendi takımı + manager ile sınırlıdır (kayıt kuralları). KVKK kapsamındaki dayanak (açık
-> rıza / sözleşmenin ifası / meşru menfaat) ve çalışan aydınlatma metni bu gerçeklere göre
-> **belgelenmelidir**; bu satır o karar verilene kadar açık işarettir (2026-10-15 incelemesi,
-> karar e).
+> sistem parametresiyle 1 ay/2 ay gibi bir değere çekilebilir), (5) güncel konum yalnızca
+> GPS aktifken ofis/manager kullanıcılarıyla paylaşılır; geçmiş kayıtlar kullanıcının
+> kendi takımı + manager ile sınırlıdır. KVKK kapsamındaki dayanak (açık rıza / sözleşmenin
+> ifası / meşru menfaat) ve çalışan aydınlatma metni bu gerçeklere göre **belgelenmelidir**;
+> bu satır o karar verilene kadar açık işarettir (2026-10-15 incelemesi, karar e).
 
 ## 2. Bağımlılıklar
 
@@ -149,14 +150,16 @@ olmayan iş bilgisi `<!-- DOLDURULACAK -->` ile işaretlenmiştir.
 
 ## 5. Ana Akış
 
-Tarayıcı tarafı (systray ikonu veya `start_gps_tracking` client action'ı):
+Tarayıcı tarafı (yalnızca kullanıcı systray ikonuna veya `start_gps_tracking`
+client action'ı tıkladığında):
 
 | Adım | Çağrı | Detay |
 |---|---|---|
 | Takım bul | `rpc("/field_team/get_my_team")` | `hr.employee` üzerinden `team_members_ids` / `team_head_id` eşleşen tek takım; aralık sabit **5** dakika |
 | Konum al | `navigator.geolocation.getCurrentPosition` | `enableHighAccuracy: true`, `timeout: 10000`, `maximumAge: 0` |
-| Gönder | `rpc("/field_team/update_gps", payload)` | `latitude`, `longitude`, `accuracy`, `device_id`, `status`, `signal_strength`; sunucu aralık/seçim doğrulaması yapar |
-| Döngü | `browser.setInterval` | 5 dakikada bir; `stopGPSWatcher()` `clearInterval` çağırır |
+| Gönder | `rpc("/field_team/update_gps", payload)` | `latitude`, `longitude`, `accuracy`, `device_id`, `signal_strength`; sunucu `gps_tracking_active=True` yapar |
+| Döngü | `browser.setInterval` | 5 dakikada bir; sekme gizlenince veya `stopGPSWatcher()` çağrılınca durur |
+| Durdur | `rpc("/field_team/stop_gps")` | Sunucuda `gps_tracking_active=False` yapar ve güncel koordinatları temizler |
 
 Sunucu tarafı: `action_open_map` → `maps.website._get_lat_lon_url()` (+ `{API_KEY}` gerekirse);
 `action_show_multi_locations_mark` → `_get_multi_location_marker_url()`;
@@ -212,7 +215,7 @@ gösterilir:
 
 Model üzerinde ayrıca GPS grubuna dahil edilmeyen `signal_strength` (Selection `0..4`: `No Signal` → `Excellent`), `status`
 (`idle` / `moving` / `working` / `break`, header'da badge), `is_online` (Boolean, **store'suz**
-compute — `last_update` 300 sn içindeyse `True`; `boolean_toggle readonly="1"`) ve
+compute — `gps_tracking_active=True` ve `last_update` 600 sn içindeyse `True`; `boolean_toggle readonly="1"`) ve
 `location_history_count` (Integer, compute — `button_box`'ta GPS History butonu) alanları
 bulunur. `is_online` bilerek store'suzdur: store'lu hâlde yalnız `last_update` yazımında
 tazeleniyordu ve ping kesilen takım sonsuza dek "Online" kalıyordu.

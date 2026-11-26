@@ -101,6 +101,18 @@ msgstr "Canlı takip açık"
 #. module: field_operation_geolocation_board
 #. odoo-javascript
 #: code:addons/field_operation_geolocation_board/static/src/js/day_board_action.js:0
+msgid "GPS on"
+msgstr "GPS açık"
+
+#. module: field_operation_geolocation_board
+#. odoo-javascript
+#: code:addons/field_operation_geolocation_board/static/src/js/day_board_action.js:0
+msgid "GPS off"
+msgstr "GPS kapalı"
+
+#. module: field_operation_geolocation_board
+#. odoo-javascript
+#: code:addons/field_operation_geolocation_board/static/src/js/day_board_action.js:0
 msgid "Loading…"
 msgstr "Yükleniyor…"
 

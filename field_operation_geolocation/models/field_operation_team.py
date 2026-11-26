@@ -6,6 +6,15 @@ from odoo.exceptions import UserError
 
 from . import geo_helpers
 
+GPS_GROUPS = (
+    "field_operation.service_group_user,"
+    "field_operation_geolocation.group_user_field_operation_route"
+)
+
+# Ping interval is five minutes; keep a five-minute margin so normal network
+# and scheduling jitter does not make the office badge flicker offline.
+GPS_ONLINE_GRACE_SECONDS = 600
+
 
 class FieldOperationTeam(models.Model):
     _inherit = "field.operation.team"
@@ -38,17 +47,27 @@ class FieldOperationTeam(models.Model):
         "the company address. Editing it here also updates the employee's home "
         "address, because both fields are the same value.",
     )
-    latitude = fields.Float(digits=(10, 7))
-    longitude = fields.Float(digits=(10, 7))
-    accuracy = fields.Float("Accuracy (m)")
-    device_id = fields.Char("Device ID")
-    timestamp = fields.Datetime("GPS Timestamp")
-    last_update = fields.Datetime("Last Update")
+    gps_tracking_active = fields.Boolean(
+        string="GPS Tracking Active",
+        default=False,
+        copy=False,
+        groups=GPS_GROUPS,
+        help="Whether the field worker explicitly started GPS tracking. "
+        "Location is shared with the office only while this is enabled.",
+    )
+    latitude = fields.Float(digits=(10, 7), groups=GPS_GROUPS)
+    longitude = fields.Float(digits=(10, 7), groups=GPS_GROUPS)
+    accuracy = fields.Float("Accuracy (m)", groups=GPS_GROUPS)
+    device_id = fields.Char("Device ID", groups=GPS_GROUPS)
+    timestamp = fields.Datetime("GPS Timestamp", groups=GPS_GROUPS)
+    last_update = fields.Datetime("Last Update", groups=GPS_GROUPS)
     # Not stored on purpose: "online" is relative to *now*, so a stored value is
     # only refreshed when last_update is written and stays True forever once the
     # pings stop. Non-stored computes on every read; nothing filters/groups on it.
-    is_online = fields.Boolean("Online", compute="_compute_online_status")
-    last_online = fields.Datetime("Last Online")
+    is_online = fields.Boolean(
+        "Online", compute="_compute_online_status", groups=GPS_GROUPS
+    )
+    last_online = fields.Datetime("Last Online", groups=GPS_GROUPS)
     location_history_ids = fields.One2many(
         "team.location.history", "team_id", string="Location History"
     )
@@ -75,6 +94,7 @@ class FieldOperationTeam(models.Model):
             ("4", "Excellent"),
         ],
         string="Signal Strength",
+        groups=GPS_GROUPS,
     )
 
     @api.depends("location_history_ids")
@@ -93,12 +113,12 @@ class FieldOperationTeam(models.Model):
         for team in self:
             team.location_history_count = counts.get(team.id, 0)
 
-    @api.depends("last_update")
+    @api.depends("gps_tracking_active", "last_update")
     def _compute_online_status(self):
         for team in self:
-            if team.last_update:
+            if team.gps_tracking_active and team.last_update:
                 delta = fields.Datetime.now() - team.last_update
-                team.is_online = delta.total_seconds() < 300
+                team.is_online = 0 <= delta.total_seconds() < GPS_ONLINE_GRACE_SECONDS
             else:
                 team.is_online = False
 

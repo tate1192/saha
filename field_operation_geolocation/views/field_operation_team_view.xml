@@ -17,13 +17,15 @@
                         type="object"
                         name="action_show_on_map"
                         class="oe_stat_button"
-                        icon="fa-map-marker">
+                        icon="fa-map-marker"
+                        groups="field_operation.service_group_user">
                 </button>
                 <button
                         class="oe_stat_button"
                         type="action"
                         name="%(action_field_team_location_history)d"
-                        icon="fa-route">
+                        icon="fa-route"
+                        groups="field_operation.service_group_user">
                     <field string="GPS History" name="location_history_count" widget="statinfo"/>
                 </button>
                 <button
@@ -31,13 +33,15 @@
                         name="action_show_today_route"
                         type="object"
                         string="Today's Route"
-                        icon="fa-map-o"/>
+                        icon="fa-map-o"
+                        groups="field_operation.service_group_user"/>
                 <button
                         class="oe_stat_button"
                         name="action_show_tomorrow_route"
                         type="object"
                         string="Tomorrow's Route"
-                        icon="fa-map-signs"/>
+                        icon="fa-map-signs"
+                        groups="field_operation.service_group_user"/>
             </xpath>
 
             <group name="Information" position="after">

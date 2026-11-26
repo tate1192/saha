@@ -180,9 +180,11 @@ class TestDayBoard(TransactionCase):
                 "latitude": HOME[0],
                 "longitude": HOME[1],
                 "last_update": fields.Datetime.now() - timedelta(minutes=2),
+                "gps_tracking_active": True,
             }
         )
         team = self._team_payload()
+        self.assertTrue(team["gps_tracking_active"])
         self.assertTrue(team["live"])
         self.assertGreaterEqual(team["live"]["minutes_ago"], 2)
 
@@ -190,6 +192,23 @@ class TestDayBoard(TransactionCase):
             team_ids=[self.team.id]
         )
         self.assertIn(self.team.id, positions["teams"])
+
+    def test_live_position_is_hidden_after_manual_stop(self):
+        self.team.write(
+            {
+                "latitude": HOME[0],
+                "longitude": HOME[1],
+                "last_update": fields.Datetime.now() - timedelta(minutes=2),
+                "gps_tracking_active": False,
+            }
+        )
+        team = self._team_payload()
+        self.assertFalse(team["gps_tracking_active"])
+        self.assertFalse(team["live"])
+        positions = self.env["field.operation.team"]._live_positions(
+            team_ids=[self.team.id]
+        )
+        self.assertNotIn(self.team.id, positions["teams"])
 
     def test_live_positions_skip_a_team_never_seen(self):
         self.team.write({"latitude": 0.0, "longitude": 0.0, "last_update": False})

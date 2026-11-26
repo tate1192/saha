@@ -197,6 +197,8 @@ class FieldOperationTeam(models.Model):
     def _board_live_info(self):
         """Last known live position of the team, or False when never seen."""
         self.ensure_one()
+        if not self.gps_tracking_active or not self.is_online:
+            return False
         if not geo_helpers.has_point(self.latitude, self.longitude):
             return False
         if not self.last_update:
@@ -333,6 +335,7 @@ class FieldOperationTeam(models.Model):
             "stops_total": len(stops),
             "stops_missing": sum(1 for stop in stops if not stop["located"]),
             "route_saved": any(operation.route_sequence for operation in operations),
+            "gps_tracking_active": self.gps_tracking_active and self.is_online,
             "start": start,
             # A day without a usable start point still draws a route, but the
             # dispatcher must see that it is not the usual home/depot loop.

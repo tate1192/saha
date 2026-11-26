@@ -564,6 +564,23 @@ msgid "Location updated successfully."
 msgstr "Konum başarıyla güncellendi."
 
 #. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
+msgid "Location sharing stopped."
+msgstr "Konum paylaşımı durduruldu."
+
+#. module: field_operation_geolocation
+#. odoo-python
+#: code:addons/field_operation_geolocation/controllers/gps_tracking.py:0
+msgid "Could not stop GPS tracking."
+msgstr "GPS takibi durdurulamadı."
+
+#. module: field_operation_geolocation
+#: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__gps_tracking_active
+msgid "GPS Tracking Active"
+msgstr "GPS Takibi Etkin"
+
+#. module: field_operation_geolocation
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_field_operation_team__longitude
 #: model:ir.model.fields,field_description:field_operation_geolocation.field_team_location_history__longitude
 msgid "Longitude"

@@ -121,6 +121,8 @@
                                 <div t-if="team.region" class="o_board_team_region" t-esc="team.region"/>
                                 <div class="o_board_team_meta">
                                     <span t-esc="teamSummary(team)"/>
+                                    <span t-if="team.gps_tracking_active" class="o_board_badge_gps_on" t-esc="labels.gpsOn"/>
+                                    <span t-else="" class="o_board_badge_gps_off" t-esc="labels.gpsOff"/>
                                     <span t-if="team.stops_total and !team.route_saved" class="o_board_badge_warn" t-esc="labels.unsaved"/>
                                 </div>
                             </div>

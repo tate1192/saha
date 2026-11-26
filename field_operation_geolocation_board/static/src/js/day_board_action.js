@@ -356,6 +356,8 @@ export class DayBoardAction extends Component {
             airDistance: _t("(as the crow flies)"),
             updatedAt: _t("Updated:"),
             liveOn: _t("Live tracking on"),
+            gpsOn: _t("GPS on"),
+            gpsOff: _t("GPS off"),
             showOnMap: _t("Show on map"),
             openPlan: _t("Open plan"),
             previousDay: _t("Previous day"),
