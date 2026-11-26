@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cost_line_all,Cost Line Head Office,model_field_operation_cost_line,field_operation.service_group_all,1,1,1,1
+access_cost_line_manager,Cost Line Manager,model_field_operation_cost_line,field_operation.service_group_manager,1,1,1,1

@@ -1,0 +1,139 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* field_operation_disinfect_common
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-24 19:44+0000\n"
+"PO-Revision-Date: 2026-11-24 19:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__active
+msgid "Active"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model,name:field_operation_disinfect_common.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields.selection,name:field_operation_disinfect_common.selection__field_operation_type__type__disinfect
+msgid "Disinfect"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.actions.act_window,name:field_operation_disinfect_common.action_field_disinfect_product
+#: model:ir.ui.menu,name:field_operation_disinfect_common.menu_field_disinfect_product
+msgid "Disinfect Product"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_res_company__disinfection_certificate
+msgid "Disinfection Certificate"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields.selection,name:field_operation_disinfect_common.selection__field_disinfect_product__type__dispenser
+msgid "Dispenser"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__display_name
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_operation_type__display_name
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_res_company__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model,name:field_operation_disinfect_common.model_field_disinfect_product
+msgid "Field Disinfect Product"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model,name:field_operation_disinfect_common.model_field_operation_type
+msgid "Field Operation Type"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect_common.field_disinfect_product_form_view
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect_common.field_disinfect_product_list_view
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect_common.field_disinfect_product_search_view
+#: model_terms:ir.ui.view,arch_db:field_operation_disinfect_common.field_disinfect_product_view_pivot
+msgid "Field Product"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields.selection,name:field_operation_disinfect_common.selection__field_disinfect_product__priority__1
+msgid "High"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__id
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_operation_type__id
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_res_company__id
+msgid "ID"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields.selection,name:field_operation_disinfect_common.selection__field_disinfect_product__priority__0
+msgid "Low"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__name
+msgid "Name"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__priority
+msgid "Priority"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_operation_type__type
+msgid "Service Type"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields.selection,name:field_operation_disinfect_common.selection__field_disinfect_product__type__tank
+msgid "Tank"
+msgstr ""
+
+#. module: field_operation_disinfect_common
+#: model:ir.model.fields,field_description:field_operation_disinfect_common.field_field_disinfect_product__type
+msgid "Type"
+msgstr ""

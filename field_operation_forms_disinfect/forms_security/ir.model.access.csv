@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+forms_disinfect_line_user,Disinfection Lines Forms User,model_field_operation_forms_disinfect,field_operation_forms.forms_user,1,1,1,0
+forms_disinfect_line_manager,Disinfection Lines Forms Manager,model_field_operation_forms_disinfect,field_operation_forms.forms_manager,1,1,1,1
+forms_disinfect_product_user,Disinfection Products Forms User,field_operation_disinfect_common.model_field_disinfect_product,field_operation_forms.forms_user,1,1,1,0
+forms_disinfect_product_manager,Disinfection Products Forms Manager,field_operation_disinfect_common.model_field_disinfect_product,field_operation_forms.forms_manager,1,1,1,1

@@ -22,7 +22,7 @@ class TestFieldOperationFormsPest(TransactionCase):
         super().setUpClass()
         cls.forms_model = cls.env["field.operation.forms"]
         cls.pesticide_model = cls.env["field.operation.forms.pest"]
-        cls.operation_line_model = cls.env["field.operation.pesticide"]
+        cls.pest_type_model = cls.env["field.operation.pest.type"]
         cls.operation_model = cls.env["field.operation"]
         cls.partner = cls.env["res.partner"].create({"name": "Pest Customer"})
         cls.service_type = cls.env["field.operation.type"].search(
@@ -164,41 +164,8 @@ class TestFieldOperationFormsPest(TransactionCase):
         for name, expression in found.items():
             self.assertEqual(expression, "service_type != 'pest'", name)
 
-    def test_06_pest_type_is_gated_on_the_operation_form(self):
-        """The operation form carries the same gate as the service form."""
-        arch = etree.fromstring(
-            self.env["field.operation"].get_view(view_type="form")["arch"]
-        )
-        found = {
-            node.get("name"): node.get("invisible")
-            for node in arch.iter("field")
-            if node.get("name") == "pest_type_ids"
-        }
-        self.assertEqual(
-            found,
-            {"pest_type_ids": "service_type_id.type != 'pest'"},
-            "the operation form shows the pest type on every service type",
-        )
-
-    def test_07_operation_line_without_form(self):
-        """A customer without forms creates the line straight on the operation."""
-        operation = self.operation_model.create(
-            {
-                "partner_id": self.partner.id,
-                "service_type_id": self.service_type.id,
-            }
-        )
-        line = self.operation_line_model.create(
-            {"operation_id": operation.id, "product_id": self.product.id}
-        )
-
-        self.assertNotIn("forms_id", self.operation_line_model._fields)
-        self.assertEqual(line.customer_id, self.partner)
-        self.assertEqual(line.status, operation.status)
-        self.assertIn(line, operation.pesticide_ids)
-
-    def test_08_pest_fields_live_on_the_form(self):
-        pest_type = self.env["field.operation.pest.type"].create({"name": "Ant"})
+    def test_06_pest_fields_live_on_the_form(self):
+        pest_type = self.pest_type_model.create({"name": "Ant"})
         form = self._form()
         form.hygiene = True
         form.residence = "12"
@@ -209,13 +176,13 @@ class TestFieldOperationFormsPest(TransactionCase):
         self.assertEqual(form.pest_type_ids, pest_type)
         self.assertFalse(form.operation_id)
 
-    def test_09_deleting_the_form_deletes_the_lines(self):
+    def test_07_deleting_the_form_deletes_the_lines(self):
         form = self._form()
         line = self._pesticide(form)
         form.unlink()
         self.assertFalse(line.exists())
 
-    def test_10_no_operation_is_created(self):
+    def test_08_no_operation_is_created(self):
         operation_count = self.operation_model.search_count([])
         form = self._form()
         self._pesticide(form)

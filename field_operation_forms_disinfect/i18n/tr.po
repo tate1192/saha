@@ -101,7 +101,6 @@ msgid "Before PH"
 msgstr "Öncesi pH"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__cleaning
 #: model_terms:ir.ui.view,arch_db:field_operation_forms_disinfect.field_disinfect_layout
 msgid "Cleaning"
 msgstr "Temizlik"
@@ -118,7 +117,6 @@ msgid "Disinfect"
 msgstr "Dezenfekte"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__disinfection
 #: model_terms:ir.ui.view,arch_db:field_operation_forms_disinfect.field_disinfect_layout
 msgid "Disinfection"
 msgstr "Dezenfeksiyon"
@@ -137,7 +135,7 @@ msgid "Disinfection Service Form"
 msgstr "Dezenfeksiyon Hizmet Formu"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__display_name
+#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_disinfect__display_name
 #: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms__display_name
 msgid "Display Name"
 msgstr "Ad Görünümü"
@@ -148,9 +146,9 @@ msgid "Email"
 msgstr "E-posta"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model,name:field_operation_forms_disinfect.model_field_operation_forms_disinfect
-msgid "Field Operation Forms Disinfect Line"
-msgstr "Saha Operasyon Formu Dezenfekte Satırı"
+#: model:ir.model,name:field_operation_forms_disinfect.model_field_operation_disinfect
+msgid "Field Operation Disinfect"
+msgstr "Saha Operasyonu Dezenfekte"
 
 #. module: field_operation_forms_disinfect
 #: model:ir.model,name:field_operation_forms_disinfect.model_field_operation_forms
@@ -158,13 +156,12 @@ msgid "Field Operation Forms"
 msgstr "Saha Operasyon Formları"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__filter_change
 #: model_terms:ir.ui.view,arch_db:field_operation_forms_disinfect.field_disinfect_layout
 msgid "Filter Change"
 msgstr "Filtre Değişimi"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__id
+#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_disinfect__id
 #: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms__id
 msgid "ID"
 msgstr ""
@@ -175,35 +172,14 @@ msgid "Marc Demo"
 msgstr ""
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__forms_id
+#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_disinfect__forms_id
 msgid "Operation Form"
 msgstr "Operasyon Formu"
 
 #. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__ozone
 #: model_terms:ir.ui.view,arch_db:field_operation_forms_disinfect.field_disinfect_layout
 msgid "Ozone"
 msgstr "Ozon"
-
-#. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__product_id
-msgid "Product"
-msgstr "Ürün"
-
-#. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__name
-msgid "Reference"
-msgstr "Referans"
-
-#. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__sequence
-msgid "Sequence"
-msgstr ""
-
-#. module: field_operation_forms_disinfect
-#: model:ir.model.fields,field_description:field_operation_forms_disinfect.field_field_operation_forms_disinfect__tank_dimensions
-msgid "Tank Dimensions"
-msgstr "Tank Ölçüleri"
 
 #. module: field_operation_forms_disinfect
 #: model_terms:ir.ui.view,arch_db:field_operation_forms_disinfect.field_disinfect_layout

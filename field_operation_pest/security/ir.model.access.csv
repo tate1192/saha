@@ -2,6 +2,3 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 field_operation_pesticide_worker,Pest Worker,model_field_operation_pesticide,field_operation.service_group_worker,1,1,1,0
 field_operation_pesticide_user,Pest User,model_field_operation_pesticide,field_operation.service_group_user,1,1,1,1
 field_operation_pesticide_manager,Pest Manager,model_field_operation_pesticide,field_operation.service_group_manager,1,1,1,1
-field_operation_pest_type_all,Pest Type Worker,model_field_operation_pest_type,field_operation.service_group_worker,1,0,0,0
-field_operation_pest_type_user,Pest Type User,model_field_operation_pest_type,field_operation.service_group_user,1,0,0,0
-field_operation_pest_type_manager,Pest Type Manager,model_field_operation_pest_type,field_operation.service_group_manager,1,1,1,1

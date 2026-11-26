@@ -1,0 +1,25 @@
+{
+    "name": "Field Operation Timesheet",
+    "version": "19.0.1.0.0",
+    "category": "Services/Field Service",
+    "summary": "Per-person time lines on a field operation, approved and locked",
+    "author": "Softteknik Bilişim",
+    "website": "https://softteknik.com",
+    "contributors": ["Softteknik Bilişim"],
+    "license": "AGPL-3",
+    "sequence": 122,
+    "images": ["static/description/icon.png"],
+    "depends": [
+        "field_operation",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/ir_rule.xml",
+        "views/field_operation_view.xml",
+        "views/time_line_view.xml",
+        "wizard/reconciliation_view.xml",
+    ],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+}

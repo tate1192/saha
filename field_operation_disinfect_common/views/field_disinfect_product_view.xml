@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- search view definition -->
     <record id="field_disinfect_product_search_view" model="ir.ui.view">
         <field name="name">field.disinfect.product.search</field>
         <field name="model">field.disinfect.product</field>
@@ -11,8 +10,6 @@
             </search>
         </field>
     </record>
-
-    <!-- list view definition -->
     <record id="field_disinfect_product_list_view" model="ir.ui.view">
         <field name="name">field.disinfect.product.list</field>
         <field name="model">field.disinfect.product</field>
@@ -25,16 +22,11 @@
             </list>
         </field>
     </record>
-
-    <!-- form view definition -->
     <record id="field_disinfect_product_form_view" model="ir.ui.view">
         <field name="name">field.disinfect.product.form</field>
         <field name="model">field.disinfect.product</field>
         <field name="arch" type="xml">
             <form string="Field Product">
-                <header>
-
-                </header>
                 <sheet>
                     <group>
                         <field name="name"/>
@@ -45,7 +37,6 @@
             </form>
         </field>
     </record>
-
     <record id="field_disinfect_product_view_pivot" model="ir.ui.view">
         <field name="name">field.disinfect.product.pivot</field>
         <field name="model">field.disinfect.product</field>
@@ -56,8 +47,6 @@
             </pivot>
         </field>
     </record>
-
-    <!-- action -->
     <record id="action_field_disinfect_product" model="ir.actions.act_window">
         <field name="name">Disinfect Product</field>
         <field name="type">ir.actions.act_window</field>
@@ -65,27 +54,11 @@
         <field name="view_id" ref="field_disinfect_product_list_view"/>
         <field name="view_mode">list,form</field>
     </record>
-
-<!--    <record id="action_field_disinfect_product_tree" model="ir.actions.act_window.view">-->
-<!--        <field name="sequence" eval="1"/>-->
-<!--        <field name="view_mode">list</field>-->
-<!--        <field name="view_id" ref="field_disinfect_product_tree_view"/>-->
-<!--        <field name="act_window_id" ref="action_field_disinfect_product"/>-->
-<!--    </record>-->
-
-<!--    <record id="action_field_disinfect_product_form" model="ir.actions.act_window.view">-->
-<!--        <field name="sequence" eval="1"/>-->
-<!--        <field name="view_mode">form</field>-->
-<!--        <field name="view_id" ref="field_disinfect_product_form_view"/>-->
-<!--        <field name="act_window_id" ref="action_field_disinfect_product"/>-->
-<!--    </record>-->
-
-     <menuitem
+    <menuitem
         name="Disinfect Product"
         id="menu_field_disinfect_product"
         action="action_field_disinfect_product"
         sequence="7"
         parent="field_operation.menu_field_operation_config"
     />
-
 </odoo>

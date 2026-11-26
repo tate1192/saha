@@ -5,6 +5,76 @@ kendi `__manifest__.py` dosyasında tutulur; aşağıdaki tablo güncel durumu g
 
 Biçim: [tutulan sürüm] — tarih — commit — açıklama
 
+## [field_operation_cost: 19.0.1.0.0 · field_operation_timesheet: 19.0.1.0.0] — 2026-11-26
+
+### Maliyet ve personel zamanı katmanı repoya alındı
+
+- **Yeni modül `field_operation_cost`:** servis başına maliyet satırları
+  (`field.operation.cost.line`), işçilik/malzeme/taşeron/araç otomatik satırları,
+  tip bazlı toplamlar, ciro-kâr-marj alanları ve maliyet analizi pivot/graph
+  görünümleri. `hr_hourly_cost` bağımlılığı, stok/makine/sözleşme katmanları
+  opsiyonel (alan varlığına göre okunur).
+- **Yeni modül `field_operation_timesheet`:** personel bazlı zaman satırları
+  (`field.operation.time.line`), planlamadan öneri, ofis onayı ve onaylı satırın
+  kilitlenmesi, draft/onaylı/beklenen saat toplamları, `hr_attendance` varsa
+  "Time vs Attendance" karşılaştırma sihirbazı (yoksa açık hata verir).
+- **Maliyet yenilemesi `sudo()` ile okur:** işi kapatan saha personelinin para
+  alanlarını görme yetkisi yok; yenileme satırları göremediği için eskisini
+  silemiyor, ikinci takım ekliyordu (düzeltme: `_refresh_auto_cost_lines`).
+  Aynı sebeple, kapatma anında alan okuması `AccessError` atıyor ve saha
+  personelinin **işi kapatmasını tamamen engelliyordu**.
+- **Refresh Costs artık `service_group_all` istiyor:** eylem ofis grubuna
+  açıktı ama yenilediği satırlar yalnız merkez ofise açık olduğundan ofis
+  kullanıcısı butonu çalıştırdığında `AccessError` alıyordu.
+- **Stored compute'lar korumalı alanları `sudo()` ile okur:** ciro/kâr/marj
+  hesabı `service_price` (ofis grubu) ve maliyet satırlarını (merkez ofis)
+  doğrudan okuduğu için personel tetiklediğinde patlayabiliyordu.
+- **Zaman önerisi gün bazında tekilleştirir:** eskiden yalnız personele göre
+  bakıyordu, aynı ekip için başka güne yapılan öneri hiç satır üretmiyordu.
+- **Puantaj karşılaştırması ofise kapatıldı:** sihirbazın ACL'si
+  `base.group_user`'dı ve `action_compute` grup doğrulamıyordu; saha personeli
+  RPC ile tüm personelin saatlerini okuyabiliyordu.
+- **Ofis kayıt kuralı çekirdekle hizalandı:** zaman satırı kuralına
+  `operation_id.user_id = False` kolu eklendi (çekirdek ofis kuralının sahipsiz
+  kayıt davranışı) ve ofis kontrolü `_check_office_group` gibi `AccessError`
+  fırlatıyor.
+- **Doküman ve çeviri:** iki modül için `README.md`, `i18n/*.pot` + `tr.po`
+  (115 terim), `static/description/icon.png`, kök README modül tablosu satırları
+  ve 21 regresyon testi.
+
+**Doğrulama:** `-i field_operation_cost,field_operation_timesheet,hr_attendance`
+ile temiz veritabanına kurulum, ardından `-u aynı modüller
+--test-tags=/field_operation_cost,/field_operation_timesheet` →
+`0 failed, 0 error(s) of 21 tests` (9 maliyet + 12 zaman satırı). Negatif
+kontrol: üç düzeltme geri alınıp aynı paket çalıştırıldığında yalnız
+`test_05_worker_close_rebuilds_instead_of_doubling`,
+`test_03_proposal_for_another_day_adds_that_day` ve
+`test_12_field_worker_cannot_run_the_reconciliation` kırmızı, kalan 18 test
+yeşil. `tr.po` `i18n import -l tr_TR -w` ile yüklendi; `total_cost` →
+"Toplam Maliyet", `time_approved` → "Onaylı Saat", servis formunun Costs/Zaman
+Takibi sekmeleri Türkçe okundu.
+
+## [field_operation_forms_pest: 19.0.1.4.0 · field_operation_forms_disinfect: 19.0.1.4.0] — 2026-11-24
+
+### Pest ve disinfect forms modülleri operation modüllerinden ayrıldı
+
+- **Yeni common modüller:** `field_operation_pest_common` ve
+  `field_operation_disinfect_common`; paylaşılan kataloglar, servis tipleri ve
+  ürün/şirket metadata'sı bu modüllere taşındı.
+- **Bağımlılıklar:** forms modüllerinin `field_operation_pest` ve
+  `field_operation_disinfect` bağımlılıkları kaldırıldı; `auto_install=False`
+  yapıldı. Operation ve forms akışları ayrı veya birlikte kurulabiliyor.
+- **Veri sahipliği:** common `pre_init_hook` mevcut katalog, view, ACL, selection,
+  UoM ve metadata XMLID'lerini yeni sahibine aktarıyor; kayıt ID'leri ve form
+  ilişkileri korunuyor.
+- **Güvenlik:** form satırı ACL/rule'ları `field.operation.forms.pest` ve
+  `field.operation.forms.disinfect` modellerinde; atama ve multi-company
+  kuralları korunuyor.
+- **Rapor:** forms dezenfeksiyon PDF'i artık PH/CL değerlerini de basıyor.
+- **Uzman doğrulaması:** staging kopyasında operation modülleri kaldırıldıktan
+  sonra 8.463 pest ve 1.401 disinfect form satırı, 7 zararlı türü, 11
+  dezenfeksiyon ürünü ve 709 form/zararlı türü ilişkisi korundu.
+
 ## [field_operation_disinfect: 19.0.1.2.1 · field_operation_pest: 19.0.1.2.1] — 2026-11-22
 
 ### Legacy satır durumu korunuyor

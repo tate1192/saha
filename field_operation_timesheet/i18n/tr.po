@@ -1,0 +1,367 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* field_operation_timesheet
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 14:41+0000\n"
+"PO-Revision-Date: 2026-11-26 17:44+0300\n"
+"Last-Translator: Softteknik Bilişim\n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation_time_line.py:0
+msgid "%(employee)s is not assigned to service %(operation)s."
+msgstr "%(employee)s, %(operation)s servisine atanmamış."
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "Approve"
+msgstr "Onayla"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "Approve All"
+msgstr "Tümünü Onayla"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields.selection,name:field_operation_timesheet.selection__field_operation_time_line__state__approved
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_list_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_reconciliation_form
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Approved"
+msgstr "Onaylandı"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__approved_by
+msgid "Approved By"
+msgstr "Onaylayan"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__time_approved
+msgid "Approved Hours"
+msgstr "Onaylı Saat"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__approved_on
+msgid "Approved On"
+msgstr "Onay Tarihi"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__timesheet_hours
+msgid "Approved Timesheet"
+msgstr "Onaylı Puantaj"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,help:field_operation_timesheet.field_field_operation__time_difference
+msgid "Approved hours minus expected hours: the gap the office has to explain before the operation is billed."
+msgstr "Onaylı saat eksi beklenen saat: servis faturalanmadan önce ofisin açıklaması gereken fark."
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation_time_line.py:0
+msgid "Approved time lines are locked: reset them to draft before changing the hours."
+msgstr "Onaylı zaman satırları kilitlidir: saatleri değiştirmeden önce taslağa geri alın."
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation_time_line.py:0
+msgid "Approved time lines cannot be deleted: reset them to draft first."
+msgstr "Onaylı zaman satırları silinemez: önce taslağa geri alın."
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation.py:0
+msgid "Assign at least one person to %(operation)s."
+msgstr "%(operation)s servisine en az bir personel atayın."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__attendance_hours
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_reconciliation_form
+msgid "Attendance"
+msgstr "Puantaj"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__company_id
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__company_id
+msgid "Company"
+msgstr "Şirket"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_reconciliation_form
+msgid "Compute"
+msgstr "Hesapla"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__create_uid
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__create_uid
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__create_uid
+msgid "Created by"
+msgstr "Oluşturan"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__create_date
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__create_date
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__create_date
+msgid "Created on"
+msgstr "Oluşturma Tarihi"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__date
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Date"
+msgstr "Tarih"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__time_difference
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__difference
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_reconciliation_form
+msgid "Difference"
+msgstr "Fark"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__display_name
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__display_name
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__display_name
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__display_name
+msgid "Display Name"
+msgstr "Görüntüleme Adı"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields.selection,name:field_operation_timesheet.selection__field_operation_time_line__state__draft
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_reconciliation_form
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Draft"
+msgstr "Taslak"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__time_draft
+msgid "Draft Hours"
+msgstr "Taslak Saat"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__draft_hours
+msgid "Draft Timesheet"
+msgstr "Taslak Puantaj"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__duration
+msgid "Duration"
+msgstr "Süre"
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation_time_line.py:0
+msgid "Duration must be greater than zero."
+msgstr "Süre sıfırdan büyük olmalıdır."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__employee_id
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__employee_id
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Employee"
+msgstr "Personel"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__employee_ids
+msgid "Employees"
+msgstr "Personeller"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__time_expected
+msgid "Expected Hours"
+msgstr "Beklenen Saat"
+
+#. module: field_operation_timesheet
+#: model:ir.model,name:field_operation_timesheet.model_field_operation
+msgid "Field Operation"
+msgstr "Saha Operasyonu"
+
+#. module: field_operation_timesheet
+#: model:ir.model,name:field_operation_timesheet.model_field_operation_time_line
+msgid "Field Operation Time Line"
+msgstr "Saha Operasyonu Zaman Satırı"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_pivot
+msgid "Field Time"
+msgstr "Saha Saati"
+
+#. module: field_operation_timesheet
+#: model:ir.model,name:field_operation_timesheet.model_field_operation_timesheet_reconciliation_line
+msgid "Field time vs attendance line"
+msgstr "Saha saati / puantaj satırı"
+
+#. module: field_operation_timesheet
+#: model:ir.model,name:field_operation_timesheet.model_field_operation_timesheet_reconciliation
+msgid "Field time vs attendance reconciliation"
+msgstr "Saha saati / puantaj karşılaştırması"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__date_from
+msgid "From"
+msgstr "Başlangıç"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,help:field_operation_timesheet.field_field_operation__time_draft
+msgid "Hours entered but not approved yet."
+msgstr "Girilmiş ama henüz onaylanmamış saatler."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,help:field_operation_timesheet.field_field_operation_time_line__duration
+msgid "Hours spent on the operation by this employee."
+msgstr "Bu personelin operasyonda harcadığı saat."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__id
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__id
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__id
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/wizard/reconciliation.py:0
+msgid "Install the Attendance module (hr_attendance) to compare field time with HR attendance."
+msgstr "Saha saatini İK puantajıyla karşılaştırmak için Puantaj modülünü (hr_attendance) kurun."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__write_uid
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__write_uid
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__write_date
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__write_date
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,help:field_operation_timesheet.field_field_operation_timesheet_reconciliation__employee_ids
+msgid "Leave empty to check every employee having field time or attendance in the period."
+msgstr "Dönemde saha saati veya puantajı olan tüm personel için boş bırakın."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__note
+msgid "Note"
+msgstr "Not"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "One draft line per assigned person, filled with the planned duration."
+msgstr "Atanan her personel için planlanan süreyle doldurulmuş bir taslak satır."
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation_time_line.py:0
+msgid "Only office users are allowed to %s."
+msgstr "Bunu yalnız ofis kullanıcıları yapabilir: %s."
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/wizard/reconciliation.py:0
+msgid "Only office users are allowed to reconcile field time."
+msgstr "Saha saatini yalnız ofis kullanıcıları karşılaştırabilir."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__operation_id
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Operation"
+msgstr "Operasyon"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "Propose From Planning"
+msgstr "Planlamadan Öner"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__line_ids
+msgid "Reconciliation"
+msgstr "Karşılaştırma"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "Reset To Draft"
+msgstr "Taslağa Al"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "Reset to draft"
+msgstr "Taslağa al"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,help:field_operation_timesheet.field_field_operation__time_expected
+msgid "Service duration x number of assigned people."
+msgstr "Servis süresi × atanan personel sayısı."
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/models/field_operation.py:0
+msgid "Set the start and end date of %(operation)s first: the proposal takes the duration from them."
+msgstr "Önce %(operation)s servisinin başlangıç ve bitiş tarihini girin: öneri süreyi oradan alır."
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_time_line__state
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Status"
+msgstr "Durum"
+
+#. module: field_operation_timesheet
+#. odoo-python
+#: code:addons/field_operation_timesheet/wizard/reconciliation.py:0
+msgid "The start date cannot be after the end date."
+msgstr "Başlangıç tarihi bitiş tarihinden sonra olamaz."
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "This Month"
+msgstr "Bu Ay"
+
+#. module: field_operation_timesheet
+#: model:ir.actions.act_window,name:field_operation_timesheet.action_time_line
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation__time_line_ids
+#: model:ir.ui.menu,name:field_operation_timesheet.menu_time_line
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_list
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_search
+msgid "Time Lines"
+msgstr "Zaman Satırları"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+msgid "Time Tracking"
+msgstr "Zaman Takibi"
+
+#. module: field_operation_timesheet
+#: model:ir.actions.act_window,name:field_operation_timesheet.action_reconciliation
+#: model:ir.ui.menu,name:field_operation_timesheet.menu_reconciliation
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_reconciliation_form
+msgid "Time vs Attendance"
+msgstr "Saat / Puantaj"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation__date_to
+msgid "To"
+msgstr "Bitiş"
+
+#. module: field_operation_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_field_operation_form_timesheet
+#: model_terms:ir.ui.view,arch_db:field_operation_timesheet.view_time_line_list
+msgid "Total"
+msgstr "Toplam"
+
+#. module: field_operation_timesheet
+#: model:ir.model.fields,field_description:field_operation_timesheet.field_field_operation_timesheet_reconciliation_line__wizard_id
+msgid "Wizard"
+msgstr "Sihirbaz"

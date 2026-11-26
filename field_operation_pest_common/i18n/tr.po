@@ -1,0 +1,169 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* field_operation_pest_common
+#
+msgid ""
+msgstr "Project-Id-Version: Odoo Server 19.0\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-11-20 16:42+0000\nPO-Revision-Date: 2026-11-20 16:42+0000\nLast-Translator: \nLanguage-Team: \nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: \nPlural-Forms: \n"
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-24 19:44+0000\n"
+"PO-Revision-Date: 2026-11-24 19:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: Softteknik <info@softteknik.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_product__active_ingredient
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_template__active_ingredient
+msgid "Active Ingredient"
+msgstr "Etken Madde"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_product__antidote
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_template__antidote
+msgid "Antidote"
+msgstr "Antidot"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_res_company__biocidal_certificate
+msgid "Biocidal Certificate"
+msgstr "Biyosidal Sertifikası"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__color
+msgid "Color"
+msgstr "Renk"
+
+#. module: field_operation_pest_common
+#: model:ir.model,name:field_operation_pest_common.model_res_company
+msgid "Companies"
+msgstr "Şirketler"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__create_uid
+msgid "Created by"
+msgstr "Oluşturan"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__create_date
+msgid "Created on"
+msgstr "Oluşturulma"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__display_name
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_type__display_name
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_template__display_name
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_res_company__display_name
+msgid "Display Name"
+msgstr "Ad Görünümü"
+
+#. module: field_operation_pest_common
+#: model_terms:ir.ui.view,arch_db:field_operation_pest_common.field_product_template_view_form
+msgid "Field Operation"
+msgstr "Saha Operasyonu"
+
+#. module: field_operation_pest_common
+#: model:ir.model,name:field_operation_pest_common.model_field_operation_pest_type
+msgid "Field Operation Pest Type"
+msgstr "Saha Operasyonu Zararlı Türü"
+
+#. module: field_operation_pest_common
+#: model:ir.model,name:field_operation_pest_common.model_field_operation_type
+msgid "Field Operation Type"
+msgstr "Saha Operasyon Türü"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__id
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_type__id
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_template__id
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_res_company__id
+msgid "ID"
+msgstr "ID"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__name
+msgid "Name"
+msgstr "Adı"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_product__package
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_template__package
+msgid "Package"
+msgstr "Ambalaj"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields.selection,name:field_operation_pest_common.selection__field_operation_type__type__pest
+msgid "Pest"
+msgstr "Haşere"
+
+#. module: field_operation_pest_common
+#: model:ir.actions.act_window,name:field_operation_pest_common.action_field_operation_pest_type
+#: model:ir.ui.menu,name:field_operation_pest_common.menu_field_operation_pest_type
+#: model_terms:ir.ui.view,arch_db:field_operation_pest_common.field_operation_pest_type_list_view
+#: model_terms:ir.ui.view,arch_db:field_operation_pest_common.field_operation_pest_type_search_view
+msgid "Pest Type"
+msgstr "Zararlı Türü"
+
+#. module: field_operation_pest_common
+#: model:ir.model,name:field_operation_pest_common.model_product_template
+msgid "Product"
+msgstr "Ürün"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_res_company__responsible_manager
+msgid "Responsible Manager"
+msgstr "Mesul Müdür"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_pest_type__sequence
+msgid "Sequence"
+msgstr "Sıra"
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_field_operation_type__type
+msgid "Service Type"
+msgstr "Servis Türü"
+
+#. module: field_operation_pest_common
+#: model_terms:ir.actions.act_window,help:field_operation_pest_common.action_field_operation_pest_type
+msgid "Use Pest Type to your service."
+msgstr "Hizmetiniz için Haşere Türünü kullanın."
+
+#. module: field_operation_pest_common
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_product__vendor
+#: model:ir.model.fields,field_description:field_operation_pest_common.field_product_template__vendor
+msgid "Vendor"
+msgstr "Tedarikçi"
+
+#. module: field_operation_pest_common
+#: model:uom.uom,name:field_operation_pest_common.uom_mg
+msgid "mg"
+msgstr "mg"
+
+#. module: field_operation_pest_common
+#: model:uom.uom,name:field_operation_pest_common.uom_ml
+msgid "ml"
+msgstr "ml"
+
+#. module: field_operation_pest_common
+#: model:uom.uom,name:field_operation_pest_common.mmol
+msgid "mmol"
+msgstr "mmol"
+
+#. module: field_operation_pest_common
+#: model:uom.uom,name:field_operation_pest_common.ug
+msgid "ug"
+msgstr "ug"

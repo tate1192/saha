@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_field_operation_form_cost" model="ir.ui.view">
+        <field name="name">field.operation.form.cost</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Costs" name="costs" groups="field_operation.service_group_all">
+                    <div class="d-flex justify-content-end mb-2">
+                        <button name="action_refresh_costs" type="object"
+                                string="Refresh Costs" class="btn-secondary"
+                                icon="fa-refresh"
+                                help="Rebuild the automatic cost lines (labour, materials, subcontractor, vehicle). Lines typed by hand are kept."/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="revenue_amount"/>
+                            <field name="total_cost"/>
+                            <field name="profit_amount"
+                                   decoration-danger="profit_amount &lt; 0"
+                                   decoration-success="profit_amount &gt; 0"/>
+                            <field name="profit_percent" widget="percentage"/>
+                        </group>
+                        <group>
+                            <field name="personnel_cost"/>
+                            <field name="material_cost"/>
+                            <field name="external_cost"/>
+                            <field name="other_cost"/>
+                            <field name="cost_hours" widget="float_time"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="contractor_cost"/>
+                            <field name="vehicle_cost"/>
+                        </group>
+                    </group>
+                    <field name="cost_line_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="line_type"/>
+                            <field name="name"/>
+                            <field name="employee_id"
+                                   options="{'no_create': True}"
+                                   optional="show"/>
+                            <field name="date" optional="show"/>
+                            <field name="quantity"/>
+                            <field name="unit_cost"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="auto" optional="hide"/>
+                            <field name="note" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_field_operation_list_cost" model="ir.ui.view">
+        <field name="name">field.operation.list.cost</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='total_work']" position="after">
+                <field name="total_cost" sum="Total Cost" optional="show"
+                       groups="field_operation.service_group_all"/>
+                <field name="profit_amount" sum="Total Profit" optional="hide"
+                       groups="field_operation.service_group_all"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

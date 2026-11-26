@@ -1,0 +1,311 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* field_operation_cost
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 14:41+0000\n"
+"PO-Revision-Date: 2026-11-26 17:44+0300\n"
+"Last-Translator: Softteknik Bilişim\n"
+"Language-Team: Turkish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__amount
+msgid "Amount"
+msgstr "Tutar"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__auto
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Automatic"
+msgstr "Otomatik"
+
+#. module: field_operation_cost
+#: model_terms:ir.actions.act_window,help:field_operation_cost.action_cost_line
+msgid "Close a service or press “Refresh Costs” on it to build the cost\n               lines from the assigned team, the hours worked and the material\n               issued."
+msgstr "Bir servisi kapatın veya üzerindeki “Refresh Costs” ile maliyet satırlarını atanan ekip, çalışılan saat ve kullanılan malzemeden oluşturun."
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__company_id
+msgid "Company"
+msgstr "Şirket"
+
+#. module: field_operation_cost
+#: model:ir.actions.act_window,name:field_operation_cost.action_cost_line
+#: model:ir.actions.act_window,name:field_operation_cost.action_cost_line_pivot
+#: model:ir.ui.menu,name:field_operation_cost.menu_cost_analysis
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_graph
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_pivot
+msgid "Cost Analysis"
+msgstr "Maliyet Analizi"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__cost_line_ids
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_list
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Cost Lines"
+msgstr "Maliyet Satırları"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__line_type
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Cost Type"
+msgstr "Maliyet Türü"
+
+#. module: field_operation_cost
+#. odoo-python
+#: code:addons/field_operation_cost/models/field_operation_cost_line.py:0
+msgid "Cost quantities and unit costs cannot be negative."
+msgstr "Maliyet miktarı ve birim maliyet negatif olamaz."
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__cost_hours
+msgid "Costed Hours"
+msgstr "Maliyetlenen Saat"
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_field_operation_form_cost
+msgid "Costs"
+msgstr "Maliyetler"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__create_uid
+msgid "Created by"
+msgstr "Oluşturan"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__create_date
+msgid "Created on"
+msgstr "Oluşturma Tarihi"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__currency_id
+msgid "Currency"
+msgstr "Para Birimi"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__date
+msgid "Date"
+msgstr "Tarih"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__name
+msgid "Description"
+msgstr "Açıklama"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__display_name
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__display_name
+msgid "Display Name"
+msgstr "Görüntüleme Adı"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__employee_id
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Employee"
+msgstr "Personel"
+
+#. module: field_operation_cost
+#: model:ir.model,name:field_operation_cost.model_field_operation
+msgid "Field Operation"
+msgstr "Saha Operasyonu"
+
+#. module: field_operation_cost
+#: model:ir.model,name:field_operation_cost.model_field_operation_cost_line
+msgid "Field Operation Cost Line"
+msgstr "Saha Operasyonu Maliyet Satırı"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,help:field_operation_cost.field_field_operation_cost_line__quantity
+msgid "Hours on labour lines, units on every other type."
+msgstr "İşçilik satırlarında saat, diğer türlerde adet."
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__id
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: field_operation_cost
+#. odoo-python
+#: code:addons/field_operation_cost/models/field_operation.py:0
+msgid "Labour: %(employee)s"
+msgstr "İşçilik: %(employee)s"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__profit_percent
+msgid "Margin (%)"
+msgstr "Marj (%)"
+
+#. module: field_operation_cost
+#: model:ir.model.fields.selection,name:field_operation_cost.selection__field_operation_cost_line__line_type__material
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Material"
+msgstr "Malzeme"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__material_cost
+msgid "Material Cost"
+msgstr "Malzeme Maliyeti"
+
+#. module: field_operation_cost
+#. odoo-python
+#: code:addons/field_operation_cost/models/field_operation.py:0
+msgid "Materials issued"
+msgstr "Kullanılan malzeme"
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Month"
+msgstr "Ay"
+
+#. module: field_operation_cost
+#: model_terms:ir.actions.act_window,help:field_operation_cost.action_cost_line
+msgid "No cost line yet"
+msgstr "Henüz maliyet satırı yok"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__note
+msgid "Note"
+msgstr "Not"
+
+#. module: field_operation_cost
+#. odoo-python
+#: code:addons/field_operation_cost/models/field_operation.py:0
+msgid "Only head office users are allowed to recalculate service costs."
+msgstr "Servis maliyetlerini yalnız merkez ofis kullanıcıları yeniden hesaplayabilir."
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__operation_id
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Operation"
+msgstr "Operasyon"
+
+#. module: field_operation_cost
+#: model:ir.model.fields.selection,name:field_operation_cost.selection__field_operation_cost_line__line_type__other
+msgid "Other"
+msgstr "Diğer"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__other_cost
+msgid "Other Cost"
+msgstr "Diğer Maliyet"
+
+#. module: field_operation_cost
+#: model:ir.model.fields.selection,name:field_operation_cost.selection__field_operation_cost_line__line_type__personnel
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "Personnel"
+msgstr "Personel"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__personnel_cost
+msgid "Personnel Cost"
+msgstr "Personel Maliyeti"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,help:field_operation_cost.field_field_operation__cost_hours
+msgid "Personnel hours behind the labour cost lines. Compare it with real worked hours before trusting the margin."
+msgstr "İşçilik maliyet satırlarının arkasındaki personel saatleri. Marja güvenmeden önce gerçek çalışılan saatlerle karşılaştırın."
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__profit_amount
+msgid "Profit"
+msgstr "Kâr"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__quantity
+msgid "Quantity"
+msgstr "Miktar"
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_field_operation_form_cost
+msgid "Rebuild the automatic cost lines (labour, materials, subcontractor, vehicle). Lines typed by hand are kept."
+msgstr "Otomatik maliyet satırlarını (işçilik, malzeme, taşeron, araç) yeniden oluşturur. Elle girilen satırlar korunur."
+
+#. module: field_operation_cost
+#: model:ir.model.fields,help:field_operation_cost.field_field_operation_cost_line__auto
+msgid "Rebuilt by 'Refresh Costs'; delete or edit it by hand instead if the amount must not be overwritten."
+msgstr "'Refresh Costs' ile yeniden oluşturulur; tutarın üzerine yazılmaması gerekiyorsa silin veya elle düzenleyin."
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_field_operation_form_cost
+msgid "Refresh Costs"
+msgstr "Maliyetleri Yenile"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__revenue_amount
+msgid "Revenue"
+msgstr "Ciro"
+
+#. module: field_operation_cost
+#. odoo-python
+#: code:addons/field_operation_cost/models/field_operation.py:0
+#: model:ir.model.fields.selection,name:field_operation_cost.selection__field_operation_cost_line__line_type__subcontractor
+msgid "Subcontractor"
+msgstr "Taşeron"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__external_cost
+msgid "Subcontractor / Vehicle"
+msgstr "Taşeron / Araç"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__contractor_cost
+msgid "Subcontractor Cost"
+msgstr "Taşeron Maliyeti"
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_search
+msgid "This Month"
+msgstr "Bu Ay"
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_cost_line_list
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_field_operation_form_cost
+msgid "Total"
+msgstr "Toplam"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__total_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_field_operation_list_cost
+msgid "Total Cost"
+msgstr "Toplam Maliyet"
+
+#. module: field_operation_cost
+#: model_terms:ir.ui.view,arch_db:field_operation_cost.view_field_operation_list_cost
+msgid "Total Profit"
+msgstr "Toplam Kâr"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation_cost_line__unit_cost
+msgid "Unit Cost"
+msgstr "Birim Maliyet"
+
+#. module: field_operation_cost
+#. odoo-python
+#: code:addons/field_operation_cost/models/field_operation.py:0
+#: model:ir.model.fields.selection,name:field_operation_cost.selection__field_operation_cost_line__line_type__vehicle
+msgid "Vehicle / Fuel"
+msgstr "Araç / Yakıt"
+
+#. module: field_operation_cost
+#: model:ir.model.fields,field_description:field_operation_cost.field_field_operation__vehicle_cost
+msgid "Vehicle / Fuel Cost"
+msgstr "Araç / Yakıt Maliyeti"

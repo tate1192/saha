@@ -7,58 +7,30 @@ from odoo.tools import sql
 _logger = logging.getLogger(__name__)
 
 
-def copy_legacy_form_data(env):
-    """Move the legacy service-form pest data to the independent form model.
+def _operation_link(cr, line_table):
+    """Column that reaches the operation from a legacy line table.
 
-    The core module keeps the operation-side lines and copies the old form
-    header values to the operation during its own migration.  This helper runs
-    both when the bridge is installed for the first time (post-init hook) and
-    when an already installed bridge is upgraded (post-migration).
+    19.0.1.1.x line tables carry no operation link; there the operation is
+    reached through the form the line belongs to.
+    """
+    if sql.column_exists(cr, line_table, "operation_id"):
+        return "line.operation_id"
+    return "form.operation_id"
+
+
+def _restore_operation_values(env):
+    """Bring the operation-side pest headers back to the form.
+
+    The core migration copies the old form header values to the operation.  On
+    databases where they never lived on the operation the columns are absent
+    and there is nothing to restore.
     """
     cr = env.cr
-    if not sql.column_exists(cr, "field_operation_pesticide", "forms_id"):
+    if not (
+        sql.column_exists(cr, "field_operation", "hygiene")
+        and sql.column_exists(cr, "field_operation_forms", "hygiene")
+    ):
         return
-
-    Line = env["field.operation.forms.pest"]
-    if not Line.search_count([]):
-        cr.execute(
-            """
-            INSERT INTO field_operation_forms_pest
-                        (name, sequence, forms_id, product_id, product_uom,
-                         product_qty, used_equipment, company_id, customer_id,
-                         user_id, subject, status, start_date, end_date,
-                         create_uid, create_date, write_uid, write_date)
-            SELECT line.name, 10, line.forms_id, line.product_id,
-                   line.product_uom, line.product_qty, line.used_equipment,
-                   form.company_id, form.customer_id, form.user_id,
-                   form.subject, line.status, operation.start_date,
-                   operation.end_date, line.create_uid, line.create_date,
-                   line.write_uid, line.write_date
-              FROM field_operation_pesticide AS line
-              JOIN field_operation_forms AS form ON form.id = line.forms_id
-              LEFT JOIN field_operation AS operation
-                ON operation.id = line.operation_id
-             WHERE line.forms_id IS NOT NULL
-            """
-        )
-        copied = cr.rowcount
-        cr.execute(
-            """
-            SELECT id
-              FROM field_operation_forms_pest
-             WHERE name IS NULL OR name IN ('', '/', 'New', 'Yeni')
-            """
-        )
-        for (line_id,) in cr.fetchall():
-            name = env["ir.sequence"].next_by_code("field.forms.pest") or "/"
-            cr.execute(
-                "UPDATE field_operation_forms_pest SET name = %s WHERE id = %s",
-                (name, line_id),
-            )
-        _logger.info("Copied %s pest form lines to the form model.", copied)
-
-    # The old form header fields were copied to the operation by the core
-    # migration; bring them back to the form so the form-side flow owns them.
     cr.execute(
         """
         UPDATE field_operation_forms AS form
@@ -95,6 +67,62 @@ def copy_legacy_form_data(env):
            AND form.service_type = 'pest'
         """
     )
+
+
+def copy_legacy_form_data(env):
+    """Move the legacy service-form pest data to the independent form model.
+
+    The core module keeps the operation-side lines and copies the old form
+    header values to the operation during its own migration.  This helper runs
+    both when the bridge is installed for the first time (post-init hook) and
+    when an already installed bridge is upgraded (post-migration).
+    """
+    cr = env.cr
+    if not sql.column_exists(cr, "field_operation_pesticide", "forms_id"):
+        return
+
+    Line = env["field.operation.forms.pest"]
+    if not Line.search_count([]):
+        operation_link = _operation_link(cr, "field_operation_pesticide")
+        cr.execute(
+            f"""
+            INSERT INTO field_operation_forms_pest
+                        (name, sequence, forms_id, product_id, product_uom,
+                         product_qty, used_equipment, company_id, customer_id,
+                         user_id, subject, status, start_date, end_date,
+                         create_uid, create_date, write_uid, write_date)
+            SELECT line.name, 10, line.forms_id, line.product_id,
+                   line.product_uom, line.product_qty, line.used_equipment,
+                   form.company_id, form.customer_id, form.user_id,
+                   form.subject, COALESCE(line.status, form.status),
+                   COALESCE(operation.start_date, form.start_date),
+                   COALESCE(operation.end_date, form.end_date),
+                   line.create_uid, line.create_date,
+                   line.write_uid, line.write_date
+              FROM field_operation_pesticide AS line
+              JOIN field_operation_forms AS form ON form.id = line.forms_id
+              LEFT JOIN field_operation AS operation
+                ON operation.id = {operation_link}
+             WHERE line.forms_id IS NOT NULL
+            """
+        )
+        copied = cr.rowcount
+        cr.execute(
+            """
+            SELECT id
+              FROM field_operation_forms_pest
+             WHERE name IS NULL OR name IN ('', '/', 'New', 'Yeni')
+            """
+        )
+        for (line_id,) in cr.fetchall():
+            name = env["ir.sequence"].next_by_code("field.forms.pest") or "/"
+            cr.execute(
+                "UPDATE field_operation_forms_pest SET name = %s WHERE id = %s",
+                (name, line_id),
+            )
+        _logger.info("Copied %s pest form lines to the form model.", copied)
+
+    _restore_operation_values(env)
 
     if sql.table_exists(
         cr, "field_operation_forms_field_operation_pest_type_rel"

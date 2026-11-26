@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="field_disinfect_ph_cl" inherit_id="field_operation_forms_disinfect.field_disinfect_layout">
+        <xpath expr="//div[@t-if='doc.solution']" position="before">
+            <div class="row" t-if="doc.before_ph or doc.after_ph or doc.before_cl or doc.after_cl">
+                <div class="col-6">
+                    <strong>Before PH:</strong>
+                    <span t-field="doc.before_ph"/>
+                    <br/>
+                    <strong>After PH:</strong>
+                    <span t-field="doc.after_ph"/>
+                </div>
+                <div class="col-6">
+                    <strong>Before CL:</strong>
+                    <span t-field="doc.before_cl"/>
+                    <br/>
+                    <strong>After CL:</strong>
+                    <span t-field="doc.after_cl"/>
+                </div>
+            </div>
+            <br/>
+        </xpath>
+    </template>
+</odoo>

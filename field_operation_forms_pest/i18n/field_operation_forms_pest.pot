@@ -59,7 +59,7 @@ msgstr ""
 
 #. module: field_operation_forms_pest
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms__display_name
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__display_name
+#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_pesticide__display_name
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_stock_move__display_name
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_stock_picking__display_name
 msgid "Display Name"
@@ -82,13 +82,13 @@ msgid "Field Operation Forms"
 msgstr ""
 
 #. module: field_operation_forms_pest
-#: model:ir.model,name:field_operation_forms_pest.model_field_operation_forms_pest
-msgid "Field Operation Forms Pest Line"
+#: model:ir.model,name:field_operation_forms_pest.model_field_operation_pesticide
+msgid "Field Operation Pesticide"
 msgstr ""
 
 #. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__forms_id
-msgid "Operation Form"
+#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_pesticide__forms_id
+msgid "Forms"
 msgstr ""
 
 #. module: field_operation_forms_pest
@@ -98,7 +98,7 @@ msgstr ""
 
 #. module: field_operation_forms_pest
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms__id
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__id
+#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_pesticide__id
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_stock_move__id
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_stock_picking__id
 msgid "ID"
@@ -132,36 +132,6 @@ msgstr ""
 #. module: field_operation_forms_pest
 #: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms__others
 msgid "Others"
-msgstr ""
-
-#. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__name
-msgid "Reference"
-msgstr ""
-
-#. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__sequence
-msgid "Sequence"
-msgstr ""
-
-#. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__product_id
-msgid "Product"
-msgstr ""
-
-#. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__product_uom
-msgid "Unit of Measure"
-msgstr ""
-
-#. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__product_qty
-msgid "Quantity"
-msgstr ""
-
-#. module: field_operation_forms_pest
-#: model:ir.model.fields,field_description:field_operation_forms_pest.field_field_operation_forms_pest__used_equipment
-msgid "Used Equipment"
 msgstr ""
 
 #. module: field_operation_forms_pest

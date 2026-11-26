@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cost_line_list" model="ir.ui.view">
+        <field name="name">field.operation.cost.line.list</field>
+        <field name="model">field.operation.cost.line</field>
+        <field name="arch" type="xml">
+            <list string="Cost Lines" create="0" edit="0">
+                <field name="date"/>
+                <field name="operation_id"/>
+                <field name="line_type"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="quantity"/>
+                <field name="unit_cost"/>
+                <field name="amount" sum="Total"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cost_line_pivot" model="ir.ui.view">
+        <field name="name">field.operation.cost.line.pivot</field>
+        <field name="model">field.operation.cost.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Cost Analysis" sample="1">
+                <field name="line_type" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="amount" type="measure"/>
+                <field name="quantity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_cost_line_graph" model="ir.ui.view">
+        <field name="name">field.operation.cost.line.graph</field>
+        <field name="model">field.operation.cost.line</field>
+        <field name="arch" type="xml">
+            <graph string="Cost Analysis" type="bar" sample="1">
+                <field name="line_type"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_cost_line_search" model="ir.ui.view">
+        <field name="name">field.operation.cost.line.search</field>
+        <field name="model">field.operation.cost.line</field>
+        <field name="arch" type="xml">
+            <search string="Cost Lines">
+                <field name="operation_id"/>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <filter name="filter_personnel" string="Personnel"
+                        domain="[('line_type', '=', 'personnel')]"/>
+                <filter name="filter_material" string="Material"
+                        domain="[('line_type', '=', 'material')]"/>
+                <filter name="filter_automatic" string="Automatic"
+                        domain="[('auto', '=', True)]"/>
+                <separator/>
+                <filter name="filter_this_month" string="This Month"
+                        domain="[('date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                <separator/>
+                <filter name="group_operation" string="Operation"
+                        context="{'group_by': 'operation_id'}"/>
+                <filter name="group_type" string="Cost Type"
+                        context="{'group_by': 'line_type'}"/>
+                <filter name="group_employee" string="Employee"
+                        context="{'group_by': 'employee_id'}"/>
+                <filter name="group_month" string="Month"
+                        context="{'group_by': 'date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cost_line" model="ir.actions.act_window">
+        <field name="name">Cost Analysis</field>
+        <field name="res_model">field.operation.cost.line</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_cost_line_search"/>
+        <field name="context">{'search_default_group_type': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No cost line yet</p>
+            <p>Close a service or press “Refresh Costs” on it to build the cost
+               lines from the assigned team, the hours worked and the material
+               issued.</p>
+        </field>
+    </record>
+
+    <record id="action_cost_line_pivot" model="ir.actions.act_window">
+        <field name="name">Cost Analysis</field>
+        <field name="res_model">field.operation.cost.line</field>
+        <field name="view_mode">pivot,list,graph</field>
+        <field name="search_view_id" ref="view_cost_line_search"/>
+    </record>
+
+    <menuitem id="menu_cost_analysis"
+              name="Cost Analysis"
+              parent="field_operation.menu_field_operation_reports"
+              action="action_cost_line_pivot"
+              groups="field_operation.service_group_all"
+              sequence="20"/>
+</odoo>

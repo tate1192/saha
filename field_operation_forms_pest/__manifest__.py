@@ -1,19 +1,17 @@
 {
     "name": "Field Operation Forms Pest",
-    "version": "19.0.1.3.0",
+    "version": "19.0.1.4.0",
     "category": "Services/Field Service",
     "summary": "Pest tab, stock delivery and form rules on field operation forms",
     "description": """
 Field Operation Forms Pest
 ==========================
 
-Optional bridge between ``field_operation_pest`` and
-``field_operation_forms``.  It restores the biocidal/pesticide tab, the
-stock delivery flow and the forms record rules for customers that use
-service forms.  The form-side lines live in their own model
+Pest control forms for customers using ``field_operation_forms``. The
+biocidal/pesticide tab, stock delivery flow and form record rules work
+without ``field_operation_pest``. Shared catalog and product metadata come
+from ``field_operation_pest_common``. Form-side lines live in their own model
 (``field.operation.forms.pest``) and do not create or modify an operation.
-Customers that do not install ``field_operation_forms`` keep the same pest
-data on the operation and print it from the operation service report.
     """,
     "author": "Softteknik Bilişim",
     "website": "https://softteknik.com",
@@ -22,13 +20,13 @@ data on the operation and print it from the operation service report.
     "license": "AGPL-3",
     "sequence": 121,
     "depends": [
-        "field_operation_pest",
+        "field_operation_pest_common",
         "field_operation_forms",
         "stock",
     ],
     "data": [
-        "security/ir.model.access.csv",
-        "security/security.xml",
+        "forms_security/ir.model.access.csv",
+        "forms_security/security.xml",
         "data/ir_sequence_data.xml",
         "views/field_operation_forms_view.xml",
     ],
@@ -36,7 +34,7 @@ data on the operation and print it from the operation service report.
     "assets": {},
     "external_dependencies": {},
     "installable": True,
-    "auto_install": True,
+    "auto_install": False,
     "application": False,
     "pre_init_hook": "pre_init_hook",
     "post_init_hook": "post_init_hook",

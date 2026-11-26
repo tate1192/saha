@@ -2,6 +2,3 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 field_operation_disinfect_worker,Disinfection Lines Worker,model_field_operation_disinfect,field_operation.service_group_worker,1,1,1,0
 field_operation_disinfect_user,Disinfection Lines User,model_field_operation_disinfect,field_operation.service_group_user,1,1,1,1
 field_operation_disinfect_manager,Disinfection Lines Manager,model_field_operation_disinfect,field_operation.service_group_manager,1,1,1,1
-field_field_disinfect_product_worker,Disinfection Products Worker,model_field_disinfect_product,field_operation.service_group_worker,1,0,0,0
-field_field_disinfect_product_user,Disinfection Products User,model_field_disinfect_product,field_operation.service_group_user,1,0,0,0
-field_field_disinfect_product_manager,Disinfection Products Manager,model_field_disinfect_product,field_operation.service_group_manager,1,1,1,1

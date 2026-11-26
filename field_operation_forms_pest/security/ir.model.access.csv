@@ -1,5 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-forms_pest_line_user,Pest Lines Forms User,model_field_operation_forms_pest,field_operation_forms.forms_user,1,1,1,0
-forms_pest_line_manager,Pest Lines Forms Manager,model_field_operation_forms_pest,field_operation_forms.forms_manager,1,1,1,1
+forms_pest_line_user,Pest Lines Forms User,field_operation_pest.model_field_operation_pesticide,field_operation_forms.forms_user,1,1,1,0
+forms_pest_line_manager,Pest Lines Forms Manager,field_operation_pest.model_field_operation_pesticide,field_operation_forms.forms_manager,1,1,1,1
 forms_pest_type_user,Pest Type Forms User,field_operation_pest.model_field_operation_pest_type,field_operation_forms.forms_user,1,1,1,1
 forms_pest_type_manager,Pest Type Forms Manager,field_operation_pest.model_field_operation_pest_type,field_operation_forms.forms_manager,1,1,1,1

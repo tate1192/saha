@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_field_operation_form_timesheet" model="ir.ui.view">
+        <field name="name">field.operation.form.timesheet</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Time Tracking" name="time_tracking">
+                    <group>
+                        <group>
+                            <field name="time_approved" widget="float_time"/>
+                            <field name="time_draft" widget="float_time"/>
+                            <field name="time_expected" widget="float_time"/>
+                            <field name="time_difference" widget="float_time"
+                                   decoration-danger="time_difference &lt; 0"/>
+                        </group>
+                        <group>
+                            <button name="action_generate_time_lines" type="object"
+                                    string="Propose From Planning" class="btn-secondary"
+                                    help="One draft line per assigned person, filled with the planned duration."
+                                    groups="field_operation.service_group_user"/>
+                            <button name="action_approve_time_lines" type="object"
+                                    string="Approve All" class="btn-primary"
+                                    groups="field_operation.service_group_user"/>
+                            <button name="action_reset_time_lines" type="object"
+                                    string="Reset To Draft" class="btn-secondary"
+                                    groups="field_operation.service_group_user"/>
+                        </group>
+                    </group>
+                    <field name="time_line_ids" nolabel="1">
+                        <list editable="bottom" decoration-muted="state == 'approved'">
+                            <field name="employee_id"
+                                   options="{'no_create': True}"/>
+                            <field name="date"/>
+                            <field name="duration" widget="float_time" sum="Total"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'approved'"/>
+                            <field name="note" optional="show"/>
+                            <field name="approved_by" optional="hide"/>
+                            <field name="approved_on" optional="hide"/>
+                            <button name="action_approve" type="object"
+                                    icon="fa-check" title="Approve"
+                                    invisible="state == 'approved'"
+                                    groups="field_operation.service_group_user"/>
+                            <button name="action_reset_draft" type="object"
+                                    icon="fa-undo" title="Reset to draft"
+                                    invisible="state != 'approved'"
+                                    groups="field_operation.service_group_user"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_field_operation_list_timesheet" model="ir.ui.view">
+        <field name="name">field.operation.list.timesheet</field>
+        <field name="model">field.operation</field>
+        <field name="inherit_id" ref="field_operation.view_field_operation_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='total_work']" position="after">
+                <field name="time_approved" widget="float_time" optional="hide"
+                       sum="Approved"/>
+                <field name="time_difference" widget="float_time" optional="hide"
+                       decoration-danger="time_difference &lt; 0"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

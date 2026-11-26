@@ -1,0 +1,25 @@
+{
+    "name": "Field Operation Cost",
+    "version": "19.0.1.0.0",
+    "category": "Services/Field Service",
+    "summary": "Per-operation labour cost, materials and profitability",
+    "author": "Softteknik Bilişim",
+    "website": "https://softteknik.com",
+    "contributors": ["Softteknik Bilişim"],
+    "license": "AGPL-3",
+    "sequence": 121,
+    "images": ["static/description/icon.png"],
+    "depends": [
+        "field_operation",
+        "hr_hourly_cost",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/ir_rule.xml",
+        "views/field_operation_view.xml",
+        "views/cost_line_view.xml",
+    ],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+}

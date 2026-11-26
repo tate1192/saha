@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reconciliation_form" model="ir.ui.view">
+        <field name="name">field.operation.timesheet.reconciliation.form</field>
+        <field name="model">field.operation.timesheet.reconciliation</field>
+        <field name="arch" type="xml">
+            <form string="Time vs Attendance">
+                <header>
+                    <button name="action_compute" type="object" string="Compute"
+                            class="oe_highlight" icon="fa-calculator"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="employee_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" nolabel="1" readonly="1">
+                        <list decoration-danger="difference &lt; -0.01"
+                              decoration-warning="difference &gt; 0.01">
+                            <field name="employee_id"/>
+                            <field name="timesheet_hours" widget="float_time" sum="Approved"/>
+                            <field name="draft_hours" widget="float_time" sum="Draft"/>
+                            <field name="attendance_hours" widget="float_time" sum="Attendance"/>
+                            <field name="difference" widget="float_time" sum="Difference"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reconciliation" model="ir.actions.act_window">
+        <field name="name">Time vs Attendance</field>
+        <field name="res_model">field.operation.timesheet.reconciliation</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_reconciliation"
+              name="Time vs Attendance"
+              parent="field_operation.menu_field_operation_reports"
+              action="action_reconciliation"
+              groups="field_operation.service_group_user"
+              sequence="19"/>
+</odoo>

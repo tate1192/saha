@@ -126,13 +126,44 @@ class TestFieldOperationFormsDisinfect(TransactionCase):
         with self.assertRaises(AccessError):
             form.with_user(forms_user).action_send_disinfect_mail()
 
-    def test_05_deleting_the_form_deletes_the_lines(self):
+    def test_05_report_prints_ph_and_cl_readings(self):
+        self.partner.lang = "en_US"
+        form = self._form()
+        form.write(
+            {
+                "before_ph": "7.21",
+                "after_ph": "6.81",
+                "before_cl": "0.81",
+                "after_cl": "0.51",
+            }
+        )
+        report = self.env.ref(
+            "field_operation_forms_disinfect.action_field_disinfect_pdf"
+        )
+
+        html, _report_type = self.env["ir.actions.report"]._render_qweb_html(
+            report, form.ids
+        )
+        html = html.decode() if isinstance(html, bytes) else html
+        for expected in (
+            "Before PH:",
+            "After PH:",
+            "Before CL:",
+            "After CL:",
+            "7.21",
+            "6.81",
+            "0.81",
+            "0.51",
+        ):
+            self.assertIn(expected, html)
+
+    def test_06_deleting_the_form_deletes_the_lines(self):
         form = self._form()
         line = self._line(form)
         form.unlink()
         self.assertFalse(line.exists())
 
-    def test_06_no_operation_is_created(self):
+    def test_07_no_operation_is_created(self):
         operation_count = self.env["field.operation"].search_count([])
         form = self._form()
         self._line(form)

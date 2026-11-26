@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_time_line_worker,Time Line Field Worker,model_field_operation_time_line,field_operation.service_group_worker,1,1,1,0
+access_time_line_user,Time Line Office User,model_field_operation_time_line,field_operation.service_group_user,1,1,1,1
+access_time_line_all,Time Line Head Office,model_field_operation_time_line,field_operation.service_group_all,1,1,1,1
+access_time_line_manager,Time Line Manager,model_field_operation_time_line,field_operation.service_group_manager,1,1,1,1
+access_reconciliation,Reconciliation,model_field_operation_timesheet_reconciliation,field_operation.service_group_user,1,1,1,1
+access_reconciliation_line,Reconciliation Line,model_field_operation_timesheet_reconciliation_line,field_operation.service_group_user,1,1,1,1
